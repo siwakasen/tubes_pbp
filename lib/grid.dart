@@ -26,7 +26,7 @@ Widget bloc (double width, int index) {
     },
     child: AnimatedContainer(
       duration: Duration(milliseconds: 200),
-      margin: const EdgeInsets.all(20.0),
+      margin: const EdgeInsets.only(right: 20.0, left: 20.00, top: 5.00),
       width: !isExpanded ? width * 0.4 : width * 1,
       height: !isExpanded ? width * 0.4 : width * 0.5,
       child: Column(
