@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:ui';
 // import 'package:guidedlayout2_1396/View/login.dart';
 import 'package:ugd2_pbp/component/form_component.dart';
+import 'package:ugd2_pbp/view/login/SimpleLoginScreen.dart';
 
 class RegisterView extends StatefulWidget {
   const RegisterView({super.key});
@@ -169,13 +170,13 @@ class _RegisterViewState extends State<RegisterView> {
                         if (_formKey.currentState!.validate()) {
                           Map<String, dynamic> formData = {};
                           formData['username'] = usernameController.text;
+                          String user = usernameController.text;
                           formData['password'] = passwordController.text;
-                          // Navigator.push(
-                          //     context,
-                          //     MaterialPageRoute(
-                          //         builder: (_) => LoginView(
-                          //               data: formData,
-                          //             )));
+                          String pass = passwordController.text;
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (_) => SimpleLoginScreen()));
                         }
                       },
                       child: const Text('Register'),

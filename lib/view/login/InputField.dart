@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ugd2_pbp/view/login/SimpleLoginScreen.dart';
-import 'package:ugd2_pbp/view/login/SimpleRegisterScreen.dart';
+import 'package:ugd2_pbp/view/login/register.dart';
 import 'package:ugd2_pbp/view/login/FormButton.dart';
 
 class InputField extends StatefulWidget {
@@ -11,7 +11,8 @@ class InputField extends StatefulWidget {
   final TextInputType? keyboardType;
   final TextInputAction? textInputAction;
   final bool autoFocus;
-  final bool isPassword; // Tambahkan properti ini untuk menandakan apakah input adalah password
+  final bool
+      isPassword; // Tambahkan properti ini untuk menandakan apakah input adalah password
 
   const InputField({
     this.labelText,
@@ -30,7 +31,8 @@ class InputField extends StatefulWidget {
 }
 
 class _InputFieldState extends State<InputField> {
-  bool _passwordVisible = false; // Variabel untuk mengontrol visibilitas kata sandi
+  bool _passwordVisible =
+      false; // Variabel untuk mengontrol visibilitas kata sandi
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +42,9 @@ class _InputFieldState extends State<InputField> {
       onSubmitted: widget.onSubmitted,
       keyboardType: widget.keyboardType,
       textInputAction: widget.textInputAction,
-      obscureText: widget.isPassword ? !_passwordVisible : false, // Gunakan _passwordVisible hanya jika ini adalah input kata sandi
+      obscureText: widget.isPassword
+          ? !_passwordVisible
+          : false, // Gunakan _passwordVisible hanya jika ini adalah input kata sandi
       decoration: InputDecoration(
         labelText: widget.labelText,
         errorText: widget.errorText,
@@ -67,8 +71,3 @@ class _InputFieldState extends State<InputField> {
     );
   }
 }
-
-
-
-
-
