@@ -1,8 +1,8 @@
 
 import 'package:flutter/material.dart';
-import 'package:ugd2_pbp/view/SimpleRegisterScreen.dart';
-import 'package:ugd2_pbp/view/InputField.dart';
-import 'package:ugd2_pbp/view/FormButton.dart';
+import 'package:ugd2_pbp/view/login/SimpleRegisterScreen.dart';
+import 'package:ugd2_pbp/view/login/InputField.dart';
+import 'package:ugd2_pbp/view/login/FormButton.dart';
 
 class SimpleLoginScreen extends StatefulWidget {
   final Function(String? email, String? password)? onSubmitted;

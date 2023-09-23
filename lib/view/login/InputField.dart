@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:ugd2_pbp/view/SimpleLoginScreen.dart';
-import 'package:ugd2_pbp/view/SimpleRegisterScreen.dart';
-import 'package:ugd2_pbp/view/FormButton.dart';
+import 'package:ugd2_pbp/view/login/SimpleLoginScreen.dart';
+import 'package:ugd2_pbp/view/login/SimpleRegisterScreen.dart';
+import 'package:ugd2_pbp/view/login/FormButton.dart';
 
 class InputField extends StatefulWidget {
   final String? labelText;

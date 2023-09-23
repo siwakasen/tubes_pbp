@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ugd2_pbp/view/SimpleLoginScreen.dart';
+import 'package:ugd2_pbp/view/login/SimpleLoginScreen.dart';
 
 void main() {
   runApp(const MainApp());

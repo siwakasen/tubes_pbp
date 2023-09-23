@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:ugd2_pbp/view/SimpleLoginScreen.dart';
+import 'package:ugd2_pbp/view/login/SimpleLoginScreen.dart';
 // import 'package:ugd2_pbp/view/SimpleRegisterScreen.dart';
-import 'package:ugd2_pbp/view/InputField.dart';
+import 'package:ugd2_pbp/view/login/InputField.dart';
 
 class FormButton extends StatelessWidget {
   final String text;
