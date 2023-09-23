@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ugd2_pbp/view/login/register.dart';
 import 'package:ugd2_pbp/component/form_component.dart';
+import 'package:ugd2_pbp/home.dart';
 
 class LoginView extends StatefulWidget {
   final Map? data;
@@ -82,11 +83,11 @@ class _LoginViewState extends State<LoginView> {
                                     usernameController.text &&
                                 dataForm['password'] ==
                                     passwordController.text) {
-                              // Navigator.push(
-                              //   context,
-                              //   MaterialPageRoute(
-                              //       builder: (_) => const HomeView()),
-                              // );
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (_) => const HomeView()),
+                              );
                             } else {
                               showDialog(
                                 context: context,
