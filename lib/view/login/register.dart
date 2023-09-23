@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'dart:ui';
 // import 'package:guidedlayout2_1396/View/login.dart';
 import 'package:ugd2_pbp/component/form_component.dart';
-import 'package:ugd2_pbp/view/login/SimpleLoginScreen.dart';
+import 'package:ugd2_pbp/view/login/login.dart';
 
 class RegisterView extends StatefulWidget {
   const RegisterView({super.key});
@@ -173,10 +172,28 @@ class _RegisterViewState extends State<RegisterView> {
                           String user = usernameController.text;
                           formData['password'] = passwordController.text;
                           String pass = passwordController.text;
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (_) => SimpleLoginScreen()));
+
+                          showDialog(
+                              context: context,
+                              builder: (_) => AlertDialog(
+                                    title: const Text(
+                                        'Apakah sudah yakin data yang diinputkan benar?'),
+                                    actions: <Widget>[
+                                      TextButton(
+                                          onPressed: () =>
+                                              Navigator.pop(context, 'No'),
+                                          child: const Text('No')),
+                                      TextButton(
+                                        onPressed: () => Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (_) => LoginView(
+                                                      data: formData,
+                                                    ))),
+                                        child: const Text('Yes'),
+                                      ),
+                                    ],
+                                  ));
                         }
                       },
                       child: const Text('Register'),

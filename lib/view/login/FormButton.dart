@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ugd2_pbp/view/login/SimpleLoginScreen.dart';
+import 'package:ugd2_pbp/view/login/login.dart';
 // import 'package:ugd2_pbp/view/SimpleRegisterScreen.dart';
 import 'package:ugd2_pbp/view/login/InputField.dart';
 

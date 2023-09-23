@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ugd2_pbp/view/login/SimpleLoginScreen.dart';
+import 'package:ugd2_pbp/view/login/login.dart';
 
 void main() {
   runApp(const MainApp());
@@ -13,7 +13,7 @@ class MainApp extends StatelessWidget {
     return const MaterialApp(
       home: Scaffold(
         body: Center(
-          child: SimpleLoginScreen(),
+          child: LoginView(),
         ),
       ),
     );
