@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:ugd2_pbp/grid.dart';
 import 'package:ugd2_pbp/midscreen.dart';
 import 'package:ugd2_pbp/profile.dart';
+import 'package:ugd2_pbp/home1.dart';
 
 
 
@@ -15,33 +16,34 @@ class HomeView extends StatefulWidget {
 class _HomeViewState extends State<HomeView> {
 
   // int _currentIndex = 0;
+  int selectedIndex = 0;
 
-  final List<Widget> _tabs = [
-    GriddView(),
-    MidView(),
-    ProfileView(),
+  void onItemTapped(int index){
+    setState(() {
+      selectedIndex = index;
+    });
+  }
+
+  static const List<Widget> widgetOptions = <Widget>[
+      Home1View(),
+      ProfileView()
+      
   ];
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: _tabs.length,
-      child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.amber[600],
-          title: Text('Restoran'),
-          bottom: TabBar(
-            tabs: [
-              Tab(icon: Icon(Icons.home), text: 'Home'),
-              Tab(icon: Icon(Icons.grid_3x3_outlined), text: 'Fitur1'),
-              Tab(icon: Icon(Icons.person), text: 'Profile'),
-            ],
-          ),
+    return Scaffold(
+        bottomNavigationBar: BottomNavigationBar(
+        items: const[
+          BottomNavigationBarItem(icon: Icon(Icons.home,), label: 'Home'),
+          BottomNavigationBarItem(icon: Icon(Icons.person,), label: 'Profile'),
+        ],
+          currentIndex: selectedIndex,
+          onTap: onItemTapped,
         ),
-        body: TabBarView(
-          children: _tabs,
-        ),
-      ),
+        body: widgetOptions.elementAt(selectedIndex),
+      // ),
+        
     );
   }
 }
