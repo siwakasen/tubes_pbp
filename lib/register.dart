@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:ui';
 // import 'package:guidedlayout2_1396/View/login.dart';
@@ -108,24 +107,20 @@ class _RegisterViewState extends State<RegisterView> {
                         ),
                       ],
                     ),
-                    ElevatedButton(
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: const [
-                          Text('Date of Birth  '),
-                          Icon(Icons.date_range)
-                        ],
-                      ),
-                      onPressed: () async {
-                        DateTime? newDate = await showDatePicker(
-                            context: context,
-                            initialDate: date,
-                            firstDate: DateTime(1900),
-                            lastDate: DateTime.now());
-                        if (newDate == null) return;
-                        setState(() => date = newDate);
-                      },
-                    ),
+                    ElevatedButton.icon(
+                        onPressed: () async {
+                          DateTime? newDate = await showDatePicker(
+                              context: context,
+                              initialDate: date,
+                              firstDate: DateTime(1900),
+                              lastDate: DateTime.now());
+                          if (newDate == null) return;
+                          setState(() => date = newDate);
+                        },
+                        label: const Text('Today'),
+                        style: ElevatedButton.styleFrom(
+                            primary: Color.fromRGBO(193, 196, 201, 1)),
+                        icon: Icon(Icons.calendar_month)),
                     ElevatedButton(
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
