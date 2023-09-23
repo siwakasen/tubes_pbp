@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ugd2_pbp/component/darkModeState.dart' as globals;
 
 Padding inputForm(Function(String?) validasi,
     {required TextEditingController controller,
@@ -9,7 +10,8 @@ Padding inputForm(Function(String?) validasi,
     child: SizedBox(
       width: 350,
       child: TextFormField(
-        style: const TextStyle(),
+        style:
+            TextStyle(color: globals.isDarkMode ? Colors.white : Colors.black),
         validator: (value) => validasi(value),
         autofocus: false,
         controller: controller,

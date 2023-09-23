@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 // import 'package:guidedlayout2_1396/View/login.dart';
 import 'package:ugd2_pbp/component/form_component.dart';
 import 'package:ugd2_pbp/view/login/login.dart';
+import 'package:ugd2_pbp/component/darkModeState.dart' as globals;
 
 class RegisterView extends StatefulWidget {
   const RegisterView({super.key});
@@ -26,6 +27,11 @@ class _RegisterViewState extends State<RegisterView> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+        theme: ThemeData(
+            useMaterial3: true,
+            colorSchemeSeed: globals.isDarkMode ? Colors.white : Colors.black,
+            brightness:
+                globals.isDarkMode ? Brightness.dark : Brightness.light),
         debugShowCheckedModeBanner: false,
         home: Scaffold(
           body: SingleChildScrollView(
@@ -196,7 +202,10 @@ class _RegisterViewState extends State<RegisterView> {
                                   ));
                         }
                       },
-                      child: const Text('Register'),
+                      child: const Text(
+                        'Register',
+                        style: TextStyle(color: Colors.white),
+                      ),
                     )
                   ],
                 )),
