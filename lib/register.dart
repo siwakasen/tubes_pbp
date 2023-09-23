@@ -15,6 +15,7 @@ enum SingingCharacter { male, female }
 
 class _RegisterViewState extends State<RegisterView> {
   final _formKey = GlobalKey<FormState>();
+  DateTime date = DateTime.now();
   String? gender;
   TextEditingController usernameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
@@ -106,6 +107,24 @@ class _RegisterViewState extends State<RegisterView> {
                           },
                         ),
                       ],
+                    ),
+                    ElevatedButton(
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: const [
+                          Text('Date of Birth  '),
+                          Icon(Icons.date_range)
+                        ],
+                      ),
+                      onPressed: () async {
+                        DateTime? newDate = await showDatePicker(
+                            context: context,
+                            initialDate: date,
+                            firstDate: DateTime(1900),
+                            lastDate: DateTime.now());
+                        if (newDate == null) return;
+                        setState(() => date = newDate);
+                      },
                     ),
                     ElevatedButton(
                         onPressed: () {
