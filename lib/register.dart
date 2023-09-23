@@ -16,10 +16,12 @@ class _RegisterViewState extends State<RegisterView> {
   final _formKey = GlobalKey<FormState>();
   DateTime date = DateTime.now();
   String? gender;
+  bool? isChecked = false;
   TextEditingController usernameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController nameController = TextEditingController();
+  TextEditingController dateController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -83,62 +85,117 @@ class _RegisterViewState extends State<RegisterView> {
                             fontSize: 18, fontWeight: FontWeight.w500),
                       ),
                     ),
-                    Column(
-                      children: [
-                        RadioListTile(
-                          title: Text("Male"),
-                          value: "male",
-                          groupValue: gender,
-                          onChanged: (value) {
-                            setState(() {
-                              gender = value.toString();
-                            });
-                          },
-                        ),
-                        RadioListTile(
-                          title: Text("Female"),
-                          value: "female",
-                          groupValue: gender,
-                          onChanged: (value) {
-                            setState(() {
-                              gender = value.toString();
-                            });
-                          },
-                        ),
-                      ],
+                    Container(
+                      width: 400,
+                      child: Column(
+                        children: [
+                          RadioListTile(
+                            title: Text("Male"),
+                            value: "male",
+                            groupValue: gender,
+                            onChanged: (value) {
+                              setState(() {
+                                gender = value.toString();
+                              });
+                            },
+                          ),
+                          RadioListTile(
+                            title: Text("Female"),
+                            value: "female",
+                            groupValue: gender,
+                            onChanged: (value) {
+                              setState(() {
+                                gender = value.toString();
+                              });
+                            },
+                          ),
+                        ],
+                      ),
                     ),
-                    ElevatedButton.icon(
-                        onPressed: () async {
-                          DateTime? newDate = await showDatePicker(
-                              context: context,
-                              initialDate: date,
-                              firstDate: DateTime(1900),
-                              lastDate: DateTime.now());
-                          if (newDate == null) return;
-                          setState(() => date = newDate);
-                        },
-                        label: const Text('Today'),
-                        style: ElevatedButton.styleFrom(
-                            primary: Color.fromRGBO(193, 196, 201, 1)),
-                        icon: Icon(Icons.calendar_month)),
+                    Container(
+                      child: Padding(
+                        padding: EdgeInsets.all(20),
+                        child: TextField(
+                          onTap: () async {
+                            DateTime? _picked = await showDatePicker(
+                                context: context,
+                                initialDate: DateTime.now(),
+                                firstDate: DateTime(1900),
+                                lastDate: DateTime(2100));
+                            if (_picked != null) {
+                              setState(() {
+                                dateController.text =
+                                    _picked.toString().split(" ")[0];
+                              });
+                            }
+                          },
+                          controller: dateController,
+                          decoration: InputDecoration(
+                              labelText: 'Date',
+                              filled: true,
+                              prefixIcon: Icon(Icons.calendar_today),
+                              enabledBorder: OutlineInputBorder(
+                                  borderSide: BorderSide.none),
+                              focusedBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.blue))),
+                          readOnly: true,
+                        ),
+                      ),
+                    ),
+                    CheckboxListTile(
+                      title: Text("I Agree with terms & condition"),
+                      value: isChecked,
+                      activeColor: Colors.blue,
+                      onChanged: (newBool) {
+                        setState(() {
+                          isChecked = newBool;
+                        });
+                      },
+                      controlAffinity: ListTileControlAffinity.leading,
+                    ),
                     ElevatedButton(
-                        onPressed: () {
-                          if (_formKey.currentState!.validate()) {
-                            Map<String, dynamic> formData = {};
-                            formData['username'] = usernameController.text;
-                            formData['password'] = passwordController.text;
-                            // Navigator.push(
-                            //     context,
-                            //     MaterialPageRoute(
-                            //         builder: (_) => LoginView(
-                            //               data: formData,
-                            //             )));
-                          }
-                        },
-                        child: const Text('Register'))
+                      style: ElevatedButton.styleFrom(
+                          primary: Color.fromARGB(255, 255, 132,
+                              0), //background color of button //border width and color
+                          elevation: 3, //elevation of button
+                          shape: RoundedRectangleBorder(
+                              //to set border radius to button
+                              borderRadius: BorderRadius.circular(5)),
+                          padding: EdgeInsets.only(
+                              left: 60,
+                              right: 60) //content padding inside button
+                          ),
+                      onPressed: () {
+                        if (_formKey.currentState!.validate()) {
+                          Map<String, dynamic> formData = {};
+                          formData['username'] = usernameController.text;
+                          formData['password'] = passwordController.text;
+                          // Navigator.push(
+                          //     context,
+                          //     MaterialPageRoute(
+                          //         builder: (_) => LoginView(
+                          //               data: formData,
+                          //             )));
+                        }
+                      },
+                      child: const Text('Register'),
+                    )
                   ],
                 )),
           ),
         ));
+  }
+
+  Future<void> _selectDate() async {
+    DateTime? _picked = await showDatePicker(
+        context: context,
+        initialDate: DateTime.now(),
+        firstDate: DateTime(1900),
+        lastDate: DateTime(2100));
+    if (_picked != null) {
+      setState(() {
+        dateController.text = _picked.toString().split(" ")[0];
+      });
+    }
   }
 }

@@ -11,7 +11,7 @@ Padding inputForm(Function(String?) validasi,
       child: TextFormField(
         style: const TextStyle(),
         validator: (value) => validasi(value),
-        autofocus: true,
+        autofocus: false,
         controller: controller,
         obscureText: password,
         decoration: InputDecoration(
