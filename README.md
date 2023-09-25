@@ -4,10 +4,10 @@ Made Riksi Purnama (NPM 210711396)\
 Deby Juwita (NPM 210711041)\
 Raihan Dwi Febrian (NPM 210711440)\
 Alfa Nada Yulaswara (NPM 210711378)\
-Davan Khadafi (NPM 210711384)\
+Davan Khadafi (NPM 210711384)
 
 Deskripsi Project\
-Aplikasi tentang restoran\
+Aplikasi tentang restoran
 
 UGD 2\
 Enhance Register Page : alert dialog, date picker, checkbox, radiobutton\
