@@ -1,5 +1,5 @@
 # TUBES PBP - RESTORAN
-Anggota Kelompok / Kontributor `<br />`
+Anggota Kelompok / Kontributor\
 Made Riksi Purnama (NPM 210711396) `<br />`
 Deby Juwita (NPM 210711041) `<br />`
 Raihan Dwi Febrian (NPM 210711440) `<br />`
