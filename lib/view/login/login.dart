@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ugd2_pbp/database/sql_helper.dart';
 import 'package:ugd2_pbp/view/login/register.dart';
 import 'package:ugd2_pbp/component/form_component.dart';
 import 'package:ugd2_pbp/home.dart';
@@ -137,10 +138,8 @@ class _LoginViewState extends State<LoginView> {
                         ElevatedButton(
                           onPressed: () {
                             if (_formKey.currentState!.validate()) {
-                              if (dataForm!['username'] ==
-                                      usernameController.text &&
-                                  dataForm['password'] ==
-                                      passwordController.text) {
+                              if (cekUser(usernameController.text,
+                                  passwordController.text)) {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
@@ -190,6 +189,10 @@ class _LoginViewState extends State<LoginView> {
         ),
       ),
     );
+  }
+
+  bool cekUser(String username, String password) {
+    return false;
   }
 
   void pushRegister(BuildContext context) {

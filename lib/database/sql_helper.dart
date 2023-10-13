@@ -10,11 +10,8 @@ CREATE TABLE user(
   password TEXT,
   name TEXT,
   address TEXT,
-  notelp TEXT,
+  phoneNumber TEXT,
   bornDate TEXT,
-  gender TEXT,
-  
-
 )
 """);
   }
@@ -27,23 +24,23 @@ CREATE TABLE user(
   }
 
   static Future<int> adduser(
-      String username,
-      String email,
-      String password,
-      String name,
-      String address,
-      String notelp,
-      String bornDate,
-      String gender) async {
+    String username,
+    String email,
+    String password,
+    String name,
+    String address,
+    String phoneNumber,
+    String bornDate,
+  ) async {
     final db = await SQLHelper.db();
     final data = {
-      'username': username,
-      'email': email,
-      'password': password,
       'name': name,
+      'username': username,
+      'password': password,
+      'email': email,
       'address': address,
       'borndate': bornDate,
-      'gender': gender
+      'phoneNumber': phoneNumber,
     };
     return await db.insert('user', data);
   }
@@ -60,7 +57,7 @@ CREATE TABLE user(
       String password,
       String name,
       String address,
-      String notelp,
+      String phoneNumber,
       String bornDate,
       String gender) async {
     final db = await SQLHelper.db();
@@ -71,7 +68,7 @@ CREATE TABLE user(
       'name': name,
       'address': address,
       'borndate': bornDate,
-      'gender': gender
+      'phoneNumber': phoneNumber
     };
 
     return await db.update('user', data, where: "id = $id");
