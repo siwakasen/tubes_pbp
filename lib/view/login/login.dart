@@ -151,16 +151,7 @@ class _LoginViewState extends State<LoginView> {
                                   context: context,
                                   builder: (_) => AlertDialog(
                                     title: const Text('Password salah'),
-                                    content: TextButton(
-                                      onPressed: () => pushRegister(context),
-                                      child: const Text('Daftar Disini !!'),
-                                    ),
                                     actions: <Widget>[
-                                      TextButton(
-                                        onPressed: () =>
-                                            Navigator.pop(context, 'Cancel'),
-                                        child: const Text('Cancel'),
-                                      ),
                                       TextButton(
                                         onPressed: () =>
                                             Navigator.pop(context, 'OK'),
