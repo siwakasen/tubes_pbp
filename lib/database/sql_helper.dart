@@ -3,20 +3,17 @@ import 'package:sqflite/sqflite.dart' as sql;
 class SQLHelper {
   static Future<void> createTables(sql.Database database) async {
     await database.execute("""
-CREATE TABLE user(
-  id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-  username TEXT,
-  email TEXT,
-  password TEXT,
-  name TEXT,
-  address TEXT,
-  notelp TEXT,
-  bornDate TEXT,
-  gender TEXT,
-  
-
-)
-""");
+    CREATE TABLE user(
+      id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+      username TEXT,
+      email TEXT,
+      password TEXT,
+      name TEXT,
+      address TEXT,
+      phoneNumber TEXT,
+      bornDate TEXT
+    )
+  """);
   }
 
   static Future<sql.Database> db() async {
@@ -27,23 +24,23 @@ CREATE TABLE user(
   }
 
   static Future<int> adduser(
-      String username,
-      String email,
-      String password,
-      String name,
-      String address,
-      String notelp,
-      String bornDate,
-      String gender) async {
+    String username,
+    String email,
+    String password,
+    String name,
+    String address,
+    String phoneNumber,
+    String bornDate,
+  ) async {
     final db = await SQLHelper.db();
     final data = {
-      'username': username,
-      'email': email,
-      'password': password,
       'name': name,
+      'username': username,
+      'password': password,
+      'email': email,
       'address': address,
       'borndate': bornDate,
-      'gender': gender
+      'phoneNumber': phoneNumber,
     };
     return await db.insert('user', data);
   }
@@ -60,7 +57,7 @@ CREATE TABLE user(
       String password,
       String name,
       String address,
-      String notelp,
+      String phoneNumber,
       String bornDate,
       String gender) async {
     final db = await SQLHelper.db();
@@ -71,7 +68,7 @@ CREATE TABLE user(
       'name': name,
       'address': address,
       'borndate': bornDate,
-      'gender': gender
+      'phoneNumber': phoneNumber
     };
 
     return await db.update('user', data, where: "id = $id");
@@ -81,5 +78,12 @@ CREATE TABLE user(
     final db = await SQLHelper.db();
 
     return await db.delete('user', where: "id = $id");
+  }
+
+  static Future<String> selectuser(String username) async {
+    final db = await SQLHelper.db();
+    return await db
+        .rawQuery("SELECT * FROM user WHERE username = $username")
+        .toString();
   }
 }

@@ -5,6 +5,8 @@ import 'package:ugd2_pbp/view/login/login.dart';
 import 'package:ugd2_pbp/component/darkModeState.dart' as globals;
 import 'package:intl/intl.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:ugd2_pbp/database/sql_helper.dart';
+import 'package:checkbox_formfield/checkbox_formfield.dart';
 
 class RegisterView extends StatefulWidget {
   const RegisterView({super.key});
@@ -31,6 +33,7 @@ class _RegisterViewState extends State<RegisterView> {
 
   @override
   Widget build(BuildContext context) {
+    bool? checkboxIconFormFieldValue = false;
     return MaterialApp(
         theme: ThemeData(
             useMaterial3: true,
@@ -98,9 +101,9 @@ class _RegisterViewState extends State<RegisterView> {
                             labelText: 'Password',
                             suffixIcon: IconButton(
                               onPressed: () {
-                                isPasswordVisible
-                                    ? isPasswordVisible = false
-                                    : isPasswordVisible = true;
+                                setState(() {
+                                  isPasswordVisible = !isPasswordVisible;
+                                });
                               },
                               icon: Icon(
                                 isPasswordVisible
@@ -111,11 +114,11 @@ class _RegisterViewState extends State<RegisterView> {
                                     : Colors.grey,
                               ),
                             )),
-                        obscureText: isPasswordVisible,
+                        obscureText: !isPasswordVisible,
                         validator: (value) {
                           if (value == '') {
                             return 'Password can\'t be empty';
-                          } else if (value!.length < 8) {
+                          } else if (value!.length < 5) {
                             return 'Password length must be greater than 8';
                           } else {
                             return null;
@@ -165,79 +168,51 @@ class _RegisterViewState extends State<RegisterView> {
                         validator: (value) {
                           if (value == '') {
                             return 'Address can\'t be empty';
+                          } else if (value!.startsWith(RegExp(r'\s'))) {
+                            return 'Address can\'t be start with space';
                           } else {
                             return null;
                           }
                         }),
-                    const ListTile(
-                      title: Text(
-                        "Gender",
-                        style: TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.w500),
-                      ),
-                    ),
-                    Container(
-                      width: 400,
-                      child: Row(
-                        children: [
-                          RadioListTile(
-                            title: Text("Male"),
-                            value: "male",
-                            groupValue: gender,
-                            onChanged: (value) {
-                              setState(() {
-                                gender = value.toString();
-                              });
-                            },
-                          ),
-                          RadioListTile(
-                            title: Text("Female"),
-                            value: "female",
-                            groupValue: gender,
-                            onChanged: (value) {
-                              setState(() {
-                                gender = value.toString();
-                              });
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
                     TextFormField(
-                      controller: bornController,
-                      decoration: const InputDecoration(
-                          prefixIcon: Icon(Icons.calendar_month_outlined),
-                          labelText: 'Born Date',
-                          suffixIcon: Icon(Icons.calendar_today)),
-                      readOnly: true,
-                      onTap: () async {
-                        DateTime? pickDate = await showDatePicker(
-                            context: context,
-                            initialDate: DateTime.now(),
-                            firstDate: DateTime(1500),
-                            lastDate: DateTime.now());
+                        controller: bornController,
+                        decoration: const InputDecoration(
+                            prefixIcon: Icon(Icons.calendar_month_outlined),
+                            labelText: 'Born Date',
+                            suffixIcon: Icon(Icons.calendar_today)),
+                        readOnly: true,
+                        onTap: () async {
+                          DateTime? pickDate = await showDatePicker(
+                              context: context,
+                              initialDate: DateTime.now(),
+                              firstDate: DateTime(1500),
+                              lastDate: DateTime(2500));
 
-                        if (pickDate != null) {
-                          String formatDate =
-                              DateFormat('dd-MM-yyyy').format(pickDate);
-                          print(formatDate);
-                          bornController.text = formatDate;
+                          if (pickDate != null) {
+                            String formatDate =
+                                DateFormat('dd-MM-yyyy').format(pickDate);
+                            print(formatDate);
+                            bornController.text = formatDate;
+                          }
+                        },
+                        validator: (value) {
+                          if (value == '' || value == null) {
+                            return 'Date of birth can\'t be empty';
+                          } else if (DateFormat('dd-MM-yyyy')
+                              .parse(value)
+                              .isAfter(DateTime.now())) {
+                            return 'Date of birth can\'t be greater than today';
+                          }
+                        }),
+                    const SizedBox(height: 30),
+                    CheckboxListTileFormField(
+                      title: Text("I Agree with terms & condition"),
+                      validator: (value) {
+                        if (!(value!)) {
+                          return 'Must be checked!';
                         }
                       },
-                      validator: (value) =>
-                          value == '' ? 'Date of birth can\'t be empty' : null,
-                    ),
-                    const SizedBox(height: 30),
-                    CheckboxListTile(
-                      title: Text("I Agree with terms & condition"),
-                      value: isChecked,
-                      activeColor: Colors.blue,
-                      onChanged: (newBool) {
-                        setState(() {
-                          isChecked = newBool;
-                        });
-                      },
-                      controlAffinity: ListTileControlAffinity.leading,
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
                     ),
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
@@ -264,12 +239,11 @@ class _RegisterViewState extends State<RegisterView> {
                           String name = nameController.text;
                           formData['address'] = addressController.text;
                           String address = addressController.text;
-                          formData['notelp'] = phoneController.text;
+                          formData['phoneNumber'] = phoneController.text;
                           String notelp = phoneController.text;
                           formData['borndate'] = bornController.text;
                           String borndate = bornController.text;
-                          formData['gender'] = gender;
-                          String gen2 = gender;
+
                           showDialog(
                               context: context,
                               builder: (_) => AlertDialog(
@@ -281,12 +255,22 @@ class _RegisterViewState extends State<RegisterView> {
                                               Navigator.pop(context, 'No'),
                                           child: const Text('No')),
                                       TextButton(
-                                        onPressed: () => Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (_) => LoginView(
-                                                      data: formData,
-                                                    ))),
+                                        onPressed: () {
+                                          SQLHelper.adduser(
+                                              usernameController.text,
+                                              emailController.text,
+                                              passwordController.text,
+                                              nameController.text,
+                                              addressController.text,
+                                              phoneController.text,
+                                              bornController.text);
+                                          // Navigator.push(
+                                          //     context,
+                                          //     MaterialPageRoute(
+                                          //         builder: (_) => LoginView(
+                                          //               data: formData,
+                                          //             )));
+                                        },
                                         child: const Text('Yes'),
                                       ),
                                     ],
