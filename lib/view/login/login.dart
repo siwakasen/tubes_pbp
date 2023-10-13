@@ -5,7 +5,6 @@ import 'package:ugd2_pbp/view/login/register.dart';
 import 'package:ugd2_pbp/component/form_component.dart';
 import 'package:ugd2_pbp/home.dart';
 import 'dart:ui';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ugd2_pbp/component/darkModeState.dart' as globals;
 
 // class DarkThemePreference {

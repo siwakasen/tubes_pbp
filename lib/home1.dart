@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ugd2_pbp/grid.dart';
 import 'package:ugd2_pbp/midscreen.dart';
-import 'package:ugd2_pbp/profile.dart';
+import 'package:ugd2_pbp/profile_edit.dart';
 import 'package:ugd2_pbp/component/darkModeState.dart' as globals;
 
 class Home1View extends StatefulWidget {
