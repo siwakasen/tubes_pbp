@@ -202,9 +202,11 @@ class _LoginViewState extends State<LoginView> {
   }
 
   bool cekUser(String username, String password) {
+    refresh();
+    print(users);
     for (var user in users) {
       if (username == user['username'] && password == user['password']) {
-        print('bisa masuk');
+        return true;
       }
     }
     return false;
