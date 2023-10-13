@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
-// import 'package:guidedlayout2_1396/View/login.dart';
+import 'package:flutter/services.dart';
 import 'package:ugd2_pbp/component/form_component.dart';
 import 'package:ugd2_pbp/view/login/login.dart';
 import 'package:ugd2_pbp/component/darkModeState.dart' as globals;
+import 'package:intl/intl.dart';
+import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:ugd2_pbp/database/sql_helper.dart';
+import 'package:checkbox_formfield/checkbox_formfield.dart';
 
 class RegisterView extends StatefulWidget {
   const RegisterView({super.key});
@@ -16,16 +20,20 @@ enum SingingCharacter { male, female }
 class _RegisterViewState extends State<RegisterView> {
   final _formKey = GlobalKey<FormState>();
   DateTime date = DateTime.now();
-  String? gender;
+  String gender = "";
   bool? isChecked = false;
+  bool isPasswordVisible = false;
   TextEditingController usernameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController nameController = TextEditingController();
-  TextEditingController dateController = TextEditingController();
+  TextEditingController bornController = TextEditingController();
+  TextEditingController phoneController = TextEditingController();
+  TextEditingController addressController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
+    bool? checkboxIconFormFieldValue = false;
     return MaterialApp(
         theme: ThemeData(
             useMaterial3: true,
@@ -56,118 +64,165 @@ class _RegisterViewState extends State<RegisterView> {
                       ),
                       contentPadding: const EdgeInsets.only(top: 50),
                     ),
-                    inputForm(
-                      (p0) {
-                        if (p0 == null || p0.isEmpty) {
-                          return 'Nama Tidak Boleh Kosong';
-                        }
-                        return null;
-                      },
-                      controller: nameController,
-                      labelTxt: "Name",
-                    ),
-                    inputForm((p0) {
-                      if (p0 == null || p0.isEmpty) {
-                        return 'Username Tidak Boleh Kosong';
-                      }
-                      return null;
-                    }, controller: usernameController, labelTxt: "Username"),
-                    inputForm(((p0) {
-                      if (p0 == null || p0.isEmpty) {
-                        return 'Password tidak boleh kosong';
-                      }
-                      if (p0.length < 5) {
-                        return 'Password minimal 5 digit';
-                      }
-                      return null;
-                    }),
-                        controller: passwordController,
-                        labelTxt: "Password",
-                        password: true),
-                    const ListTile(
-                      title: Text(
-                        "Gender",
-                        style: TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.w500),
-                      ),
-                    ),
-                    Container(
-                      width: 400,
-                      child: Column(
-                        children: [
-                          RadioListTile(
-                            title: Text("Male"),
-                            value: "male",
-                            groupValue: gender,
-                            onChanged: (value) {
-                              setState(() {
-                                gender = value.toString();
-                              });
-                            },
-                          ),
-                          RadioListTile(
-                            title: Text("Female"),
-                            value: "female",
-                            groupValue: gender,
-                            onChanged: (value) {
-                              setState(() {
-                                gender = value.toString();
-                              });
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      child: Padding(
-                        padding: EdgeInsets.all(20),
-                        child: TextField(
-                          onTap: () async {
-                            DateTime? _picked = await showDatePicker(
-                                context: context,
-                                initialDate: DateTime.now(),
-                                firstDate: DateTime(1900),
-                                lastDate: DateTime(2100));
-                            if (_picked != null) {
-                              setState(() {
-                                dateController.text =
-                                    _picked.toString().split(" ")[0];
-                              });
-                            }
-                          },
-                          controller: dateController,
-                          decoration: InputDecoration(
-                              labelText: 'Date',
-                              filled: true,
-                              prefixIcon: Icon(Icons.calendar_today),
-                              enabledBorder: OutlineInputBorder(
-                                  borderSide: BorderSide.none),
-                              focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.blue))),
-                          readOnly: true,
+                    TextFormField(
+                        controller: nameController,
+                        decoration: const InputDecoration(
+                          prefixIcon: Icon(Icons.person),
+                          labelText: 'Name',
                         ),
+                        validator: (value) {
+                          if (value == '') {
+                            return 'Name can\'t be empty';
+                          } else if (value!.length < 1) {
+                            return 'Name length must be greater than 1';
+                          } else {
+                            return null;
+                          }
+                        }),
+                    TextFormField(
+                        controller: usernameController,
+                        decoration: const InputDecoration(
+                          prefixIcon: Icon(Icons.person),
+                          labelText: 'Username',
+                        ),
+                        validator: (value) {
+                          if (value == '') {
+                            return 'Username can\'t be empty';
+                          } else if (value!.contains(RegExp(r'\s'))) {
+                            return 'Username cant contain space';
+                          } else {
+                            return null;
+                          }
+                        }),
+                    TextFormField(
+                        controller: passwordController,
+                        decoration: InputDecoration(
+                            prefixIcon: const Icon(Icons.lock),
+                            labelText: 'Password',
+                            suffixIcon: IconButton(
+                              onPressed: () {
+                                setState(() {
+                                  isPasswordVisible = !isPasswordVisible;
+                                });
+                              },
+                              icon: Icon(
+                                isPasswordVisible
+                                    ? Icons.visibility
+                                    : Icons.visibility_off,
+                                color: isPasswordVisible
+                                    ? Colors.blue
+                                    : Colors.grey,
+                              ),
+                            )),
+                        obscureText: !isPasswordVisible,
+                        validator: (value) {
+                          if (value == '') {
+                            return 'Password can\'t be empty';
+                          } else if (value!.length < 5) {
+                            return 'Password length must be greater than 8';
+                          } else {
+                            return null;
+                          }
+                        }),
+                    TextFormField(
+                      controller: emailController,
+                      decoration: const InputDecoration(
+                        prefixIcon: Icon(Icons.email),
+                        labelText: 'Email',
                       ),
-                    ),
-                    CheckboxListTile(
-                      title: Text("I Agree with terms & condition"),
-                      value: isChecked,
-                      activeColor: Colors.blue,
-                      onChanged: (newBool) {
-                        setState(() {
-                          isChecked = newBool;
-                        });
+                      validator: (value) {
+                        if (value == '') {
+                          return 'Email can\'t be empty';
+                        } else if (!value!.contains('@')) {
+                          return 'Email must contain @';
+                        } else {
+                          return null;
+                        }
                       },
-                      controlAffinity: ListTileControlAffinity.leading,
+                    ),
+                    TextFormField(
+                        controller: phoneController,
+                        keyboardType: TextInputType.number,
+                        inputFormatters: <TextInputFormatter>[
+                          FilteringTextInputFormatter.digitsOnly
+                        ],
+                        decoration: const InputDecoration(
+                          prefixIcon: Icon(Icons.phone),
+                          labelText: 'Phone Number',
+                        ),
+                        validator: (value) {
+                          if (value == '') {
+                            return 'Phone number can\'t be empty';
+                          } else if (value!.length < 10 || value.length > 13) {
+                            return 'Phone number must be between 10 - 13';
+                          } else {
+                            return null;
+                          }
+                        }),
+                    TextFormField(
+                        controller: addressController,
+                        decoration: const InputDecoration(
+                          prefixIcon: Icon(Icons.home),
+                          labelText: 'Address',
+                        ),
+                        validator: (value) {
+                          if (value == '') {
+                            return 'Address can\'t be empty';
+                          } else if (value!.startsWith(RegExp(r'\s'))) {
+                            return 'Address can\'t be start with space';
+                          } else {
+                            return null;
+                          }
+                        }),
+                    TextFormField(
+                        controller: bornController,
+                        decoration: const InputDecoration(
+                            prefixIcon: Icon(Icons.calendar_month_outlined),
+                            labelText: 'Born Date',
+                            suffixIcon: Icon(Icons.calendar_today)),
+                        readOnly: true,
+                        onTap: () async {
+                          DateTime? pickDate = await showDatePicker(
+                              context: context,
+                              initialDate: DateTime.now(),
+                              firstDate: DateTime(1500),
+                              lastDate: DateTime(2500));
+
+                          if (pickDate != null) {
+                            String formatDate =
+                                DateFormat('dd-MM-yyyy').format(pickDate);
+                            print(formatDate);
+                            bornController.text = formatDate;
+                          }
+                        },
+                        validator: (value) {
+                          if (value == '' || value == null) {
+                            return 'Date of birth can\'t be empty';
+                          } else if (DateFormat('dd-MM-yyyy')
+                              .parse(value)
+                              .isAfter(DateTime.now())) {
+                            return 'Date of birth can\'t be greater than today';
+                          }
+                        }),
+                    const SizedBox(height: 30),
+                    CheckboxListTileFormField(
+                      title: Text("I Agree with terms & condition"),
+                      validator: (value) {
+                        if (!(value!)) {
+                          return 'Must be checked!';
+                        }
+                      },
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
                     ),
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                          primary: Color.fromARGB(255, 255, 132,
+                          backgroundColor: const Color.fromARGB(255, 255, 132,
                               0), //background color of button //border width and color
                           elevation: 3, //elevation of button
                           shape: RoundedRectangleBorder(
                               //to set border radius to button
                               borderRadius: BorderRadius.circular(5)),
-                          padding: EdgeInsets.only(
+                          padding: const EdgeInsets.only(
                               left: 60,
                               right: 60) //content padding inside button
                           ),
@@ -176,8 +231,18 @@ class _RegisterViewState extends State<RegisterView> {
                           Map<String, dynamic> formData = {};
                           formData['username'] = usernameController.text;
                           String user = usernameController.text;
+                          formData['email'] = emailController.text;
+                          String email = usernameController.text;
                           formData['password'] = passwordController.text;
                           String pass = passwordController.text;
+                          formData['name'] = nameController.text;
+                          String name = nameController.text;
+                          formData['address'] = addressController.text;
+                          String address = addressController.text;
+                          formData['phoneNumber'] = phoneController.text;
+                          String notelp = phoneController.text;
+                          formData['borndate'] = bornController.text;
+                          String borndate = bornController.text;
 
                           showDialog(
                               context: context,
@@ -190,12 +255,22 @@ class _RegisterViewState extends State<RegisterView> {
                                               Navigator.pop(context, 'No'),
                                           child: const Text('No')),
                                       TextButton(
-                                        onPressed: () => Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (_) => LoginView(
-                                                      data: formData,
-                                                    ))),
+                                        onPressed: () {
+                                          SQLHelper.adduser(
+                                              usernameController.text,
+                                              emailController.text,
+                                              passwordController.text,
+                                              nameController.text,
+                                              addressController.text,
+                                              phoneController.text,
+                                              bornController.text);
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (_) => LoginView(
+                                                        data: formData,
+                                                      )));
+                                        },
                                         child: const Text('Yes'),
                                       ),
                                     ],
@@ -211,18 +286,5 @@ class _RegisterViewState extends State<RegisterView> {
                 )),
           ),
         ));
-  }
-
-  Future<void> _selectDate() async {
-    DateTime? _picked = await showDatePicker(
-        context: context,
-        initialDate: DateTime.now(),
-        firstDate: DateTime(1900),
-        lastDate: DateTime(2100));
-    if (_picked != null) {
-      setState(() {
-        dateController.text = _picked.toString().split(" ")[0];
-      });
-    }
   }
 }
