@@ -31,6 +31,21 @@ class _RegisterViewState extends State<RegisterView> {
   TextEditingController phoneController = TextEditingController();
   TextEditingController addressController = TextEditingController();
 
+  List<Map<String, dynamic>> users = [];
+
+  void refresh() async {
+    final data = await SQLHelper.getuser();
+    setState(() {
+      users = data;
+    });
+  }
+
+  @override
+  void initState() {
+    refresh();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     bool? checkboxIconFormFieldValue = false;
@@ -227,6 +242,8 @@ class _RegisterViewState extends State<RegisterView> {
                               right: 60) //content padding inside button
                           ),
                       onPressed: () {
+                        print(users);
+                        print(emailController.text);
                         if (_formKey.currentState!.validate()) {
                           Map<String, dynamic> formData = {};
                           formData['username'] = usernameController.text;
@@ -256,20 +273,58 @@ class _RegisterViewState extends State<RegisterView> {
                                           child: const Text('No')),
                                       TextButton(
                                         onPressed: () {
-                                          SQLHelper.adduser(
-                                              usernameController.text,
-                                              emailController.text,
-                                              passwordController.text,
-                                              nameController.text,
-                                              addressController.text,
-                                              phoneController.text,
-                                              bornController.text);
-                                          // Navigator.push(
-                                          //     context,
-                                          //     MaterialPageRoute(
-                                          //         builder: (_) => LoginView(
-                                          //               data: formData,
-                                          //             )));
+                                          if (isSameUsername(
+                                              usernameController.text)) {
+                                            Navigator.pop(context);
+                                            showDialog(
+                                                context: context,
+                                                builder: (_) => AlertDialog(
+                                                      title: const Text(
+                                                          'Username tidak tersedia!'),
+                                                      actions: <Widget>[
+                                                        TextButton(
+                                                            onPressed: () =>
+                                                                Navigator.pop(
+                                                                    context,
+                                                                    'OK'),
+                                                            child: const Text(
+                                                                'OK')),
+                                                      ],
+                                                    ));
+                                          } else if (isSameEmail(
+                                              emailController.text)) {
+                                            Navigator.pop(context);
+                                            showDialog(
+                                                context: context,
+                                                builder: (_) => AlertDialog(
+                                                      title: const Text(
+                                                          'Email terdaftar dalam sistem!'),
+                                                      actions: <Widget>[
+                                                        TextButton(
+                                                            onPressed: () =>
+                                                                Navigator.pop(
+                                                                    context,
+                                                                    'OK'),
+                                                            child: const Text(
+                                                                'OK')),
+                                                      ],
+                                                    ));
+                                          } else {
+                                            SQLHelper.adduser(
+                                                usernameController.text,
+                                                emailController.text,
+                                                passwordController.text,
+                                                nameController.text,
+                                                addressController.text,
+                                                phoneController.text,
+                                                bornController.text);
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (_) => LoginView(
+                                                          data: formData,
+                                                        )));
+                                          }
                                         },
                                         child: const Text('Yes'),
                                       ),
@@ -286,5 +341,23 @@ class _RegisterViewState extends State<RegisterView> {
                 )),
           ),
         ));
+  }
+
+  bool isSameEmail(String email) {
+    for (var user in users) {
+      if (email == user['email']) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  bool isSameUsername(String username) {
+    for (var user in users) {
+      if (username == user['username']) {
+        return true;
+      }
+    }
+    return false;
   }
 }

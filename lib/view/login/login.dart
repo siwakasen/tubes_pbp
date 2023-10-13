@@ -65,6 +65,12 @@ class _LoginViewState extends State<LoginView> {
   }
 
   @override
+  void initState() {
+    refresh();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     Map? dataForm = widget.data;
     return MaterialApp(
@@ -141,34 +147,47 @@ class _LoginViewState extends State<LoginView> {
                         return null;
                       },
                     ),
-                    SizedBox(height: 16.0),
+                    const SizedBox(height: 16.0),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         ElevatedButton(
-                          onPressed: () {
+                          onPressed: () async {
+                            print(users);
                             if (_formKey.currentState!.validate()) {
                               if (cekUser(usernameController.text,
                                   passwordController.text)) {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (_) => const HomeView()),
-                                );
+                                showDialog(
+                                    context: context,
+                                    builder: (_) => AlertDialog(
+                                          title: const Text('Login Success'),
+                                          actions: <Widget>[
+                                            TextButton(
+                                              onPressed: () {
+                                                Navigator.pop(context);
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (_) =>
+                                                          const HomeView()),
+                                                );
+                                              },
+                                              child: const Text('OK'),
+                                            ),
+                                          ],
+                                        ));
                               } else {
                                 showDialog(
-                                  context: context,
-                                  builder: (_) => AlertDialog(
-                                    title: const Text('Password salah'),
-                                    actions: <Widget>[
-                                      TextButton(
-                                        onPressed: () =>
-                                            Navigator.pop(context, 'OK'),
-                                        child: const Text('OK'),
-                                      ),
-                                    ],
-                                  ),
-                                );
+                                    context: context,
+                                    builder: (_) => AlertDialog(
+                                          title: const Text('Login Failed'),
+                                          actions: <Widget>[
+                                            TextButton(
+                                                onPressed: () => Navigator.pop(
+                                                    context, 'OK'),
+                                                child: const Text('OK')),
+                                          ],
+                                        ));
                               }
                             }
                           },
@@ -202,8 +221,6 @@ class _LoginViewState extends State<LoginView> {
   }
 
   bool cekUser(String username, String password) {
-    refresh();
-    print(users);
     for (var user in users) {
       if (username == user['username'] && password == user['password']) {
         return true;

@@ -8,11 +8,8 @@ class MidView extends StatefulWidget {
 }
 
 class _MidViewState extends State<MidView> {
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      
-    );
+    return Scaffold();
   }
 }
