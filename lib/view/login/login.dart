@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ugd2_pbp/database/sql_helper.dart';
+import 'package:ugd2_pbp/model/user.dart';
 import 'package:ugd2_pbp/view/login/register.dart';
 import 'package:ugd2_pbp/component/form_component.dart';
 import 'package:ugd2_pbp/home.dart';
@@ -53,6 +54,15 @@ class _LoginViewState extends State<LoginView> {
   Color appBarColor = Colors.orange;
   Color bodyColor = Colors.white;
   Color fontColor = Colors.black;
+
+  List<Map<String, dynamic>> users = [];
+
+  void refresh() async {
+    final data = await SQLHelper.getuser();
+    setState(() {
+      users = data;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -192,6 +202,11 @@ class _LoginViewState extends State<LoginView> {
   }
 
   bool cekUser(String username, String password) {
+    for (var user in users) {
+      if (username == user['username'] && password == user['password']) {
+        print('bisa masuk');
+      }
+    }
     return false;
   }
 

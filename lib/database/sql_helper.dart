@@ -3,17 +3,17 @@ import 'package:sqflite/sqflite.dart' as sql;
 class SQLHelper {
   static Future<void> createTables(sql.Database database) async {
     await database.execute("""
-CREATE TABLE user(
-  id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-  username TEXT,
-  email TEXT,
-  password TEXT,
-  name TEXT,
-  address TEXT,
-  phoneNumber TEXT,
-  bornDate TEXT,
-)
-""");
+    CREATE TABLE user(
+      id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+      username TEXT,
+      email TEXT,
+      password TEXT,
+      name TEXT,
+      address TEXT,
+      phoneNumber TEXT,
+      bornDate TEXT
+    )
+  """);
   }
 
   static Future<sql.Database> db() async {
@@ -78,5 +78,12 @@ CREATE TABLE user(
     final db = await SQLHelper.db();
 
     return await db.delete('user', where: "id = $id");
+  }
+
+  static Future<String> selectuser(String username) async {
+    final db = await SQLHelper.db();
+    return await db
+        .rawQuery("SELECT * FROM user WHERE username = $username")
+        .toString();
   }
 }

@@ -255,21 +255,21 @@ class _RegisterViewState extends State<RegisterView> {
                                               Navigator.pop(context, 'No'),
                                           child: const Text('No')),
                                       TextButton(
-                                        onPressed: () async {
-                                          await SQLHelper.adduser(
-                                              user,
-                                              email,
-                                              pass,
-                                              name,
-                                              address,
-                                              notelp,
-                                              borndate);
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (_) => LoginView(
-                                                        data: formData,
-                                                      )));
+                                        onPressed: () {
+                                          SQLHelper.adduser(
+                                              usernameController.text,
+                                              emailController.text,
+                                              passwordController.text,
+                                              nameController.text,
+                                              addressController.text,
+                                              phoneController.text,
+                                              bornController.text);
+                                          // Navigator.push(
+                                          //     context,
+                                          //     MaterialPageRoute(
+                                          //         builder: (_) => LoginView(
+                                          //               data: formData,
+                                          //             )));
                                         },
                                         child: const Text('Yes'),
                                       ),
