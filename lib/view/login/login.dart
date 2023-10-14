@@ -2,38 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:ugd2_pbp/database/sql_helper.dart';
 import 'package:ugd2_pbp/model/user.dart';
 import 'package:ugd2_pbp/view/login/register.dart';
-import 'package:ugd2_pbp/component/form_component.dart';
 import 'package:ugd2_pbp/home.dart';
 import 'dart:ui';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ugd2_pbp/component/darkModeState.dart' as globals;
-
-// class DarkThemePreference {
-//   static const THEME_STATUS = "THEMESTATUS";
-
-//   setDarkTheme(bool value) async {
-//     SharedPreferences prefs = await SharedPreferences.getInstance();
-//     prefs.setBool(THEME_STATUS, value);
-//   }
-
-//   Future<bool> getTheme() async {
-//     SharedPreferences prefs = await SharedPreferences.getInstance();
-//     return prefs.getBool(THEME_STATUS) ?? false;
-//   }
-// }
-
-// class DarkThemeProvider with ChangeNotifier {
-//   DarkThemePreference darkThemePreference = DarkThemePreference();
-//   bool _darkTheme = false;
-
-//   bool get darkTheme => _darkTheme;
-
-//   set darkTheme(bool value) {
-//     _darkTheme = value;
-//     darkThemePreference.setDarkTheme(value);
-//     notifyListeners();
-//   }
-// }
 
 class LoginView extends StatefulWidget {
   final Map? data;
@@ -157,6 +128,8 @@ class _LoginViewState extends State<LoginView> {
                             if (_formKey.currentState!.validate()) {
                               if (cekUser(usernameController.text,
                                   passwordController.text)) {
+                                int userId = getUserId(usernameController.text,
+                                    passwordController.text);
                                 showDialog(
                                     context: context,
                                     builder: (_) => AlertDialog(
@@ -169,7 +142,7 @@ class _LoginViewState extends State<LoginView> {
                                                   context,
                                                   MaterialPageRoute(
                                                       builder: (_) =>
-                                                          const HomeView()),
+                                                          HomeView(id: userId)),
                                                 );
                                               },
                                               child: const Text('OK'),
@@ -180,7 +153,8 @@ class _LoginViewState extends State<LoginView> {
                                 showDialog(
                                     context: context,
                                     builder: (_) => AlertDialog(
-                                          title: const Text('Login Failed'),
+                                          title: const Text(
+                                              'Username or Password may not correct'),
                                           actions: <Widget>[
                                             TextButton(
                                                 onPressed: () => Navigator.pop(
@@ -218,6 +192,17 @@ class _LoginViewState extends State<LoginView> {
         ),
       ),
     );
+  }
+
+  int getUserId(String username, String password) {
+    refresh();
+
+    for (var user in users) {
+      if (username == user['username'] && password == user['password']) {
+        return user['id'];
+      }
+    }
+    return 0;
   }
 
   bool cekUser(String username, String password) {

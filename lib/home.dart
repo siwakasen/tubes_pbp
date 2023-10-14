@@ -1,12 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:ugd2_pbp/grid.dart';
 import 'package:ugd2_pbp/midscreen.dart';
-import 'package:ugd2_pbp/profile.dart';
+import 'package:ugd2_pbp/model/user.dart';
+import 'package:ugd2_pbp/view/profile/profile_edit.dart';
 import 'package:ugd2_pbp/home1.dart';
 import 'package:ugd2_pbp/component/darkModeState.dart' as globals;
+import 'package:ugd2_pbp/view/profile/profile_view.dart';
 
 class HomeView extends StatefulWidget {
-  const HomeView({super.key});
+  const HomeView({
+    super.key,
+    required this.id,
+  });
+
+  final int id;
 
   @override
   State<HomeView> createState() => _HomeViewState();
@@ -22,10 +29,20 @@ class _HomeViewState extends State<HomeView> {
     });
   }
 
-  static const List<Widget> widgetOptions = <Widget>[
-    Home1View(),
-    ProfileView()
-  ];
+  Widget widgetSetting() {
+    if (selectedIndex == 0) {
+      return Home1View();
+    }
+    if (selectedIndex == 1) {
+      return ProfileView(id: widget.id);
+    }
+    return Text("error cuy");
+  }
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,8 +69,7 @@ class _HomeViewState extends State<HomeView> {
             currentIndex: selectedIndex,
             onTap: onItemTapped,
           ),
-          body: widgetOptions.elementAt(selectedIndex),
-          // ),
+          body: widgetSetting(),
         ));
   }
 }

@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:ugd2_pbp/component/form_component.dart';
 import 'package:ugd2_pbp/view/login/login.dart';
 import 'package:ugd2_pbp/component/darkModeState.dart' as globals;
 import 'package:intl/intl.dart';
-import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:ugd2_pbp/database/sql_helper.dart';
 import 'package:checkbox_formfield/checkbox_formfield.dart';
 
@@ -20,7 +18,6 @@ enum SingingCharacter { male, female }
 class _RegisterViewState extends State<RegisterView> {
   final _formKey = GlobalKey<FormState>();
   DateTime date = DateTime.now();
-  String gender = "";
   bool? isChecked = false;
   bool isPasswordVisible = false;
   TextEditingController usernameController = TextEditingController();
@@ -52,7 +49,7 @@ class _RegisterViewState extends State<RegisterView> {
     return MaterialApp(
         theme: ThemeData(
             useMaterial3: true,
-            colorSchemeSeed: globals.isDarkMode ? Colors.white : Colors.black,
+            colorSchemeSeed: globals.isDarkMode ? Colors.white : Colors.white,
             brightness:
                 globals.isDarkMode ? Brightness.dark : Brightness.light),
         debugShowCheckedModeBanner: false,
@@ -242,8 +239,6 @@ class _RegisterViewState extends State<RegisterView> {
                               right: 60) //content padding inside button
                           ),
                       onPressed: () {
-                        print(users);
-                        print(emailController.text);
                         if (_formKey.currentState!.validate()) {
                           Map<String, dynamic> formData = {};
                           formData['username'] = usernameController.text;

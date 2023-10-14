@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ugd2_pbp/grid.dart';
 import 'package:ugd2_pbp/midscreen.dart';
-import 'package:ugd2_pbp/profile.dart';
 import 'package:ugd2_pbp/component/darkModeState.dart' as globals;
 
 class Home1View extends StatefulWidget {
@@ -34,14 +33,14 @@ class _Home1ViewState extends State<Home1View> {
           child: Scaffold(
               appBar: AppBar(
                 backgroundColor: Colors.amber[600],
-                title: Text(
+                title: const Text(
                   'Restoran',
                   style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
                       fontSize: 30),
                 ),
-                bottom: TabBar(
+                bottom: const TabBar(
                   indicatorColor: Colors.white,
                   labelColor: Colors.white,
                   unselectedLabelColor: Colors.black,

@@ -51,15 +51,15 @@ class SQLHelper {
   }
 
   static Future<int> edituser(
-      int id,
-      String username,
-      String email,
-      String password,
-      String name,
-      String address,
-      String phoneNumber,
-      String bornDate,
-      String gender) async {
+    int id,
+    String username,
+    String email,
+    String password,
+    String name,
+    String address,
+    String phoneNumber,
+    String bornDate,
+  ) async {
     final db = await SQLHelper.db();
     final data = {
       'username': username,
