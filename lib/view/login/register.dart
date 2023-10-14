@@ -85,7 +85,7 @@ class _RegisterViewState extends State<RegisterView> {
                         validator: (value) {
                           if (value == '') {
                             return 'Name can\'t be empty';
-                          } else if (value!.length < 1) {
+                          } else if (value!.length <= 1) {
                             return 'Name length must be greater than 1';
                           } else {
                             return null;
