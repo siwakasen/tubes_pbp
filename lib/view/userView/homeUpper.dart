@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ugd2_pbp/view/userView/dashboard.dart';
-import 'package:ugd2_pbp/view/adminView/addMenu.dart';
 import 'package:ugd2_pbp/component/darkModeState.dart' as globals;
-import 'package:ugd2_pbp/view/adminView/listAddFood.dart';
+import 'package:ugd2_pbp/view/adminView/list_food.dart';
 
 class Home1View extends StatefulWidget {
   const Home1View({super.key});

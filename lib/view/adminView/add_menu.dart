@@ -1,19 +1,12 @@
 import 'dart:io';
 
 import 'package:ugd2_pbp/view/adminView/Utility.dart';
-import 'package:ugd2_pbp/view/userView/dashboard.dart';
 import 'package:ugd2_pbp/view/userView/homeUpper.dart';
-import 'package:ugd2_pbp/view/userView/homeBottom.dart';
-import 'package:ugd2_pbp/view/adminView/listAddFood.dart';
-import 'package:ugd2_pbp/model/makanan.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:convert';
-import 'dart:typed_data';
-import 'package:image_picker_platform_interface/image_picker_platform_interface.dart';
 import 'package:ugd2_pbp/database/sql_helperMakanan.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class InputMakanan extends StatefulWidget {
   const InputMakanan(

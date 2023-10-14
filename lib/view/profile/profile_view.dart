@@ -1,7 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:intl/intl.dart';
 import 'package:ugd2_pbp/database/sql_helper.dart';
 import 'package:ugd2_pbp/component/darkModeState.dart' as globals;
 import 'package:ugd2_pbp/model/user.dart';

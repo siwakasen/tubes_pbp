@@ -1,5 +1,5 @@
 import 'package:ugd2_pbp/database/sql_helperMakanan.dart';
-import 'package:ugd2_pbp/view/adminView/addMenu.dart';
+import 'package:ugd2_pbp/view/adminView/add_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 

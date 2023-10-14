@@ -4,7 +4,6 @@ import 'package:intl/intl.dart';
 import 'package:ugd2_pbp/database/sql_helper.dart';
 import 'package:ugd2_pbp/component/darkModeState.dart' as globals;
 import 'package:ugd2_pbp/model/user.dart';
-import 'package:ugd2_pbp/view/profile/profile_view.dart';
 
 class ProfileEdit extends StatefulWidget {
   ProfileEdit({
