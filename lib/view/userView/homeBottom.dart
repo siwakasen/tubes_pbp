@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:ugd2_pbp/grid.dart';
-import 'package:ugd2_pbp/midscreen.dart';
+import 'package:ugd2_pbp/view/userView/dashboard.dart';
+import 'package:ugd2_pbp/view/adminView/addMenu.dart';
 import 'package:ugd2_pbp/model/user.dart';
 import 'package:ugd2_pbp/view/profile/profile_edit.dart';
-import 'package:ugd2_pbp/home1.dart';
+import 'package:ugd2_pbp/homeUpper.dart';
 import 'package:ugd2_pbp/component/darkModeState.dart' as globals;
 import 'package:ugd2_pbp/view/profile/profile_view.dart';
 

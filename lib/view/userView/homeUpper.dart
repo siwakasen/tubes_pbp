@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:ugd2_pbp/grid.dart';
-import 'package:ugd2_pbp/midscreen.dart';
+import 'package:ugd2_pbp/view/userView/dashboard.dart';
+import 'package:ugd2_pbp/view/adminView/addMenu.dart';
 import 'package:ugd2_pbp/component/darkModeState.dart' as globals;
+import 'package:ugd2_pbp/view/adminView/listAddFood.dart';
 
 class Home1View extends StatefulWidget {
   const Home1View({super.key});
@@ -16,8 +17,7 @@ class _Home1ViewState extends State<Home1View> {
 
   List<Widget> _tabs = [
     GriddView(),
-    MidView(),
-    MidView(),
+    cobaGrid(),
   ];
 
   @override
@@ -45,9 +45,10 @@ class _Home1ViewState extends State<Home1View> {
                   labelColor: Colors.white,
                   unselectedLabelColor: Colors.black,
                   tabs: <Widget>[
-                    Tab(icon: Icon(Icons.home), text: 'Home'),
-                    Tab(icon: Icon(Icons.grid_3x3_outlined), text: 'Fitur1'),
-                    Tab(icon: Icon(Icons.grid_3x3_outlined), text: 'Fitur2'),
+                    Tab(icon: Icon(Icons.dashboard), text: 'Dashboard'),
+                    Tab(
+                        icon: Icon(Icons.food_bank_sharp),
+                        text: 'Add New Menu'),
                   ],
                 ),
               ),

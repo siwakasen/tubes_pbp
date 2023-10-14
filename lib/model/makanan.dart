@@ -1,7 +1,8 @@
 class Makanan {
-  final String? namaMakanan;
-  final String? hargaMakanan;
-  final String? gambarMakanan;
+  int? id;
+  String? namaMakanan;
+  String? hargaMakanan;
+  String? namaFoto;
 
-  Makanan({this.namaMakanan, this.hargaMakanan, this.gambarMakanan});
+  Makanan({this.id, this.namaMakanan, this.hargaMakanan, this.namaFoto});
 }

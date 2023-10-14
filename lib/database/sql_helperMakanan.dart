@@ -7,7 +7,7 @@ class SQLMakanan {
         id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
         namaMakanan TEXT,
         hargaMakanan TEXT,
-        gambarMakanan TEXT
+        namaFoto TEXT
       )
     """);
   }
@@ -25,7 +25,7 @@ class SQLMakanan {
     final data = {
       'namaMakanan': namaMakanan,
       'hargaMakanan': hargaMakanan,
-      'gambarMakanan': gambarMakanan,
+      'namaFoto': gambarMakanan,
     };
     return await db.insert('makanan', data);
   }
@@ -47,7 +47,7 @@ class SQLMakanan {
     final data = {
       'namaMakanan': namaMakanan,
       'hargaMakanan': hargaMakanan,
-      'gambarMakanan': gambarMakanan,
+      'namaFoto': gambarMakanan,
     };
 
     return await db.update('makanan', data, where: "id = $id");

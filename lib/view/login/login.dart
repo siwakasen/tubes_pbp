@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:ugd2_pbp/database/sql_helper.dart';
 import 'package:ugd2_pbp/model/user.dart';
 import 'package:ugd2_pbp/view/login/register.dart';
-import 'package:ugd2_pbp/home.dart';
+import 'package:ugd2_pbp/view/userView/homeBottom.dart';
 import 'dart:ui';
 import 'package:ugd2_pbp/component/darkModeState.dart' as globals;
 
