@@ -6,10 +6,7 @@ import 'package:ugd2_pbp/view/profile/profile_view.dart';
 class HomeView extends StatefulWidget {
   const HomeView({
     super.key,
-    required this.id,
   });
-
-  final int id;
 
   @override
   State<HomeView> createState() => _HomeViewState();
@@ -30,7 +27,7 @@ class _HomeViewState extends State<HomeView> {
       return Home1View();
     }
     if (selectedIndex == 1) {
-      return ProfileView(id: widget.id);
+      return ProfileView();
     }
     return Text("error cuy");
   }

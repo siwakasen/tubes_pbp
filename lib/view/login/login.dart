@@ -3,6 +3,7 @@ import 'package:ugd2_pbp/database/sql_helper.dart';
 import 'package:ugd2_pbp/view/login/register.dart';
 import 'package:ugd2_pbp/view/userView/homeBottom.dart';
 import 'package:ugd2_pbp/component/darkModeState.dart' as globals;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginView extends StatefulWidget {
   final Map? data;
@@ -135,12 +136,14 @@ class _LoginViewState extends State<LoginView> {
                                           actions: <Widget>[
                                             TextButton(
                                               onPressed: () {
+                                                addIntToSF(userId);
+                                                print(userId);
                                                 Navigator.pop(context);
                                                 Navigator.push(
                                                   context,
                                                   MaterialPageRoute(
                                                       builder: (_) =>
-                                                          HomeView(id: userId)),
+                                                          HomeView()),
                                                 );
                                               },
                                               child: const Text('OK'),
@@ -219,5 +222,10 @@ class _LoginViewState extends State<LoginView> {
         builder: (_) => const RegisterView(),
       ),
     );
+  }
+
+  addIntToSF(int userId) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setInt('intValue', userId);
   }
 }

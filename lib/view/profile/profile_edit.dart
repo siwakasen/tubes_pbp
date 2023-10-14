@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ugd2_pbp/database/sql_helper.dart';
 import 'package:ugd2_pbp/component/darkModeState.dart' as globals;
 import 'package:ugd2_pbp/model/user.dart';
@@ -8,10 +9,7 @@ import 'package:ugd2_pbp/model/user.dart';
 class ProfileEdit extends StatefulWidget {
   ProfileEdit({
     super.key,
-    required this.id,
   });
-
-  final int id;
 
   @override
   State<ProfileEdit> createState() => _ProfileEditState();
@@ -37,15 +35,17 @@ class _ProfileEditState extends State<ProfileEdit> {
     super.initState();
   }
 
+  late int userId;
   List<Map<String, dynamic>> users = [];
   User userLog = User();
 
   void refresh() async {
     final data = await SQLHelper.getuser();
+    userId = await getIntValuesSF();
     setState(() {
       users = data;
       for (var user in users) {
-        if (widget.id == user['id']) {
+        if (userId == user['id']) {
           usernameController.text = user['username'];
           emailController.text = user['email'];
           passwordController.text = user['password'];
@@ -287,7 +287,7 @@ class _ProfileEditState extends State<ProfileEdit> {
                                   ));
                         } else {
                           SQLHelper.edituser(
-                              widget.id,
+                              userId,
                               usernameController.text,
                               emailController.text,
                               passwordController.text,
@@ -327,5 +327,12 @@ class _ProfileEditState extends State<ProfileEdit> {
       }
     }
     return false;
+  }
+
+  getIntValuesSF() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    //Return int
+    int intValue = await prefs.getInt('intValue') ?? 0;
+    return intValue;
   }
 }

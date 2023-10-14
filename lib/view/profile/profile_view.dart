@@ -3,14 +3,12 @@ import 'package:ugd2_pbp/database/sql_helper.dart';
 import 'package:ugd2_pbp/component/darkModeState.dart' as globals;
 import 'package:ugd2_pbp/model/user.dart';
 import 'package:ugd2_pbp/view/profile/profile_edit.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfileView extends StatefulWidget {
   ProfileView({
     super.key,
-    required this.id,
   });
-
-  final int id;
 
   @override
   State<ProfileView> createState() => _ProfileViewState();
@@ -29,12 +27,14 @@ class _ProfileViewState extends State<ProfileView> {
   List<Map<String, dynamic>> users = [];
 
   User user = User();
+  late int userId;
   void refresh() async {
     final data = await SQLHelper.getuser();
+    userId = await getIntValuesSF();
     setState(() {
       users = data;
       for (var tempUser in users) {
-        if (widget.id == tempUser['id']) {
+        if (userId == tempUser['id']) {
           user.username = tempUser['username'];
           user.email = tempUser['email'];
           user.password = tempUser['password'];
@@ -94,7 +94,7 @@ class _ProfileViewState extends State<ProfileView> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => ProfileEdit(id: widget.id),
+        builder: (_) => ProfileEdit(),
       ),
     );
   }
@@ -119,5 +119,12 @@ class _ProfileViewState extends State<ProfileView> {
         tileColor: globals.isDarkMode ? Colors.black54 : Colors.white,
       ),
     );
+  }
+
+  getIntValuesSF() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    //Return int
+    int intValue = await prefs.getInt('intValue') ?? 0;
+    return intValue;
   }
 }
