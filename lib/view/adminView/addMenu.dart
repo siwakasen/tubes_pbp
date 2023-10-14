@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:ugd2_pbp/view/adminView/Utility.dart';
+import 'package:ugd2_pbp/view/userView/dashboard.dart';
 import 'package:ugd2_pbp/view/userView/homeUpper.dart';
 import 'package:ugd2_pbp/view/userView/homeBottom.dart';
 import 'package:ugd2_pbp/view/adminView/listAddFood.dart';
@@ -20,7 +21,7 @@ class InputMakanan extends StatefulWidget {
   final String? namaMakanan, hargaMakanan, namaFoto;
   final int? id;
 
-  final String title = "Flutter Save Image in Preferences";
+  final String title = "Add New Menu";
 
   @override
   State<InputMakanan> createState() => _InputMakananState();
@@ -31,7 +32,7 @@ class _InputMakananState extends State<InputMakanan> {
   TextEditingController hargaMakananController = TextEditingController();
   String? ImgString = '';
   final _formKey = GlobalKey<FormState>();
-
+  XFile? xFile;
   Future<File?>? imageFile;
   Image? imageFromPreferences;
   List<Map<String, dynamic>> makanan = [];
@@ -43,10 +44,10 @@ class _InputMakananState extends State<InputMakanan> {
   }
 
   pickImageFromGallery(ImageSource source) async {
-    XFile? xFile = await ImagePicker().pickImage(source: ImageSource.gallery);
+    xFile = await ImagePicker().pickImage(source: ImageSource.gallery);
 
     if (xFile != null) {
-      final image = File(xFile.path);
+      final image = File(xFile!.path);
       // String imgString = Utility.base64String(image.readAsBytesSync());
       setState(() {
         imageFile = Future.value(image);
@@ -162,8 +163,8 @@ class _InputMakananState extends State<InputMakanan> {
                       prefixIcon: Icon(Icons.lunch_dining),
                       labelText: 'Food\'s name',
                     ),
-                    validator: (controller) {
-                      if (namaMakananController.text == '') {
+                    validator: (value) {
+                      if (value!.isEmpty) {
                         return 'Food\'s name can\'t be empty';
                       } else {
                         return null;
@@ -180,8 +181,8 @@ class _InputMakananState extends State<InputMakanan> {
                       prefixIcon: Icon(Icons.attach_money_outlined),
                       labelText: 'Price',
                     ),
-                    validator: (controller) {
-                      if (hargaMakananController == '') {
+                    validator: (value) {
+                      if (value!.isEmpty) {
                         return 'Price can\'t be empty';
                       } else {
                         return null;
@@ -200,22 +201,39 @@ class _InputMakananState extends State<InputMakanan> {
                       ),
                   onPressed: () async {
                     if (_formKey.currentState!.validate()) {
-                      if (widget.id == null) {
-                        await SQLMakanan.addmakanan(namaMakananController.text,
-                            hargaMakananController.text, ImgString!);
+                      if (widget.id == null && xFile == null) {
+                        showDialog(
+                            context: context,
+                            builder: (_) => AlertDialog(
+                                  title: const Text('Gambar harus ada!'),
+                                  actions: <Widget>[
+                                    TextButton(
+                                        onPressed: () => Navigator.of(context,
+                                                rootNavigator: true)
+                                            .pop(),
+                                        child: const Text('OK')),
+                                  ],
+                                ));
                       } else {
-                        await SQLMakanan.editmakanan(
-                            widget.id!,
-                            namaMakananController.text,
-                            hargaMakananController.text,
-                            ImgString!);
+                        if (widget.id == null) {
+                          await SQLMakanan.addmakanan(
+                              namaMakananController.text,
+                              hargaMakananController.text,
+                              ImgString!);
+                        } else {
+                          await SQLMakanan.editmakanan(
+                              widget.id!,
+                              namaMakananController.text,
+                              hargaMakananController.text,
+                              ImgString!);
+                        }
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => Home1View(),
+                            ));
                       }
                     }
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => cobaGrid(),
-                        ));
                   },
                   child: const Text(
                     'Input',

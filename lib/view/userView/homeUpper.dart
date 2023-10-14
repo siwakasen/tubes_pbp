@@ -15,9 +15,9 @@ class _Home1ViewState extends State<Home1View> {
   int _currentIndex = 0;
   // int selectedIndex = 0;
 
-  List<Widget> _tabs = [
-    GriddView(),
-    cobaGrid(),
+  final List<Widget> _tabs = [
+    const DashboardView(),
+    const ListFoodView(),
   ];
 
   @override

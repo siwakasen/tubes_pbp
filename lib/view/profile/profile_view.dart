@@ -106,21 +106,20 @@ class _ProfileViewState extends State<ProfileView> {
   itemProfile(String title, String subtitle, Icon icon) {
     return Container(
       decoration: BoxDecoration(
-          color: Colors.white,
+          color: globals.isDarkMode ? Colors.black12 : Colors.white,
           borderRadius: BorderRadius.circular(10),
           boxShadow: [
             BoxShadow(
-                offset: Offset(0, 2),
-                color: Colors.amber[600]!,
-                spreadRadius: 1,
-                blurRadius: 5)
+                offset: Offset(0, 1),
+                color: globals.isDarkMode ? Colors.black54 : Colors.amber[600]!,
+                spreadRadius: 2,
+                blurRadius: 2)
           ]),
       child: ListTile(
         title: Text(title),
         subtitle: Text(subtitle),
         leading: icon,
-        trailing: Icon(Icons.arrow_forward, color: Colors.grey.shade400),
-        tileColor: Colors.white,
+        tileColor: globals.isDarkMode ? Colors.black54 : Colors.white,
       ),
     );
   }

@@ -3,14 +3,14 @@ import 'package:ugd2_pbp/view/adminView/addMenu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
-class cobaGrid extends StatefulWidget {
-  const cobaGrid({super.key});
+class ListFoodView extends StatefulWidget {
+  const ListFoodView({super.key});
 
   @override
-  State<cobaGrid> createState() => _cobaGridState();
+  State<ListFoodView> createState() => _ListFoodViewState();
 }
 
-class _cobaGridState extends State<cobaGrid> {
+class _ListFoodViewState extends State<ListFoodView> {
   List<Map<String, dynamic>> makanan = [];
   void refresh() async {
     final data = await SQLMakanan.getmakanan();

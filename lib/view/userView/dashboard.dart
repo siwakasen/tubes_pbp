@@ -1,17 +1,34 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:ugd2_pbp/component/darkModeState.dart' as globals;
+import 'package:ugd2_pbp/database/sql_helperMakanan.dart';
 
-class GriddView extends StatefulWidget {
-  const GriddView({super.key});
+class DashboardView extends StatefulWidget {
+  const DashboardView({super.key});
 
   @override
-  State<GriddView> createState() => _GriddViewState();
+  State<DashboardView> createState() => _DashboardViewState();
 }
 
-const itemCount = 8;
+class _DashboardViewState extends State<DashboardView> {
+  List<Map<String, dynamic>> makanan = [];
+  List<bool> expandableState = [];
+  late int itemCount = 0;
+  void refresh() async {
+    final data = await SQLMakanan.getmakanan();
+    setState(() {
+      makanan = data;
+      itemCount = makanan.length;
+      expandableState = List.generate(itemCount, (index) => false);
+    });
+  }
 
-class _GriddViewState extends State<GriddView> {
-  List<bool> expandableState = List.generate(itemCount, (index) => false);
+  void initState() {
+    refresh();
+    super.initState();
+  }
+
   List<String> gambar = [
     "sumsum.jpg",
     "ayamsmackdown.jpg",
@@ -22,28 +39,6 @@ class _GriddViewState extends State<GriddView> {
     "naspad.jpeg",
     "rawon.jpg"
   ];
-  List<String> namaMakanan = [
-    "BUBUR SUMSUM",
-    "AYAM GEPREK",
-    "NASI GORENG",
-    "RENDANG",
-    "SATE",
-    "SOTO",
-    "NASI PADANG",
-    "RAWON"
-  ];
-  List<String> hargaMakanan = [
-    'Price : Rp.15.000,00',
-    'Price : Rp.10.000,00',
-    'Price : Rp.12.000,00',
-    'Price : Rp.25.000,00',
-    'Price : Rp.15.000,00',
-    'Price : Rp.10.000,00',
-    'Price : Rp.13.000,00',
-    'Price : Rp.12.000,00',
-    'Price : Rp.14.000,00'
-  ];
-
   Widget bloc(double width, int index) {
     bool isExpanded = expandableState[index];
     return GestureDetector(
@@ -52,38 +47,42 @@ class _GriddViewState extends State<GriddView> {
           expandableState[index] = !isExpanded;
         });
       },
-      child: AnimatedContainer(
-        duration: Duration(milliseconds: 200),
-        margin: const EdgeInsets.only(right: 20.0, left: 20.00, top: 5.00),
-        width: !isExpanded ? width * 0.4 : width * 1,
-        height: !isExpanded ? width * 0.4 : width * 0.5,
-        child: Column(
-          children: [
-            SizedBox(
-              width: !isExpanded ? 500 : 800,
-              height: !isExpanded
-                  ? (MediaQuery.of(context).size.height / 7)
-                  : (MediaQuery.of(context).size.height / 5.5),
-              child: Image.asset("images/" + gambar[index]),
-            ),
-            Flexible(
-              flex: 1,
-              child: Text(namaMakanan[index],
-                  style: TextStyle(
-                    fontFamily: 'Oswald',
-                    fontSize: 18,
-                    color: globals.isDarkMode ? Colors.white : Colors.black,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 1,
-                  )),
-            ),
-            Flexible(
+      child: SingleChildScrollView(
+        child: AnimatedContainer(
+          duration: Duration(milliseconds: 200),
+          margin: const EdgeInsets.only(right: 20.0, left: 20.00, top: 5.00),
+          width: !isExpanded ? width * 0.4 : width * 1,
+          height: !isExpanded ? width * 0.4 : width * 0.5,
+          child: Column(
+            children: [
+              SizedBox(
+                  width: !isExpanded ? 800 : 900,
+                  height: !isExpanded
+                      ? ((MediaQuery.of(context).size.height + 100) / 8.2)
+                      : (MediaQuery.of(context).size.height / 5.5),
+                  child:
+                      // Image.asset("images/" + gambar[index]),
+                      Image.memory(Base64Decoder()
+                          .convert(makanan[index]["namaFoto"] as String))),
+              Flexible(
                 flex: 1,
-                child: Text(
-                  !isExpanded ? '' : hargaMakanan[index],
-                  textAlign: TextAlign.center,
-                )),
-          ],
+                child: Text(makanan[index]["namaMakanan"],
+                    style: TextStyle(
+                      fontFamily: 'Oswald',
+                      fontSize: 18,
+                      color: globals.isDarkMode ? Colors.white : Colors.black,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 1,
+                    )),
+              ),
+              Flexible(
+                  flex: 1,
+                  child: Text(
+                    !isExpanded ? '' : makanan[index]["hargaMakanan"],
+                    textAlign: TextAlign.center,
+                  )),
+            ],
+          ),
         ),
       ),
     );
