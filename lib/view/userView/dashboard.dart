@@ -29,16 +29,6 @@ class _DashboardViewState extends State<DashboardView> {
     super.initState();
   }
 
-  List<String> gambar = [
-    "sumsum.jpg",
-    "ayamsmackdown.jpg",
-    "nasgor.jpeg",
-    "rendang.png",
-    "sate.jpg",
-    "soto.jpg",
-    "naspad.jpeg",
-    "rawon.jpg"
-  ];
   Widget bloc(double width, int index) {
     bool isExpanded = expandableState[index];
     return GestureDetector(
