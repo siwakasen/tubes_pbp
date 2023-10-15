@@ -142,7 +142,7 @@ class _ProfileEditState extends State<ProfileEdit> {
                       validator: (value) {
                         if (value == '') {
                           return 'Password can\'t be empty';
-                        } else if (value!.length < 5) {
+                        } else if (value!.length <= 8) {
                           return 'Password length must be greater than 8';
                         } else {
                           return null;
