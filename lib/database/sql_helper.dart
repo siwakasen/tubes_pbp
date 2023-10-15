@@ -82,7 +82,7 @@ class SQLHelper {
 
   static Future<String> selectuser(String username) async {
     final db = await SQLHelper.db();
-    return await db
+    return db
         .rawQuery("SELECT * FROM user WHERE username = $username")
         .toString();
   }

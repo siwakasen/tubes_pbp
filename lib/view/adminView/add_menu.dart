@@ -1,11 +1,11 @@
 import 'dart:io';
 
-import 'package:ugd2_pbp/view/adminView/Utility.dart';
-import 'package:ugd2_pbp/view/userView/homeUpper.dart';
+import 'package:ugd2_pbp/view/adminView/utility.dart';
+import 'package:ugd2_pbp/view/userView/home_upper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:convert';
-import 'package:ugd2_pbp/database/sql_helperMakanan.dart';
+import 'package:ugd2_pbp/database/sql_helper_makanan.dart';
 import 'package:image_picker/image_picker.dart';
 
 class InputMakanan extends StatefulWidget {
@@ -23,7 +23,7 @@ class InputMakanan extends StatefulWidget {
 class _InputMakananState extends State<InputMakanan> {
   TextEditingController namaMakananController = TextEditingController();
   TextEditingController hargaMakananController = TextEditingController();
-  String? ImgString = '';
+  String? imgString = '';
   final _formKey = GlobalKey<FormState>();
   XFile? xFile;
   Future<File?>? imageFile;
@@ -66,7 +66,7 @@ class _InputMakananState extends State<InputMakanan> {
         if (snapshot.connectionState == ConnectionState.done &&
             null != snapshot.data) {
           final imgBytes = snapshot.data!.readAsBytesSync();
-          ImgString = Utility.base64String(imgBytes);
+          imgString = Utility.base64String(imgBytes);
           // print(snapshot.data?.path);
           Utility.saveImageToPreferences(
               Utility.base64String(snapshot.data!.readAsBytesSync()));
@@ -81,16 +81,17 @@ class _InputMakananState extends State<InputMakanan> {
             'Wat',
             textAlign: TextAlign.center,
           );
-        } else if (ImgString != null) {
+        } else if (imgString != null) {
+          // ignore: avoid_unnecessary_containers
           return Container(
               child: Image.memory(
-            Base64Decoder().convert(ImgString as String),
+            const Base64Decoder().convert(imgString as String),
             fit: BoxFit.cover,
             width: 300,
             height: 200,
           ));
         } else {
-          return Container(
+          return SizedBox(
             width: 300,
             height: 200,
             child: Image.asset('images/placeholder_image.png'),
@@ -105,17 +106,17 @@ class _InputMakananState extends State<InputMakanan> {
     if (widget.id != null) {
       namaMakananController.text = widget.namaMakanan!;
       hargaMakananController.text = widget.hargaMakanan!;
-      ImgString = widget.namaFoto!;
+      imgString = widget.namaFoto!;
     } else {
       namaMakananController.text = '';
       hargaMakananController.text = '';
-      ImgString = null;
+      imgString = null;
     }
 
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
-        actions: <Widget>[],
+        actions: const <Widget>[],
       ),
       body: SingleChildScrollView(
         child: Form(
@@ -125,19 +126,19 @@ class _InputMakananState extends State<InputMakanan> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
-                SizedBox(
+                const SizedBox(
                   height: 20.0,
                 ),
                 imageFromGallery(),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                      backgroundColor: Color.fromARGB(255, 255, 132,
+                      backgroundColor: const Color.fromARGB(255, 255, 132,
                           0), //background color of button //border width and color
                       elevation: 3, //elevation of button
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(5)),
-                      padding: EdgeInsets.only(
+                      padding: const EdgeInsets.only(
                           left: 60, right: 60) //content padding inside button
                       ),
                   child: const Text(
@@ -149,7 +150,7 @@ class _InputMakananState extends State<InputMakanan> {
                     setState(() {});
                   },
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 TextFormField(
                     controller: namaMakananController,
                     decoration: const InputDecoration(
@@ -159,13 +160,13 @@ class _InputMakananState extends State<InputMakanan> {
                     validator: (value) {
                       if (value!.isEmpty) {
                         return 'Food\'s name can\'t be empty';
-                      } else if (value!.length > 12) {
+                      } else if (value.length > 12) {
                         return 'Food\'s name can\'t have more than 12 words';
                       } else {
                         return null;
                       }
                     }),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 TextFormField(
                     controller: hargaMakananController,
                     keyboardType: TextInputType.number,
@@ -183,7 +184,7 @@ class _InputMakananState extends State<InputMakanan> {
                         return null;
                       }
                     }),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                       backgroundColor: const Color.fromARGB(255, 255, 132,
@@ -214,18 +215,19 @@ class _InputMakananState extends State<InputMakanan> {
                           await SQLMakanan.addmakanan(
                               namaMakananController.text,
                               hargaMakananController.text,
-                              ImgString!);
+                              imgString!);
                         } else {
                           await SQLMakanan.editmakanan(
                               widget.id!,
                               namaMakananController.text,
                               hargaMakananController.text,
-                              ImgString!);
+                              imgString!);
                         }
+                        // ignore: use_build_context_synchronously
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => Home1View(),
+                              builder: (context) => const Home1View(),
                             ));
                       }
                     }

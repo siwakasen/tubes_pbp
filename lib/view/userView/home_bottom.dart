@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:ugd2_pbp/view/userView/homeUpper.dart';
-import 'package:ugd2_pbp/component/darkModeState.dart' as globals;
+import 'package:ugd2_pbp/view/userView/home_upper.dart';
+import 'package:ugd2_pbp/component/dark_mode_state.dart' as globals;
 import 'package:ugd2_pbp/view/profile/profile_view.dart';
 
 class HomeView extends StatefulWidget {
@@ -24,12 +24,12 @@ class _HomeViewState extends State<HomeView> {
 
   Widget widgetSetting() {
     if (selectedIndex == 0) {
-      return Home1View();
+      return const Home1View();
     }
     if (selectedIndex == 1) {
-      return ProfileView();
+      return const ProfileView();
     }
-    return Text("error cuy");
+    return const Text("error cuy");
   }
 
   @override

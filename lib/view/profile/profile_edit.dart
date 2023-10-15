@@ -3,11 +3,11 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ugd2_pbp/database/sql_helper.dart';
-import 'package:ugd2_pbp/component/darkModeState.dart' as globals;
+import 'package:ugd2_pbp/component/dark_mode_state.dart' as globals;
 import 'package:ugd2_pbp/model/user.dart';
 
 class ProfileEdit extends StatefulWidget {
-  ProfileEdit({
+  const ProfileEdit({
     super.key,
   });
 
@@ -87,7 +87,7 @@ class _ProfileEditState extends State<ProfileEdit> {
                       style:
                           TextStyle(fontSize: 30, fontWeight: FontWeight.w500),
                     ),
-                    contentPadding: const EdgeInsets.only(top: 50),
+                    contentPadding: EdgeInsets.only(top: 50),
                   ),
                   TextFormField(
                       controller: nameController,
@@ -215,7 +215,6 @@ class _ProfileEditState extends State<ProfileEdit> {
                         if (pickDate != null) {
                           String formatDate =
                               DateFormat('dd-MM-yyyy').format(pickDate);
-                          print(formatDate);
                           bornController.text = formatDate;
                         }
                       },
@@ -227,6 +226,7 @@ class _ProfileEditState extends State<ProfileEdit> {
                             .isAfter(DateTime.now())) {
                           return 'Date of birth can\'t be greater than today';
                         }
+                        return null;
                       }),
                   const SizedBox(height: 30),
                   ElevatedButton(
@@ -244,19 +244,18 @@ class _ProfileEditState extends State<ProfileEdit> {
                       if (_formKey.currentState!.validate()) {
                         Map<String, dynamic> formData = {};
                         formData['username'] = usernameController.text;
-                        String user = usernameController.text;
+
                         formData['email'] = emailController.text;
-                        String email = usernameController.text;
+
                         formData['password'] = passwordController.text;
-                        String pass = passwordController.text;
+
                         formData['name'] = nameController.text;
-                        String name = nameController.text;
+
                         formData['address'] = addressController.text;
-                        String address = addressController.text;
+
                         formData['phoneNumber'] = phoneController.text;
-                        String notelp = phoneController.text;
+
                         formData['borndate'] = bornController.text;
-                        String borndate = bornController.text;
 
                         if (isSameUsername(usernameController.text, userLog)) {
                           showDialog(
@@ -332,7 +331,7 @@ class _ProfileEditState extends State<ProfileEdit> {
   getIntValuesSF() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     //Return int
-    int intValue = await prefs.getInt('intValue') ?? 0;
+    int intValue = prefs.getInt('intValue') ?? 0;
     return intValue;
   }
 }

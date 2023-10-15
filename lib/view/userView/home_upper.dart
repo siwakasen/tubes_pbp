@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ugd2_pbp/view/userView/dashboard.dart';
-import 'package:ugd2_pbp/component/darkModeState.dart' as globals;
+import 'package:ugd2_pbp/component/dark_mode_state.dart' as globals;
 import 'package:ugd2_pbp/view/adminView/list_food.dart';
 
 class Home1View extends StatefulWidget {
@@ -11,7 +11,6 @@ class Home1View extends StatefulWidget {
 }
 
 class _Home1ViewState extends State<Home1View> {
-  int _currentIndex = 0;
   // int selectedIndex = 0;
 
   final List<Widget> _tabs = [

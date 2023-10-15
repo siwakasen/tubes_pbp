@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:ugd2_pbp/database/sql_helper.dart';
-import 'package:ugd2_pbp/component/darkModeState.dart' as globals;
+import 'package:ugd2_pbp/component/dark_mode_state.dart' as globals;
 import 'package:ugd2_pbp/model/user.dart';
 import 'package:ugd2_pbp/view/profile/profile_edit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfileView extends StatefulWidget {
-  ProfileView({
+  const ProfileView({
     super.key,
   });
 
@@ -15,7 +15,6 @@ class ProfileView extends StatefulWidget {
 }
 
 class _ProfileViewState extends State<ProfileView> {
-  final _formKey = GlobalKey<FormState>();
   DateTime date = DateTime.now();
 
   @override
@@ -61,15 +60,15 @@ class _ProfileViewState extends State<ProfileView> {
               backgroundImage: AssetImage('images/riksi.jpeg'),
             ),
             const SizedBox(height: 20),
-            itemProfile('Name', user.name, Icon(Icons.face)),
+            itemProfile('Name', user.name, const Icon(Icons.face)),
             const SizedBox(height: 10),
-            itemProfile('Username', user.username, Icon(Icons.person)),
+            itemProfile('Username', user.username, const Icon(Icons.person)),
             const SizedBox(height: 10),
-            itemProfile('Phone', user.phoneNumber, Icon(Icons.phone)),
+            itemProfile('Phone', user.phoneNumber, const Icon(Icons.phone)),
             const SizedBox(height: 10),
-            itemProfile('Address', user.address, Icon(Icons.home)),
+            itemProfile('Address', user.address, const Icon(Icons.home)),
             const SizedBox(height: 10),
-            itemProfile('Email', user.email, Icon(Icons.email)),
+            itemProfile('Email', user.email, const Icon(Icons.email)),
             const SizedBox(
               height: 20,
             ),
@@ -94,7 +93,7 @@ class _ProfileViewState extends State<ProfileView> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => ProfileEdit(),
+        builder: (_) => const ProfileEdit(),
       ),
     );
   }
@@ -107,7 +106,7 @@ class _ProfileViewState extends State<ProfileView> {
           borderRadius: BorderRadius.circular(10),
           boxShadow: [
             BoxShadow(
-                offset: Offset(0, 1),
+                offset: const Offset(0, 1),
                 color: globals.isDarkMode ? Colors.black54 : Colors.amber[600]!,
                 spreadRadius: 2,
                 blurRadius: 2)
@@ -124,7 +123,7 @@ class _ProfileViewState extends State<ProfileView> {
   getIntValuesSF() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     //Return int
-    int intValue = await prefs.getInt('intValue') ?? 0;
+    int intValue = prefs.getInt('intValue') ?? 0;
     return intValue;
   }
 }

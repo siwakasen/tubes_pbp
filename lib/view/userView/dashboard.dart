@@ -1,8 +1,8 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:ugd2_pbp/component/darkModeState.dart' as globals;
-import 'package:ugd2_pbp/database/sql_helperMakanan.dart';
+import 'package:ugd2_pbp/component/dark_mode_state.dart' as globals;
+import 'package:ugd2_pbp/database/sql_helper_makanan.dart';
 
 class DashboardView extends StatefulWidget {
   const DashboardView({super.key});
@@ -24,6 +24,7 @@ class _DashboardViewState extends State<DashboardView> {
     });
   }
 
+  @override
   void initState() {
     refresh();
     super.initState();
@@ -39,7 +40,7 @@ class _DashboardViewState extends State<DashboardView> {
       },
       child: SingleChildScrollView(
         child: AnimatedContainer(
-          duration: Duration(milliseconds: 200),
+          duration: const Duration(milliseconds: 200),
           margin: const EdgeInsets.only(right: 20.0, left: 20.00, top: 5.00),
           width: !isExpanded ? width * 0.4 : width * 1,
           height: !isExpanded ? width * 0.4 : width * 0.5,
@@ -52,7 +53,7 @@ class _DashboardViewState extends State<DashboardView> {
                       : (MediaQuery.of(context).size.height / 5.5),
                   child:
                       // Image.asset("images/" + gambar[index]),
-                      Image.memory(Base64Decoder()
+                      Image.memory(const Base64Decoder()
                           .convert(makanan[index]["namaFoto"] as String))),
               Flexible(
                 flex: 1,
