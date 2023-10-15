@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:ugd2_pbp/component/form_component.dart';
 import 'package:ugd2_pbp/view/login/login.dart';
 import 'package:ugd2_pbp/component/darkModeState.dart' as globals;
 import 'package:intl/intl.dart';
-import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:ugd2_pbp/database/sql_helper.dart';
 import 'package:checkbox_formfield/checkbox_formfield.dart';
 
@@ -20,7 +18,6 @@ enum SingingCharacter { male, female }
 class _RegisterViewState extends State<RegisterView> {
   final _formKey = GlobalKey<FormState>();
   DateTime date = DateTime.now();
-  String gender = "";
   bool? isChecked = false;
   bool isPasswordVisible = false;
   TextEditingController usernameController = TextEditingController();
@@ -31,13 +28,28 @@ class _RegisterViewState extends State<RegisterView> {
   TextEditingController phoneController = TextEditingController();
   TextEditingController addressController = TextEditingController();
 
+  List<Map<String, dynamic>> users = [];
+
+  void refresh() async {
+    final data = await SQLHelper.getuser();
+    setState(() {
+      users = data;
+    });
+  }
+
+  @override
+  void initState() {
+    refresh();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     bool? checkboxIconFormFieldValue = false;
     return MaterialApp(
         theme: ThemeData(
             useMaterial3: true,
-            colorSchemeSeed: globals.isDarkMode ? Colors.white : Colors.black,
+            colorSchemeSeed: globals.isDarkMode ? Colors.white : Colors.white,
             brightness:
                 globals.isDarkMode ? Brightness.dark : Brightness.light),
         debugShowCheckedModeBanner: false,
@@ -73,7 +85,7 @@ class _RegisterViewState extends State<RegisterView> {
                         validator: (value) {
                           if (value == '') {
                             return 'Name can\'t be empty';
-                          } else if (value!.length < 1) {
+                          } else if (value!.length <= 1) {
                             return 'Name length must be greater than 1';
                           } else {
                             return null;
@@ -256,20 +268,58 @@ class _RegisterViewState extends State<RegisterView> {
                                           child: const Text('No')),
                                       TextButton(
                                         onPressed: () {
-                                          SQLHelper.adduser(
-                                              usernameController.text,
-                                              emailController.text,
-                                              passwordController.text,
-                                              nameController.text,
-                                              addressController.text,
-                                              phoneController.text,
-                                              bornController.text);
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (_) => LoginView(
-                                                        data: formData,
-                                                      )));
+                                          if (isSameUsername(
+                                              usernameController.text)) {
+                                            Navigator.pop(context);
+                                            showDialog(
+                                                context: context,
+                                                builder: (_) => AlertDialog(
+                                                      title: const Text(
+                                                          'Username tidak tersedia!'),
+                                                      actions: <Widget>[
+                                                        TextButton(
+                                                            onPressed: () =>
+                                                                Navigator.pop(
+                                                                    context,
+                                                                    'OK'),
+                                                            child: const Text(
+                                                                'OK')),
+                                                      ],
+                                                    ));
+                                          } else if (isSameEmail(
+                                              emailController.text)) {
+                                            Navigator.pop(context);
+                                            showDialog(
+                                                context: context,
+                                                builder: (_) => AlertDialog(
+                                                      title: const Text(
+                                                          'Email terdaftar dalam sistem!'),
+                                                      actions: <Widget>[
+                                                        TextButton(
+                                                            onPressed: () =>
+                                                                Navigator.pop(
+                                                                    context,
+                                                                    'OK'),
+                                                            child: const Text(
+                                                                'OK')),
+                                                      ],
+                                                    ));
+                                          } else {
+                                            SQLHelper.adduser(
+                                                usernameController.text,
+                                                emailController.text,
+                                                passwordController.text,
+                                                nameController.text,
+                                                addressController.text,
+                                                phoneController.text,
+                                                bornController.text);
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (_) => LoginView(
+                                                          data: formData,
+                                                        )));
+                                          }
                                         },
                                         child: const Text('Yes'),
                                       ),
@@ -286,5 +336,23 @@ class _RegisterViewState extends State<RegisterView> {
                 )),
           ),
         ));
+  }
+
+  bool isSameEmail(String email) {
+    for (var user in users) {
+      if (email == user['email']) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  bool isSameUsername(String username) {
+    for (var user in users) {
+      if (username == user['username']) {
+        return true;
+      }
+    }
+    return false;
   }
 }

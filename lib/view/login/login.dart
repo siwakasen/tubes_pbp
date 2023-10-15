@@ -1,38 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:ugd2_pbp/database/sql_helper.dart';
-import 'package:ugd2_pbp/model/user.dart';
 import 'package:ugd2_pbp/view/login/register.dart';
-import 'package:ugd2_pbp/component/form_component.dart';
-import 'package:ugd2_pbp/home.dart';
-import 'dart:ui';
+import 'package:ugd2_pbp/view/userView/homeBottom.dart';
 import 'package:ugd2_pbp/component/darkModeState.dart' as globals;
-
-// class DarkThemePreference {
-//   static const THEME_STATUS = "THEMESTATUS";
-
-//   setDarkTheme(bool value) async {
-//     SharedPreferences prefs = await SharedPreferences.getInstance();
-//     prefs.setBool(THEME_STATUS, value);
-//   }
-
-//   Future<bool> getTheme() async {
-//     SharedPreferences prefs = await SharedPreferences.getInstance();
-//     return prefs.getBool(THEME_STATUS) ?? false;
-//   }
-// }
-
-// class DarkThemeProvider with ChangeNotifier {
-//   DarkThemePreference darkThemePreference = DarkThemePreference();
-//   bool _darkTheme = false;
-
-//   bool get darkTheme => _darkTheme;
-
-//   set darkTheme(bool value) {
-//     _darkTheme = value;
-//     darkThemePreference.setDarkTheme(value);
-//     notifyListeners();
-//   }
-// }
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginView extends StatefulWidget {
   final Map? data;
@@ -61,6 +32,12 @@ class _LoginViewState extends State<LoginView> {
     setState(() {
       users = data;
     });
+  }
+
+  @override
+  void initState() {
+    refresh();
+    super.initState();
   }
 
   @override
@@ -140,39 +117,52 @@ class _LoginViewState extends State<LoginView> {
                         return null;
                       },
                     ),
-                    SizedBox(height: 16.0),
+                    const SizedBox(height: 16.0),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         ElevatedButton(
-                          onPressed: () {
+                          onPressed: () async {
+                            print(users);
                             if (_formKey.currentState!.validate()) {
                               if (cekUser(usernameController.text,
                                   passwordController.text)) {
                                 int userId = getUserId(usernameController.text,
                                     passwordController.text);
-
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (_) => HomeView(
-                                            id: userId,
-                                          )),
-                                );
+                                showDialog(
+                                    context: context,
+                                    builder: (_) => AlertDialog(
+                                          title: const Text('Login Success'),
+                                          actions: <Widget>[
+                                            TextButton(
+                                              onPressed: () {
+                                                addIntToSF(userId);
+                                                print(userId);
+                                                Navigator.pop(context);
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (_) =>
+                                                          HomeView()),
+                                                );
+                                              },
+                                              child: const Text('OK'),
+                                            ),
+                                          ],
+                                        ));
                               } else {
                                 showDialog(
-                                  context: context,
-                                  builder: (_) => AlertDialog(
-                                    title: const Text('Password salah'),
-                                    actions: <Widget>[
-                                      TextButton(
-                                        onPressed: () =>
-                                            Navigator.pop(context, 'OK'),
-                                        child: const Text('OK'),
-                                      ),
-                                    ],
-                                  ),
-                                );
+                                    context: context,
+                                    builder: (_) => AlertDialog(
+                                          title: const Text(
+                                              'Username or Password may not correct'),
+                                          actions: <Widget>[
+                                            TextButton(
+                                                onPressed: () => Navigator.pop(
+                                                    context, 'OK'),
+                                                child: const Text('OK')),
+                                          ],
+                                        ));
                               }
                             }
                           },
@@ -194,7 +184,7 @@ class _LoginViewState extends State<LoginView> {
                           ),
                         )
                       ],
-                    ),
+                    )
                   ],
                 ),
               ),
@@ -217,8 +207,6 @@ class _LoginViewState extends State<LoginView> {
   }
 
   bool cekUser(String username, String password) {
-    refresh();
-    print(users);
     for (var user in users) {
       if (username == user['username'] && password == user['password']) {
         return true;
@@ -234,5 +222,10 @@ class _LoginViewState extends State<LoginView> {
         builder: (_) => const RegisterView(),
       ),
     );
+  }
+
+  addIntToSF(int userId) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setInt('intValue', userId);
   }
 }

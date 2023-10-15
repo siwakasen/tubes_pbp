@@ -1,24 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ugd2_pbp/database/sql_helper.dart';
 import 'package:ugd2_pbp/component/darkModeState.dart' as globals;
+import 'package:ugd2_pbp/model/user.dart';
 
-class ProfileView extends StatefulWidget {
-  ProfileView({
+class ProfileEdit extends StatefulWidget {
+  ProfileEdit({
     super.key,
-    required this.id,
   });
 
-  final int id;
-
   @override
-  State<ProfileView> createState() => _ProfileViewState();
+  State<ProfileEdit> createState() => _ProfileEditState();
 }
 
-class _ProfileViewState extends State<ProfileView> {
-  int _currentIndex = 0;
-
+class _ProfileEditState extends State<ProfileEdit> {
   final _formKey = GlobalKey<FormState>();
   DateTime date = DateTime.now();
 
@@ -38,14 +35,17 @@ class _ProfileViewState extends State<ProfileView> {
     super.initState();
   }
 
+  late int userId;
   List<Map<String, dynamic>> users = [];
+  User userLog = User();
+
   void refresh() async {
     final data = await SQLHelper.getuser();
+    userId = await getIntValuesSF();
     setState(() {
       users = data;
-      print(users);
       for (var user in users) {
-        if (widget.id == user['id']) {
+        if (userId == user['id']) {
           usernameController.text = user['username'];
           emailController.text = user['email'];
           passwordController.text = user['password'];
@@ -53,6 +53,10 @@ class _ProfileViewState extends State<ProfileView> {
           addressController.text = user['address'];
           phoneController.text = user['phoneNumber'];
           bornController.text = user['bornDate'];
+
+          //digunakan untuk cek user saat ini pada 2 function paling bawah
+          userLog.username = user['username'];
+          userLog.email = user['email'];
         }
       }
     });
@@ -77,8 +81,8 @@ class _ProfileViewState extends State<ProfileView> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  ListTile(
-                    title: const Text(
+                  const ListTile(
+                    title: Text(
                       "Profile",
                       style:
                           TextStyle(fontSize: 30, fontWeight: FontWeight.w500),
@@ -94,7 +98,7 @@ class _ProfileViewState extends State<ProfileView> {
                       validator: (value) {
                         if (value == '') {
                           return 'Name can\'t be empty';
-                        } else if (value!.length < 1) {
+                        } else if (value!.length <= 1) {
                           return 'Name length must be greater than 1';
                         } else {
                           return null;
@@ -254,32 +258,45 @@ class _ProfileViewState extends State<ProfileView> {
                         formData['borndate'] = bornController.text;
                         String borndate = bornController.text;
 
-                        showDialog(
-                            context: context,
-                            builder: (_) => AlertDialog(
-                                  title: const Text(
-                                      'Apakah sudah yakin data yang diinputkan benar?'),
-                                  actions: <Widget>[
-                                    TextButton(
-                                        onPressed: () =>
-                                            Navigator.pop(context, 'No'),
-                                        child: const Text('No')),
-                                    TextButton(
-                                      onPressed: () {
-                                        SQLHelper.edituser(
-                                            widget.id,
-                                            usernameController.text,
-                                            emailController.text,
-                                            passwordController.text,
-                                            nameController.text,
-                                            addressController.text,
-                                            phoneController.text,
-                                            bornController.text);
-                                      },
-                                      child: const Text('Yes'),
-                                    ),
-                                  ],
-                                ));
+                        if (isSameUsername(usernameController.text, userLog)) {
+                          showDialog(
+                              context: context,
+                              builder: (_) => AlertDialog(
+                                    title:
+                                        const Text('Username tidak tersedia!'),
+                                    actions: <Widget>[
+                                      TextButton(
+                                          onPressed: () => Navigator.of(context,
+                                                  rootNavigator: true)
+                                              .pop(),
+                                          child: const Text('OK')),
+                                    ],
+                                  ));
+                        } else if (isSameEmail(emailController.text, userLog)) {
+                          showDialog(
+                              context: context,
+                              builder: (_) => AlertDialog(
+                                    title: const Text('Email tidak tersedia!'),
+                                    actions: <Widget>[
+                                      TextButton(
+                                          onPressed: () => Navigator.of(context,
+                                                  rootNavigator: true)
+                                              .pop(),
+                                          child: const Text('OK')),
+                                    ],
+                                  ));
+                        } else {
+                          SQLHelper.edituser(
+                              userId,
+                              usernameController.text,
+                              emailController.text,
+                              passwordController.text,
+                              nameController.text,
+                              addressController.text,
+                              phoneController.text,
+                              bornController.text);
+                          Navigator.pop(context);
+                        }
                       }
                     },
                     child: const Text(
@@ -292,5 +309,30 @@ class _ProfileViewState extends State<ProfileView> {
         ),
       ),
     );
+  }
+
+  bool isSameEmail(String email, User userLog) {
+    for (var user in users) {
+      if (email == user['email'] && email != userLog.email) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  bool isSameUsername(String username, User userLog) {
+    for (var user in users) {
+      if (username == user['username'] && username != userLog.username) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  getIntValuesSF() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    //Return int
+    int intValue = await prefs.getInt('intValue') ?? 0;
+    return intValue;
   }
 }

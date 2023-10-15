@@ -1,18 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:ugd2_pbp/grid.dart';
-import 'package:ugd2_pbp/midscreen.dart';
-import 'package:ugd2_pbp/model/user.dart';
-import 'package:ugd2_pbp/profile_edit.dart';
-import 'package:ugd2_pbp/home1.dart';
+import 'package:ugd2_pbp/view/userView/homeUpper.dart';
 import 'package:ugd2_pbp/component/darkModeState.dart' as globals;
+import 'package:ugd2_pbp/view/profile/profile_view.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({
     super.key,
-    required this.id,
   });
-
-  final int id;
 
   @override
   State<HomeView> createState() => _HomeViewState();
@@ -33,7 +27,7 @@ class _HomeViewState extends State<HomeView> {
       return Home1View();
     }
     if (selectedIndex == 1) {
-      return ProfileView(id: widget.id);
+      return ProfileView();
     }
     return Text("error cuy");
   }
