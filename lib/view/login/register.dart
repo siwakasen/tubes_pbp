@@ -129,7 +129,7 @@ class _RegisterViewState extends State<RegisterView> {
                         validator: (value) {
                           if (value == '') {
                             return 'Password can\'t be empty';
-                          } else if (value!.length < 8) {
+                          } else if (value!.length <= 8) {
                             return 'Password length must be greater than 8';
                           } else {
                             return null;
