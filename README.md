@@ -1,16 +1,9 @@
-# TUBES PBP - RESTORAN
-Anggota Kelompok / Kontributor\
-Made Riksi Purnama (NPM 210711396)\
-Deby Juwita (NPM 210711041)\
-Raihan Dwi Febrian (NPM 210711440)\
-Alfa Nada Yulaswara (NPM 210711378)\
-Davan Khadafi (NPM 210711384)
+# Kelompok 9
+## Kelas : PBP A
+## Anggota Kelompok & Pembagian Tugas
 
-Deskripsi Project\
-Aplikasi tentang restoran
-
-UGD 2\
-Enhance Register Page : alert dialog, date picker, checkbox, radiobutton\
-Enhance Login Page : eye toggle, floating action button (dark/light theme)\
-Apply Grid at home page (can be expanded)\
-Profile page with tab
+Made Riksi Purnama (210711396) : Merge hasil kerja, grid, profile view/
+Deby Juwita (210711041) : CRUD makanan (poin ugd no 6)/
+Raihan Dwi Febrian (210711440) : Membantu pembuatan database user/
+Alfa Nada Yulaswara (210711378) : Membuat edit profile view dan dbnya/
+Davan Khadafi (210711384) : Membantu pembuatan register/
