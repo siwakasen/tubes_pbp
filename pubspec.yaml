@@ -1,12 +1,19 @@
 name: ugd2_pbp
 description: A new Flutter project.
 publish_to: 'none'
-version: 0.1.0
+version: 0.1.0+1
 
 environment:
   sdk: '>=3.1.0 <4.0.0'
 
 dependencies:
+  camera: ^0.10.5+2
+  cupertino_icons: ^1.0.2
+ 
+  mobile_scanner: ^3.2.0
+  path: any
+  path_provider: ^2.0.15
+  qr_flutter: ^4.1.0
   flutter:
     sdk: flutter
   shared_preferences: ^2.2.1
@@ -17,11 +24,14 @@ dependencies:
   checkbox_formfield: ^0.2.0
   image_picker: ^1.0.4
   flutter_slidable: ^0.6.0
+  speech_to_text: ^6.4.0
 
 dev_dependencies:
+  appcenter_sdk_flutter: ^0.5.1
+  flutter_lints: ^2.0.0
   flutter_test:
     sdk: flutter
-  flutter_lints: ^2.0.0
+  
 
 flutter:
   uses-material-design: true

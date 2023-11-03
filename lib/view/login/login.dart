@@ -4,6 +4,8 @@ import 'package:ugd2_pbp/view/login/register.dart';
 import 'package:ugd2_pbp/view/userView/home_bottom.dart';
 import 'package:ugd2_pbp/component/dark_mode_state.dart' as globals;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:speech_to_text/speech_recognition_result.dart';
+import 'package:speech_to_text/speech_to_text.dart';
 
 class LoginView extends StatefulWidget {
   final Map? data;
@@ -20,7 +22,12 @@ class _LoginViewState extends State<LoginView> {
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
+  final SpeechToText _speechToText = SpeechToText();
+
+  String _lastWords = '';
+
   bool _passwordVisible = false;
+
   Color appBarColor = Colors.orange;
   Color bodyColor = Colors.white;
   Color fontColor = Colors.black;
@@ -29,15 +36,49 @@ class _LoginViewState extends State<LoginView> {
 
   void refresh() async {
     final data = await SQLHelper.getuser();
+    _initSpeech();
     setState(() {
       users = data;
+    });
+  }
+
+  bool _speechEnabled = false;
+
+  /// This has to happen only once per app
+  void _initSpeech() async {
+    _speechEnabled = await _speechToText.initialize();
+    setState(() {});
+  }
+
+  /// Each time to start a speech recognition session
+  void _startListening() async {
+    await _speechToText.listen(onResult: _onSpeechResult);
+    setState(() {});
+  }
+
+  /// Manually stop the active speech recognition session
+  /// Note that there are also timeouts that each platform enforces
+  /// and the SpeechToText plugin supports setting timeouts on the
+  /// listen method.
+  void _stopListening() async {
+    await _speechToText.stop();
+    setState(() {});
+  }
+
+  /// This is the callback that the SpeechToText plugin calls when
+  /// the platform returns recognized words.
+  void _onSpeechResult(SpeechRecognitionResult result) {
+    setState(() {
+      _lastWords = result.recognizedWords;
     });
   }
 
   @override
   void initState() {
     refresh();
+
     super.initState();
+    _initSpeech();
   }
 
   @override
@@ -79,8 +120,17 @@ class _LoginViewState extends State<LoginView> {
                     const Text('LOGIN'),
                     TextFormField(
                       controller: usernameController,
-                      decoration: const InputDecoration(
-                        labelText: 'Username',
+                      decoration: InputDecoration(
+                        labelText: _lastWords,
+                        suffixIcon: IconButton(
+                            icon: Icon(
+                              _speechToText.isListening
+                                  ? Icons.mic_rounded
+                                  : Icons.mic_off_rounded,
+                            ),
+                            onPressed: _speechToText.isNotListening
+                                ? _startListening
+                                : _stopListening),
                       ),
                       validator: (p0) {
                         if (p0 == null || p0.isEmpty) {
