@@ -6,6 +6,7 @@ import 'package:ugd2_pbp/model/user.dart';
 
 import 'package:ugd2_pbp/view/adminView/Utility.dart';
 import 'package:ugd2_pbp/view/profile/profile_view.dart';
+import 'package:ugd2_pbp/view/userView/homeBottom.dart';
 import 'package:ugd2_pbp/view/userView/homeUpper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -165,11 +166,7 @@ class _profileCameraViewState extends State<profileCameraView> {
                   onPressed: () async {
                     if (_formKey.currentState!.validate()) {
                       await SQLHelper.editphoto(userId, ImgString!);
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ProfileView(),
-                          ));
+                      Navigator.pop(context);
                     }
                   },
                   child: const Text(
