@@ -11,7 +11,8 @@ class SQLHelper {
       name TEXT,
       address TEXT,
       phoneNumber TEXT,
-      bornDate TEXT
+      bornDate TEXT,
+      photo TEXT
     )
   """);
   }
@@ -24,14 +25,14 @@ class SQLHelper {
   }
 
   static Future<int> adduser(
-    String username,
-    String email,
-    String password,
-    String name,
-    String address,
-    String phoneNumber,
-    String bornDate,
-  ) async {
+      String username,
+      String email,
+      String password,
+      String name,
+      String address,
+      String phoneNumber,
+      String bornDate,
+      String photo) async {
     final db = await SQLHelper.db();
     final data = {
       'name': name,
@@ -41,6 +42,7 @@ class SQLHelper {
       'address': address,
       'borndate': bornDate,
       'phoneNumber': phoneNumber,
+      'photo': photo
     };
     return await db.insert('user', data);
   }
@@ -59,6 +61,7 @@ class SQLHelper {
     String address,
     String phoneNumber,
     String bornDate,
+    // String photo
   ) async {
     final db = await SQLHelper.db();
     final data = {
@@ -70,6 +73,13 @@ class SQLHelper {
       'borndate': bornDate,
       'phoneNumber': phoneNumber
     };
+
+    return await db.update('user', data, where: "id = $id");
+  }
+
+  static Future<int> editphoto(int id, String photo) async {
+    final db = await SQLHelper.db();
+    final data = {'photo': photo};
 
     return await db.update('user', data, where: "id = $id");
   }

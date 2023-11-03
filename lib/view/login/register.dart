@@ -255,7 +255,7 @@ class _RegisterViewState extends State<RegisterView> {
                           String notelp = phoneController.text;
                           formData['borndate'] = bornController.text;
                           String borndate = bornController.text;
-
+                          String photo = "";
                           showDialog(
                               context: context,
                               builder: (_) => AlertDialog(
@@ -312,7 +312,8 @@ class _RegisterViewState extends State<RegisterView> {
                                                 nameController.text,
                                                 addressController.text,
                                                 phoneController.text,
-                                                bornController.text);
+                                                bornController.text,
+                                                photo);
                                             Navigator.push(
                                                 context,
                                                 MaterialPageRoute(

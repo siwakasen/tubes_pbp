@@ -37,11 +37,11 @@ class _InputMakananState extends State<InputMakanan> {
   }
 
   pickImageFromGallery(ImageSource source) async {
-    xFile = await ImagePicker().pickImage(source: ImageSource.gallery);
+    xFile = await ImagePicker()
+        .pickImage(source: ImageSource.camera, imageQuality: 25);
 
     if (xFile != null) {
       final image = File(xFile!.path);
-      // String imgString = Utility.base64String(image.readAsBytesSync());
       setState(() {
         imageFile = Future.value(image);
       });
@@ -67,6 +67,7 @@ class _InputMakananState extends State<InputMakanan> {
             null != snapshot.data) {
           final imgBytes = snapshot.data!.readAsBytesSync();
           ImgString = Utility.base64String(imgBytes);
+
           // print(snapshot.data?.path);
           Utility.saveImageToPreferences(
               Utility.base64String(snapshot.data!.readAsBytesSync()));
