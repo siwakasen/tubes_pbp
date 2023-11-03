@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ugd2_pbp/view/maps/map.dart';
 import 'package:ugd2_pbp/view/userView/homeUpper.dart';
 import 'package:ugd2_pbp/view/ratings/list_rating.dart';
 import 'package:ugd2_pbp/component/darkModeState.dart' as globals;
@@ -31,6 +32,9 @@ class _HomeViewState extends State<HomeView> {
       return RatingView();
     }
     if (selectedIndex == 2) {
+      return OpenMap();
+    }
+    if (selectedIndex == 3) {
       return ProfileView();
     }
     return Text("error cuy");
@@ -51,6 +55,8 @@ class _HomeViewState extends State<HomeView> {
         ),
         home: Scaffold(
           bottomNavigationBar: BottomNavigationBar(
+            selectedItemColor: Colors.red,
+            unselectedItemColor: Colors.grey,
             items: const [
               BottomNavigationBarItem(
                   icon: Icon(
@@ -60,6 +66,10 @@ class _HomeViewState extends State<HomeView> {
               BottomNavigationBarItem(
                 icon: Icon(Icons.star),
                 label: 'Review',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.map),
+                label: 'Map',
               ),
               BottomNavigationBarItem(
                   icon: Icon(
