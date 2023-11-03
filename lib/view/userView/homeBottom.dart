@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ugd2_pbp/view/userView/homeUpper.dart';
+import 'package:ugd2_pbp/view/ratings/list_rating.dart';
 import 'package:ugd2_pbp/component/darkModeState.dart' as globals;
 import 'package:ugd2_pbp/view/profile/profile_view.dart';
 
@@ -27,6 +28,9 @@ class _HomeViewState extends State<HomeView> {
       return Home1View();
     }
     if (selectedIndex == 1) {
+      return RatingView();
+    }
+    if (selectedIndex == 2) {
       return ProfileView();
     }
     return Text("error cuy");
@@ -53,6 +57,10 @@ class _HomeViewState extends State<HomeView> {
                     Icons.home,
                   ),
                   label: 'Home'),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.star),
+                label: 'Review',
+              ),
               BottomNavigationBarItem(
                   icon: Icon(
                     Icons.person,
