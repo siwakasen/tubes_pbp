@@ -26,7 +26,6 @@ class _OpenMapState extends State<OpenMap> {
   @override
   void initState() {
     _getCurrentLocation();
-    _getAddressFromLatLng(_currentPosition);
     super.initState();
   }
 
