@@ -6,13 +6,12 @@ import 'package:latlong2/latlong.dart';
 
 class OpenMap extends StatefulWidget {
   const OpenMap({super.key});
-
   @override
   State<OpenMap> createState() => _OpenMapState();
 }
 
 class _OpenMapState extends State<OpenMap> {
-  late Position _currentPosition = _getCurrentLocation();
+  late Position _currentPosition;
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -67,7 +66,9 @@ class _OpenMapState extends State<OpenMap> {
     );
   }
 
-  _getCurrentLocation() {
+  _getCurrentLocation() async {
+    LocationPermission permission;
+    permission = await Geolocator.requestPermission();
     Geolocator.getCurrentPosition(
             desiredAccuracy: LocationAccuracy.best,
             forceAndroidLocationManager: true)
