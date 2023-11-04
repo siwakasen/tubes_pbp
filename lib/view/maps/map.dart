@@ -12,6 +12,7 @@ class OpenMap extends StatefulWidget {
 }
 
 class _OpenMapState extends State<OpenMap> {
+  late Position _currentPosition;
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -28,7 +29,8 @@ class _OpenMapState extends State<OpenMap> {
               MarkerLayer(
                 markers: [
                   Marker(
-                    point: LatLng(-12.069783, -77.034057),
+                    point: LatLng(
+                        _currentPosition.latitude, _currentPosition.longitude),
                     width: 30.0,
                     height: 30.0,
                     child: Container(
@@ -63,5 +65,18 @@ class _OpenMapState extends State<OpenMap> {
         ),
       ],
     );
+  }
+
+  _getCurrentLocation() {
+    Geolocator.getCurrentPosition(
+            desiredAccuracy: LocationAccuracy.best,
+            forceAndroidLocationManager: true)
+        .then((Position position) {
+      setState(() {
+        _currentPosition = position;
+      });
+    }).catchError((e) {
+      print(e);
+    });
   }
 }
