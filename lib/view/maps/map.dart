@@ -12,7 +12,7 @@ class OpenMap extends StatefulWidget {
 }
 
 class _OpenMapState extends State<OpenMap> {
-  late Position _currentPosition;
+  late Position _currentPosition = _getCurrentLocation();
   @override
   Widget build(BuildContext context) {
     return Stack(
