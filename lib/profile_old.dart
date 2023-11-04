@@ -14,7 +14,6 @@ class ProfileView extends StatefulWidget {
 }
 
 class _ProfileViewState extends State<ProfileView> {
-  int _currentIndex = 0;
   // int selectedIndex = 0;
 
   List<Widget> _tabs = [

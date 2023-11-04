@@ -22,7 +22,7 @@ class _OpenMapState extends State<OpenMap> {
                 initialZoom: 13.0),
             children: [
               TileLayer(
-                urlTemplate: 'https://tile.openstreetmap.org/5/17/13.png',
+                urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                 userAgentPackageName: 'com.example.ugd2_pbp',
               ),
               MarkerLayer(
