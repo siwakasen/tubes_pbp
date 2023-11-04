@@ -5,45 +5,29 @@ import 'package:ugd2_pbp/view/ratings/list_rating.dart';
 import 'package:ugd2_pbp/component/darkModeState.dart' as globals;
 import 'package:ugd2_pbp/view/profile/profile_view.dart';
 
-class HomeView extends StatefulWidget {
-  const HomeView({super.key, this.index});
-  final int? index;
+class HomeViewStf extends StatefulWidget {
+  final int initialSelectedIndex;
+
+  HomeViewStf({super.key, this.initialSelectedIndex = 0});
 
   @override
-  State<HomeView> createState() => _HomeViewState();
+  State<HomeViewStf> createState() => _HomeViewStfState();
 }
 
-class _HomeViewState extends State<HomeView> {
-  int selectedIndex = 0;
+int selectedIndex = 0;
 
-  void onItemTapped(int index) {
+class _HomeViewStfState extends State<HomeViewStf> {
+  static List<Widget> widgetOptions = <Widget>[
+    Home1View(),
+    RatingView(),
+    OpenMap(),
+    ProfileView(),
+  ];
+
+  void setSelectedIndex(int index) {
     setState(() {
       selectedIndex = index;
     });
-  }
-
-  Widget widgetSetting() {
-    if (widget.index != null) {
-      selectedIndex = widget.index!;
-    }
-    if (selectedIndex == 0) {
-      return Home1View();
-    }
-    if (selectedIndex == 1) {
-      return RatingView();
-    }
-    if (selectedIndex == 2) {
-      return OpenMap();
-    }
-    if (selectedIndex == 3) {
-      return ProfileView();
-    }
-    return Text("error cuy");
-  }
-
-  @override
-  void initState() {
-    super.initState();
   }
 
   @override
@@ -55,8 +39,11 @@ class _HomeViewState extends State<HomeView> {
           brightness: globals.isDarkMode ? Brightness.dark : Brightness.light,
         ),
         home: Scaffold(
+          body: Center(
+            child: widgetOptions.elementAt(selectedIndex),
+          ),
           bottomNavigationBar: BottomNavigationBar(
-            selectedItemColor: Colors.red,
+            selectedItemColor: Colors.amber[800],
             unselectedItemColor: Colors.grey,
             items: const [
               BottomNavigationBarItem(
@@ -79,9 +66,12 @@ class _HomeViewState extends State<HomeView> {
                   label: 'Profile'),
             ],
             currentIndex: selectedIndex,
-            onTap: onItemTapped,
+            onTap: _onItemTapped,
           ),
-          body: widgetSetting(),
         ));
+  }
+
+  void _onItemTapped(int index) {
+    setSelectedIndex(index);
   }
 }

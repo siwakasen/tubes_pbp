@@ -62,13 +62,23 @@ class _ProfileViewState extends State<ProfileView> {
             const SizedBox(height: 40),
             Stack(
               children: [
-                CircleAvatar(
-                    radius: 70,
-                    backgroundImage:
-                        MemoryImage(const Base64Decoder().convert(user.photo))),
+                if (user.photo == "") ...[
+                  const CircleAvatar(
+                      radius: 70,
+                      backgroundImage: AssetImage("images/riksi.jpeg")),
+                ] else ...[
+                  CircleAvatar(
+                      radius: 70,
+                      backgroundImage: MemoryImage(
+                          const Base64Decoder().convert(user.photo))),
+                ],
                 // CircleAvatar(
                 //     radius: 70,
-                //     backgroundImage: AssetImage("images/riksi.jpeg")),
+                //     backgroundImage:
+                //         MemoryImage(const Base64Decoder().convert(user.photo))),
+                // // CircleAvatar(
+                // //     radius: 70,
+                // //     backgroundImage: AssetImage("images/riksi.jpeg")),
                 Positioned(
                   bottom: 1,
                   right: 1,

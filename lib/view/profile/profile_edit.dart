@@ -301,8 +301,8 @@ class _ProfileEditState extends State<ProfileEdit> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (_) => HomeView(),
-                            ),
+                                builder: (_) =>
+                                    HomeViewStf(initialSelectedIndex: 3)),
                           );
                         }
                       }

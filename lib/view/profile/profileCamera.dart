@@ -170,8 +170,7 @@ class _profileCameraViewState extends State<profileCameraView> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => HomeView(),
-                      ),
+                          builder: (_) => HomeViewStf(initialSelectedIndex: 3)),
                     );
                   },
                   child: const Text(

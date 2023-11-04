@@ -41,6 +41,14 @@ class SQLMakanan {
     return await db.delete('makanan', where: "id = $id");
   }
 
+  static Future<List<Map<String, dynamic>>> getMakananByKeyword(
+      String keyword) async {
+    final db = await SQLMakanan.db();
+    return db.query('makanan',
+        where: 'namaMakanan LIKE ? OR hargaMakanan LIKE ?',
+        whereArgs: ['%$keyword%', '%$keyword%']);
+  }
+
   static Future<int> editmakanan(int id, String namaMakanan,
       String hargaMakanan, String gambarMakanan) async {
     final db = await SQLMakanan.db();

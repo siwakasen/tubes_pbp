@@ -36,7 +36,7 @@ class _InputRatingState extends State<InputRating> {
   }
 
   pickImageFromGallery(ImageSource source) async {
-    xFile = await ImagePicker().pickImage(source: ImageSource.gallery);
+    xFile = await ImagePicker().pickImage(source: ImageSource.camera);
 
     if (xFile != null) {
       final image = File(xFile!.path);

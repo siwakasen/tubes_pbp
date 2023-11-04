@@ -24,6 +24,8 @@ class _DashboardViewState extends State<DashboardView> {
     });
   }
 
+  final _formKey = GlobalKey<FormState>();
+  TextEditingController searchController = TextEditingController();
   void initState() {
     refresh();
     super.initState();
@@ -50,10 +52,8 @@ class _DashboardViewState extends State<DashboardView> {
                   height: !isExpanded
                       ? ((MediaQuery.of(context).size.height + 100) / 8.2)
                       : (MediaQuery.of(context).size.height / 5.5),
-                  child:
-                      // Image.asset("images/" + gambar[index]),
-                      Image.memory(Base64Decoder()
-                          .convert(makanan[index]["namaFoto"] as String))),
+                  child: Image.memory(Base64Decoder()
+                      .convert(makanan[index]["namaFoto"] as String))),
               Flexible(
                 flex: 1,
                 child: Text(makanan[index]["namaMakanan"],

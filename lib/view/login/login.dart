@@ -143,8 +143,9 @@ class _LoginViewState extends State<LoginView> {
                                                 Navigator.push(
                                                   context,
                                                   MaterialPageRoute(
-                                                      builder: (_) =>
-                                                          HomeView()),
+                                                      builder: (_) => HomeViewStf(
+                                                          initialSelectedIndex:
+                                                              0)),
                                                 );
                                               },
                                               child: const Text('OK'),
