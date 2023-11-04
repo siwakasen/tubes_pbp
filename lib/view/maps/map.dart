@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:geocoding/geocoding.dart';
 
 class OpenMap extends StatefulWidget {
   const OpenMap({super.key});
@@ -10,7 +11,7 @@ class OpenMap extends StatefulWidget {
 }
 
 class _OpenMapState extends State<OpenMap> {
-  // late Position _currentPosition;
+  String? _currentAddress;
   Position _currentPosition = Position(
       longitude: -122.08395287867832,
       latitude: 37.42342342342342,
@@ -25,22 +26,12 @@ class _OpenMapState extends State<OpenMap> {
   @override
   void initState() {
     _getCurrentLocation();
+    _getAddressFromLatLng(_currentPosition);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    print(_currentPosition.longitude);
-    print(_currentPosition.latitude);
-    print(_currentPosition.timestamp);
-    print(_currentPosition.accuracy);
-    print(_currentPosition.altitudeAccuracy);
-    print(_currentPosition.heading);
-    print(_currentPosition.headingAccuracy);
-    print(_currentPosition.speed);
-    print(_currentPosition.longitude);
-    print(_currentPosition.speedAccuracy);
-    print("HEREEEEEEEEEEEEEEEEEEEEEEEEEE");
     return Stack(
       children: [
         FlutterMap(
@@ -73,7 +64,7 @@ class _OpenMapState extends State<OpenMap> {
                 ],
               )
             ]),
-        const Padding(
+        Padding(
           padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 34.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -82,7 +73,7 @@ class _OpenMapState extends State<OpenMap> {
                 child: TextField(
                   decoration: InputDecoration(
                     contentPadding: EdgeInsets.all(16.0),
-                    hintText: "Search for your localisation",
+                    hintText: '${_currentAddress ?? "Tes"}',
                     prefixIcon: Icon(Icons.location_on_outlined),
                   ),
                 ),
@@ -98,14 +89,28 @@ class _OpenMapState extends State<OpenMap> {
     LocationPermission permission;
     permission = await Geolocator.requestPermission();
     Geolocator.getCurrentPosition(
-            desiredAccuracy: LocationAccuracy.best,
+            desiredAccuracy: LocationAccuracy.bestForNavigation,
             forceAndroidLocationManager: true)
         .then((Position position) {
       setState(() {
         _currentPosition = position;
+        _getAddressFromLatLng(_currentPosition);
       });
     }).catchError((e) {
       print(e);
+    });
+  }
+
+  Future<void> _getAddressFromLatLng(Position position) async {
+    await placemarkFromCoordinates(
+            _currentPosition.latitude, _currentPosition.longitude)
+        .then((List<Placemark> placemarks) {
+      Placemark place = placemarks[0];
+      setState(() {
+        _currentAddress = '${place.street}, ${place.subLocality}';
+      });
+    }).catchError((e) {
+      debugPrint(e);
     });
   }
 }
