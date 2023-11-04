@@ -6,16 +6,14 @@ import 'package:ugd2_pbp/component/darkModeState.dart' as globals;
 import 'package:ugd2_pbp/view/profile/profile_view.dart';
 
 class HomeView extends StatefulWidget {
-  const HomeView({
-    super.key,
-  });
+  const HomeView({super.key, this.index});
+  final int? index;
 
   @override
   State<HomeView> createState() => _HomeViewState();
 }
 
 class _HomeViewState extends State<HomeView> {
-  // int _currentIndex = 0;
   int selectedIndex = 0;
 
   void onItemTapped(int index) {
@@ -25,6 +23,9 @@ class _HomeViewState extends State<HomeView> {
   }
 
   Widget widgetSetting() {
+    if (widget.index != null) {
+      selectedIndex = widget.index!;
+    }
     if (selectedIndex == 0) {
       return Home1View();
     }

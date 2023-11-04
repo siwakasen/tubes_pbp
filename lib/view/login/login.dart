@@ -136,6 +136,7 @@ class _LoginViewState extends State<LoginView> {
                                           actions: <Widget>[
                                             TextButton(
                                               onPressed: () {
+                                                globals.setRefresh = 1;
                                                 addIntToSF(userId);
                                                 print(userId);
                                                 Navigator.pop(context);

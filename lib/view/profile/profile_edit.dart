@@ -5,6 +5,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ugd2_pbp/database/sql_helper.dart';
 import 'package:ugd2_pbp/component/darkModeState.dart' as globals;
 import 'package:ugd2_pbp/model/user.dart';
+import 'package:ugd2_pbp/view/profile/profile_view.dart';
+import 'package:ugd2_pbp/view/userView/homeBottom.dart';
 
 class ProfileEdit extends StatefulWidget {
   ProfileEdit({
@@ -68,6 +70,7 @@ class _ProfileEditState extends State<ProfileEdit> {
 
   @override
   Widget build(BuildContext context) {
+    globals.setRefresh = 1;
     return MaterialApp(
       theme: ThemeData(
           useMaterial3: true,
@@ -295,7 +298,12 @@ class _ProfileEditState extends State<ProfileEdit> {
                               addressController.text,
                               phoneController.text,
                               bornController.text);
-                          Navigator.pop(context);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => HomeView(),
+                            ),
+                          );
                         }
                       }
                     },
