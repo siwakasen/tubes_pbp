@@ -37,7 +37,8 @@ class _InputMakananState extends State<InputMakanan> {
   }
 
   pickImageFromGallery(ImageSource source) async {
-    xFile = await ImagePicker().pickImage(source: ImageSource.gallery);
+    xFile = await ImagePicker()
+        .pickImage(source: ImageSource.camera, imageQuality: 25);
 
     if (xFile != null) {
       final image = File(xFile!.path);
@@ -47,17 +48,6 @@ class _InputMakananState extends State<InputMakanan> {
       });
     }
   }
-
-  // loadImageFromPreferences() {
-  //   Utility.getImageFromPreferences().then((img) {
-  //     if (null == img) {
-  //       return;
-  //     }
-  //     setState(() {
-  //       imageFromPreferences = Utility.imageFromBase64String(img);
-  //     });
-  //   });
-  // }
 
   Widget imageFromGallery() {
     return FutureBuilder<File?>(

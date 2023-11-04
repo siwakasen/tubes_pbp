@@ -32,6 +32,7 @@ dependencies:
   vector_math: ^2.1.4
   proj4dart: ^2.1.0
   collection: ^1.17.2
+  speech_to_text: ^6.4.0
 
 dev_dependencies:
   flutter_test: 

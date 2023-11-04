@@ -98,7 +98,7 @@ class _OpenMapState extends State<OpenMap> {
     LocationPermission permission;
     permission = await Geolocator.requestPermission();
     Geolocator.getCurrentPosition(
-            desiredAccuracy: LocationAccuracy.high,
+            desiredAccuracy: LocationAccuracy.best,
             forceAndroidLocationManager: true)
         .then((Position position) {
       setState(() {
