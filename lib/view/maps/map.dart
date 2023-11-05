@@ -13,8 +13,8 @@ class OpenMap extends StatefulWidget {
 class _OpenMapState extends State<OpenMap> {
   String? _currentAddress;
   Position _currentPosition = Position(
-      longitude: -122.08395287867832,
-      latitude: 37.42342342342342,
+      longitude: -9.8096,
+      latitude: 120.4546,
       timestamp: DateTime.now(),
       accuracy: 2000.0,
       altitude: 0.5,
