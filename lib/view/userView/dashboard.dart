@@ -24,8 +24,8 @@ class _DashboardViewState extends State<DashboardView> {
     });
   }
 
-  final _formKey = GlobalKey<FormState>();
   TextEditingController searchController = TextEditingController();
+  @override
   void initState() {
     refresh();
     super.initState();
@@ -41,7 +41,7 @@ class _DashboardViewState extends State<DashboardView> {
       },
       child: SingleChildScrollView(
         child: AnimatedContainer(
-          duration: Duration(milliseconds: 200),
+          duration: const Duration(milliseconds: 200),
           margin: const EdgeInsets.only(right: 20.0, left: 20.00, top: 5.00),
           width: !isExpanded ? width * 0.4 : width * 1,
           height: !isExpanded ? width * 0.4 : width * 0.5,
@@ -52,7 +52,7 @@ class _DashboardViewState extends State<DashboardView> {
                   height: !isExpanded
                       ? ((MediaQuery.of(context).size.height + 100) / 8.2)
                       : (MediaQuery.of(context).size.height / 5.5),
-                  child: Image.memory(Base64Decoder()
+                  child: Image.memory(const Base64Decoder()
                       .convert(makanan[index]["namaFoto"] as String))),
               Flexible(
                 flex: 1,

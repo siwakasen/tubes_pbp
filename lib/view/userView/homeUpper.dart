@@ -11,9 +11,6 @@ class Home1View extends StatefulWidget {
 }
 
 class _Home1ViewState extends State<Home1View> {
-  int _currentIndex = 0;
-  // int selectedIndex = 0;
-
   final List<Widget> _tabs = [
     const DashboardView(),
     const ListFoodView(),

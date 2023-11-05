@@ -45,7 +45,6 @@ class _RegisterViewState extends State<RegisterView> {
 
   @override
   Widget build(BuildContext context) {
-    bool? checkboxIconFormFieldValue = false;
     return MaterialApp(
         theme: ThemeData(
             useMaterial3: true,
@@ -203,7 +202,6 @@ class _RegisterViewState extends State<RegisterView> {
                           if (pickDate != null) {
                             String formatDate =
                                 DateFormat('dd-MM-yyyy').format(pickDate);
-                            print(formatDate);
                             bornController.text = formatDate;
                           }
                         },
@@ -215,14 +213,16 @@ class _RegisterViewState extends State<RegisterView> {
                               .isAfter(DateTime.now())) {
                             return 'Date of birth can\'t be greater than today';
                           }
+                          return null;
                         }),
                     const SizedBox(height: 30),
                     CheckboxListTileFormField(
-                      title: Text("I Agree with terms & condition"),
+                      title: const Text("I Agree with terms & condition"),
                       validator: (value) {
                         if (!(value!)) {
                           return 'Must be checked!';
                         }
+                        return null;
                       },
                       autovalidateMode: AutovalidateMode.onUserInteraction,
                     ),
@@ -242,19 +242,12 @@ class _RegisterViewState extends State<RegisterView> {
                         if (_formKey.currentState!.validate()) {
                           Map<String, dynamic> formData = {};
                           formData['username'] = usernameController.text;
-                          String user = usernameController.text;
                           formData['email'] = emailController.text;
-                          String email = usernameController.text;
                           formData['password'] = passwordController.text;
-                          String pass = passwordController.text;
                           formData['name'] = nameController.text;
-                          String name = nameController.text;
                           formData['address'] = addressController.text;
-                          String address = addressController.text;
                           formData['phoneNumber'] = phoneController.text;
-                          String notelp = phoneController.text;
                           formData['borndate'] = bornController.text;
-                          String borndate = bornController.text;
                           String photo = "";
                           showDialog(
                               context: context,

@@ -13,8 +13,8 @@ class OpenMap extends StatefulWidget {
 class _OpenMapState extends State<OpenMap> {
   String? _currentAddress;
   Position _currentPosition = Position(
-      longitude: -9.8096,
-      latitude: 120.4546,
+      longitude: -122.08395287867832,
+      latitude: 37.42342342342342,
       timestamp: DateTime.now(),
       accuracy: 2000.0,
       altitude: 0.5,
@@ -64,16 +64,16 @@ class _OpenMapState extends State<OpenMap> {
               )
             ]),
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 34.0),
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 34.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Card(
                 child: TextField(
                   decoration: InputDecoration(
-                    contentPadding: EdgeInsets.all(16.0),
-                    hintText: '${_currentAddress ?? "Tes"}',
-                    prefixIcon: Icon(Icons.location_on_outlined),
+                    contentPadding: const EdgeInsets.all(16.0),
+                    hintText: _currentAddress ?? "Tes",
+                    prefixIcon: const Icon(Icons.location_on_outlined),
                   ),
                 ),
               ),
@@ -85,6 +85,7 @@ class _OpenMapState extends State<OpenMap> {
   }
 
   _getCurrentLocation() async {
+    // ignore: unused_local_variable
     LocationPermission permission;
     permission = await Geolocator.requestPermission();
     Geolocator.getCurrentPosition(

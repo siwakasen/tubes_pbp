@@ -9,7 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ugd2_pbp/view/profile/profileCamera.dart';
 
 class ProfileView extends StatefulWidget {
-  ProfileView({
+  const ProfileView({
     super.key,
   });
 
@@ -18,7 +18,6 @@ class ProfileView extends StatefulWidget {
 }
 
 class _ProfileViewState extends State<ProfileView> {
-  final _formKey = GlobalKey<FormState>();
   DateTime date = DateTime.now();
 
   @override
@@ -90,16 +89,12 @@ class _ProfileViewState extends State<ProfileView> {
                               builder: (_) => profileCameraView()))
                     },
                     child: Container(
-                      child: Padding(
-                        padding: const EdgeInsets.all(2.0),
-                        child: Icon(Icons.add_a_photo, color: Colors.black),
-                      ),
                       decoration: BoxDecoration(
                           border: Border.all(
                             width: 3,
                             color: Colors.white,
                           ),
-                          borderRadius: BorderRadius.all(
+                          borderRadius: const BorderRadius.all(
                             Radius.circular(
                               50,
                             ),
@@ -107,28 +102,32 @@ class _ProfileViewState extends State<ProfileView> {
                           color: Colors.white,
                           boxShadow: [
                             BoxShadow(
-                              offset: Offset(2, 4),
+                              offset: const Offset(2, 4),
                               color: Colors.black.withOpacity(
                                 0.3,
                               ),
                               blurRadius: 3,
                             ),
                           ]),
+                      child: const Padding(
+                        padding: EdgeInsets.all(2.0),
+                        child: Icon(Icons.add_a_photo, color: Colors.black),
+                      ),
                     ),
                   ),
                 ),
               ],
             ),
             const SizedBox(height: 20),
-            itemProfile('Name', user.name, Icon(Icons.face)),
+            itemProfile('Name', user.name, const Icon(Icons.face)),
             const SizedBox(height: 10),
-            itemProfile('Username', user.username, Icon(Icons.person)),
+            itemProfile('Username', user.username, const Icon(Icons.person)),
             const SizedBox(height: 10),
-            itemProfile('Phone', user.phoneNumber, Icon(Icons.phone)),
+            itemProfile('Phone', user.phoneNumber, const Icon(Icons.phone)),
             const SizedBox(height: 10),
-            itemProfile('Address', user.address, Icon(Icons.home)),
+            itemProfile('Address', user.address, const Icon(Icons.home)),
             const SizedBox(height: 10),
-            itemProfile('Email', user.email, Icon(Icons.email)),
+            itemProfile('Email', user.email, const Icon(Icons.email)),
             const SizedBox(
               height: 20,
             ),
@@ -166,7 +165,7 @@ class _ProfileViewState extends State<ProfileView> {
           borderRadius: BorderRadius.circular(10),
           boxShadow: [
             BoxShadow(
-                offset: Offset(0, 1),
+                offset: const Offset(0, 1),
                 color: globals.isDarkMode ? Colors.black54 : Colors.amber[600]!,
                 spreadRadius: 2,
                 blurRadius: 2)
@@ -183,7 +182,7 @@ class _ProfileViewState extends State<ProfileView> {
   getIntValuesSF() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     //Return int
-    int intValue = await prefs.getInt('intValue') ?? 0;
+    int intValue = prefs.getInt('intValue') ?? 0;
     return intValue;
   }
 }

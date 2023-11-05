@@ -42,7 +42,6 @@ class _LoginViewState extends State<LoginView> {
 
   @override
   Widget build(BuildContext context) {
-    Map? dataForm = widget.data;
     return MaterialApp(
       theme: ThemeData(
           useMaterial3: true,

@@ -1,4 +1,5 @@
-import 'dart:ffi';
+// ignore_for_file: avoid_unnecessary_containers, sized_box_for_whitespace, use_build_context_synchronously
+
 import 'dart:io';
 import 'package:ugd2_pbp/database/sql_helperRating.dart';
 import 'package:ugd2_pbp/view/adminView/Utility.dart';
@@ -22,7 +23,7 @@ class InputRating extends StatefulWidget {
 class _InputRatingState extends State<InputRating> {
   TextEditingController rateStarController = TextEditingController();
   TextEditingController textReviewController = TextEditingController();
-  String? ImgString = '';
+  String? imgString = '';
   final _formKey = GlobalKey<FormState>();
   XFile? xFile;
   Future<File?>? imageFile;
@@ -52,11 +53,11 @@ class _InputRatingState extends State<InputRating> {
     if (widget.id != null) {
       rateStarController.text = widget.rateStar!;
       textReviewController.text = widget.textReview!;
-      ImgString = widget.namaFoto!;
+      imgString = widget.namaFoto!;
     } else {
       rateStarController.text = '';
       textReviewController.text = '';
-      ImgString = null;
+      imgString = null;
     }
 
     Widget imageFromGallery() {
@@ -66,7 +67,7 @@ class _InputRatingState extends State<InputRating> {
           if (snapshot.connectionState == ConnectionState.done &&
               null != snapshot.data) {
             final imgBytes = snapshot.data!.readAsBytesSync();
-            ImgString = Utility.base64String(imgBytes);
+            imgString = Utility.base64String(imgBytes);
             // print(snapshot.data?.path);
             Utility.saveImageToPreferences(
                 Utility.base64String(snapshot.data!.readAsBytesSync()));
@@ -81,10 +82,10 @@ class _InputRatingState extends State<InputRating> {
               'Wat',
               textAlign: TextAlign.center,
             );
-          } else if (ImgString != null) {
+          } else if (imgString != null) {
             return Container(
                 child: Image.memory(
-              Base64Decoder().convert(ImgString as String),
+              const Base64Decoder().convert(imgString as String),
               fit: BoxFit.cover,
               width: 300,
               height: 200,
@@ -103,7 +104,7 @@ class _InputRatingState extends State<InputRating> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
-        actions: <Widget>[],
+        actions: const <Widget>[],
       ),
       body: SingleChildScrollView(
         child: Form(
@@ -113,19 +114,19 @@ class _InputRatingState extends State<InputRating> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
-                SizedBox(
+                const SizedBox(
                   height: 20.0,
                 ),
                 imageFromGallery(),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                      backgroundColor: Color.fromARGB(255, 255, 132,
+                      backgroundColor: const Color.fromARGB(255, 255, 132,
                           0), //background color of button //border width and color
                       elevation: 3, //elevation of button
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(5)),
-                      padding: EdgeInsets.only(
+                      padding: const EdgeInsets.only(
                           left: 60, right: 60) //content padding inside button
                       ),
                   child: const Text(
@@ -137,7 +138,7 @@ class _InputRatingState extends State<InputRating> {
                     setState(() {});
                   },
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 DefaultTextStyle.merge(
                   style: const TextStyle(
                     fontSize: 24,
@@ -155,7 +156,7 @@ class _InputRatingState extends State<InputRating> {
                   direction: Axis.horizontal,
                   allowHalfRating: false,
                   itemCount: 5,
-                  itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
+                  itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
                   itemBuilder: (context, _) => const Icon(
                     Icons.star,
                     color: Colors.amber,
@@ -164,7 +165,7 @@ class _InputRatingState extends State<InputRating> {
                     rateStarController.text = rating.toInt().toString();
                   },
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 TextFormField(
                   controller: textReviewController,
                   decoration: const InputDecoration(
@@ -172,7 +173,7 @@ class _InputRatingState extends State<InputRating> {
                     border: OutlineInputBorder(),
                   ),
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                       backgroundColor: const Color.fromARGB(255, 255, 132,
@@ -215,13 +216,13 @@ class _InputRatingState extends State<InputRating> {
                       } else {
                         if (widget.id == null) {
                           await SQLMakanan.addRating(rateStarController.text,
-                              textReviewController.text, ImgString!);
+                              textReviewController.text, imgString!);
                         } else {
                           await SQLMakanan.editRating(
                               widget.id!,
                               rateStarController.text,
                               textReviewController.text,
-                              ImgString!);
+                              imgString!);
                         }
                         Navigator.pop(context);
                       }
