@@ -31,6 +31,8 @@ class _OpenMapState extends State<OpenMap> {
 
   @override
   Widget build(BuildContext context) {
+    print(_currentPosition.latitude);
+    print(_currentPosition.longitude);
     return Stack(
       children: [
         FlutterMap(
@@ -61,7 +63,61 @@ class _OpenMapState extends State<OpenMap> {
                     ),
                   ),
                 ],
-              )
+              ),
+              MarkerLayer(
+                markers: [
+                  Marker(
+                    point: const LatLng(-7.776475408894669, 110.41189568694772),
+                    width: 30.0,
+                    height: 30.0,
+                    child: Container(
+                      child: Container(
+                        child: const Icon(
+                          Icons.location_on,
+                          color: Colors.blueAccent,
+                          size: 40,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              MarkerLayer(
+                markers: [
+                  Marker(
+                    point: const LatLng(-7.779409962354487, 110.41492177284286),
+                    width: 30.0,
+                    height: 30.0,
+                    child: Container(
+                      child: Container(
+                        child: Icon(
+                          Icons.storefront,
+                          color: Colors.red.shade900,
+                          size: 40,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              MarkerLayer(
+                markers: [
+                  Marker(
+                    point: const LatLng(-7.775941357253614, 110.41539230794986),
+                    width: 30.0,
+                    height: 30.0,
+                    child: Container(
+                      child: Container(
+                        child: Icon(
+                          Icons.storefront,
+                          color: Colors.red.shade900,
+                          size: 40,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ]),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 34.0),
