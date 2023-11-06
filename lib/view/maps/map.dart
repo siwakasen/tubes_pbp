@@ -13,8 +13,8 @@ class OpenMap extends StatefulWidget {
 class _OpenMapState extends State<OpenMap> {
   String? _currentAddress;
   Position _currentPosition = Position(
-      longitude: -122.08395287867832,
-      latitude: 37.42342342342342,
+      latitude: -7.779353691217627,
+      longitude: 110.41544086617908,
       timestamp: DateTime.now(),
       accuracy: 2000.0,
       altitude: 0.5,
@@ -39,7 +39,7 @@ class _OpenMapState extends State<OpenMap> {
             options: MapOptions(
                 initialCenter: LatLng(
                     _currentPosition.latitude, _currentPosition.longitude),
-                initialZoom: 13.0),
+                initialZoom: 17.0),
             children: [
               TileLayer(
                 urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -72,9 +72,9 @@ class _OpenMapState extends State<OpenMap> {
                     height: 30.0,
                     child: Container(
                       child: Container(
-                        child: const Icon(
-                          Icons.location_on,
-                          color: Colors.blueAccent,
+                        child: Icon(
+                          Icons.storefront,
+                          color: Colors.red.shade900,
                           size: 40,
                         ),
                       ),
@@ -85,7 +85,7 @@ class _OpenMapState extends State<OpenMap> {
               MarkerLayer(
                 markers: [
                   Marker(
-                    point: const LatLng(-7.779409962354487, 110.41492177284286),
+                    point: const LatLng(-7.781738040773426, 110.41416005489336),
                     width: 30.0,
                     height: 30.0,
                     child: Container(
