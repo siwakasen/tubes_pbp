@@ -12,6 +12,7 @@ class OpenMap extends StatefulWidget {
 
 class _OpenMapState extends State<OpenMap> {
   String? _currentAddress;
+  late MapController _mapController;
   Position _currentPosition = Position(
       latitude: -7.779353691217627,
       longitude: 110.41544086617908,
@@ -25,100 +26,102 @@ class _OpenMapState extends State<OpenMap> {
       speedAccuracy: 0.5);
   @override
   void initState() {
+    _mapController = MapController();
     _getCurrentLocation();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    print(_currentPosition.latitude);
-    print(_currentPosition.longitude);
     return Stack(
       children: [
         FlutterMap(
-            options: MapOptions(
-                initialCenter: LatLng(
-                    _currentPosition.latitude, _currentPosition.longitude),
-                initialZoom: 17.0),
-            children: [
-              TileLayer(
-                urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                userAgentPackageName: 'com.example.ugd2_pbp',
-              ),
-              MarkerLayer(
-                markers: [
-                  Marker(
-                    point: LatLng(
-                        _currentPosition.latitude, _currentPosition.longitude),
-                    width: 30.0,
-                    height: 30.0,
+          options: MapOptions(
+            initialCenter:
+                LatLng(_currentPosition.latitude, _currentPosition.longitude),
+            initialZoom: 17.0,
+          ),
+          mapController: _mapController,
+          children: [
+            TileLayer(
+              urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+              userAgentPackageName: 'com.example.ugd2_pbp',
+            ),
+            MarkerLayer(
+              markers: [
+                Marker(
+                  point: LatLng(
+                      _currentPosition.latitude, _currentPosition.longitude),
+                  width: 30.0,
+                  height: 30.0,
+                  child: Container(
                     child: Container(
-                      child: Container(
-                        child: const Icon(
-                          Icons.location_on,
-                          color: Colors.blueAccent,
-                          size: 40,
-                        ),
+                      child: const Icon(
+                        Icons.location_on,
+                        color: Colors.blueAccent,
+                        size: 40,
                       ),
                     ),
                   ),
-                ],
-              ),
-              MarkerLayer(
-                markers: [
-                  Marker(
-                    point: const LatLng(-7.776475408894669, 110.41189568694772),
-                    width: 30.0,
-                    height: 30.0,
+                ),
+              ],
+            ),
+            MarkerLayer(
+              markers: [
+                Marker(
+                  point: const LatLng(-7.776475408894669, 110.41189568694772),
+                  width: 30.0,
+                  height: 30.0,
+                  child: Container(
                     child: Container(
-                      child: Container(
-                        child: Icon(
-                          Icons.storefront,
-                          color: Colors.red.shade900,
-                          size: 40,
-                        ),
+                      child: Icon(
+                        Icons.storefront,
+                        color: Colors.red.shade900,
+                        size: 40,
                       ),
                     ),
                   ),
-                ],
-              ),
-              MarkerLayer(
-                markers: [
-                  Marker(
-                    point: const LatLng(-7.781738040773426, 110.41416005489336),
-                    width: 30.0,
-                    height: 30.0,
+                ),
+              ],
+            ),
+            MarkerLayer(
+              markers: [
+                Marker(
+                  point: const LatLng(-7.781738040773426, 110.41416005489336),
+                  width: 30.0,
+                  height: 30.0,
+                  child: Container(
                     child: Container(
-                      child: Container(
-                        child: Icon(
-                          Icons.storefront,
-                          color: Colors.red.shade900,
-                          size: 40,
-                        ),
+                      child: Icon(
+                        Icons.storefront,
+                        color: Colors.red.shade900,
+                        size: 40,
                       ),
                     ),
                   ),
-                ],
-              ),
-              MarkerLayer(
-                markers: [
-                  Marker(
-                    point: const LatLng(-7.775941357253614, 110.41539230794986),
-                    width: 30.0,
-                    height: 30.0,
+                ),
+              ],
+            ),
+            MarkerLayer(
+              markers: [
+                Marker(
+                  point: const LatLng(-7.775941357253614, 110.41539230794986),
+                  width: 30.0,
+                  height: 30.0,
+                  child: Container(
                     child: Container(
-                      child: Container(
-                        child: Icon(
-                          Icons.storefront,
-                          color: Colors.red.shade900,
-                          size: 40,
-                        ),
+                      child: Icon(
+                        Icons.storefront,
+                        color: Colors.red.shade900,
+                        size: 40,
                       ),
                     ),
                   ),
-                ],
-              ),
-            ]),
+                ),
+              ],
+            ),
+          ],
+        ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 34.0),
           child: Column(
@@ -132,6 +135,23 @@ class _OpenMapState extends State<OpenMap> {
                     prefixIcon: const Icon(Icons.location_on_outlined),
                   ),
                 ),
+              ),
+            ],
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 100),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              FloatingActionButton(
+                child: Icon(Icons.navigation),
+                onPressed: () {
+                  _mapController.move(
+                      LatLng(_currentPosition.latitude,
+                          _currentPosition.longitude),
+                      17.0);
+                },
               ),
             ],
           ),
