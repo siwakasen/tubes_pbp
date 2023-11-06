@@ -58,27 +58,28 @@ class _LoginViewState extends State<LoginView> {
             backgroundColor: Colors.black,
             foregroundColor: Colors.white,
             child: globals.isDarkMode
-                ? Icon(Icons
+                ? const Icon(Icons
                     .wb_sunny_outlined) // Mode gelap, tampilkan ikon matahari
-                : Icon(Icons.nightlight_round)),
+                : const Icon(Icons.nightlight_round)),
         body: SafeArea(
           child: Center(
             child: Container(
-              padding: EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(16.0),
               decoration: BoxDecoration(
                 // color: Color.fromARGB(255, 255, 187, 0),
                 borderRadius: BorderRadius.circular(12.0),
               ),
-              constraints: BoxConstraints(maxWidth: 300.0, maxHeight: 400.0),
+              constraints:
+                  const BoxConstraints(maxWidth: 300.0, maxHeight: 400.0),
               child: Form(
                 key: _formKey,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text('LOGIN'),
+                    const Text('LOGIN'),
                     TextFormField(
                       controller: usernameController,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         labelText: 'Username',
                       ),
                       validator: (p0) {
@@ -122,7 +123,6 @@ class _LoginViewState extends State<LoginView> {
                       children: [
                         ElevatedButton(
                           onPressed: () async {
-                            print(users);
                             if (_formKey.currentState!.validate()) {
                               if (cekUser(usernameController.text,
                                   passwordController.text)) {
@@ -137,14 +137,15 @@ class _LoginViewState extends State<LoginView> {
                                               onPressed: () {
                                                 globals.setRefresh = 1;
                                                 addIntToSF(userId);
-                                                print(userId);
+
                                                 Navigator.pop(context);
                                                 Navigator.push(
                                                   context,
                                                   MaterialPageRoute(
-                                                      builder: (_) => HomeViewStf(
-                                                          initialSelectedIndex:
-                                                              0)),
+                                                      builder: (_) =>
+                                                          const HomeViewStf(
+                                                              initialSelectedIndex:
+                                                                  0)),
                                                 );
                                               },
                                               child: const Text('OK'),
@@ -171,9 +172,6 @@ class _LoginViewState extends State<LoginView> {
                         ),
                         TextButton(
                           onPressed: () {
-                            Map<String, dynamic> FormData = {};
-                            FormData['username'] = usernameController.text;
-                            FormData['password'] = passwordController.text;
                             pushRegister(context);
                           },
                           child: Text(

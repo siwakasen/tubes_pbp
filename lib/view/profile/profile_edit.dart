@@ -8,7 +8,7 @@ import 'package:ugd2_pbp/model/user.dart';
 import 'package:ugd2_pbp/view/userView/homeBottom.dart';
 
 class ProfileEdit extends StatefulWidget {
-  ProfileEdit({
+  const ProfileEdit({
     super.key,
   });
 
@@ -89,7 +89,7 @@ class _ProfileEditState extends State<ProfileEdit> {
                       style:
                           TextStyle(fontSize: 30, fontWeight: FontWeight.w500),
                     ),
-                    contentPadding: const EdgeInsets.only(top: 50),
+                    contentPadding: EdgeInsets.only(top: 50),
                   ),
                   TextFormField(
                       controller: nameController,
@@ -294,7 +294,7 @@ class _ProfileEditState extends State<ProfileEdit> {
                             context,
                             MaterialPageRoute(
                                 builder: (_) =>
-                                    HomeViewStf(initialSelectedIndex: 3)),
+                                    const HomeViewStf(initialSelectedIndex: 3)),
                           );
                         }
                       }

@@ -43,15 +43,15 @@ class _ListFoodViewState extends State<ListFoodView> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("TAMBAH MAKANAN"),
+          title: const Text("TAMBAH MAKANAN"),
           actions: [
             IconButton(
-              icon: Icon(Icons.add),
+              icon: const Icon(Icons.add),
               onPressed: () async {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => InputMakanan(
+                    builder: (context) => const InputMakanan(
                       id: null,
                       namaMakanan: null,
                       hargaMakanan: null,
@@ -73,7 +73,7 @@ class _ListFoodViewState extends State<ListFoodView> {
                 },
                 decoration: InputDecoration(
                   labelText: 'Search',
-                  prefixIcon: Icon(Icons.search),
+                  prefixIcon: const Icon(Icons.search),
                   suffixIcon: IconButton(
                     icon: Icon(_isListening ? Icons.mic : Icons.mic_off),
                     onPressed: () {
@@ -97,17 +97,7 @@ class _ListFoodViewState extends State<ListFoodView> {
                       .toLowerCase()
                       .contains(searchController.text.toLowerCase())) {
                 return Slidable(
-                  child: ListTile(
-                    title: Text(makanan[index]['namaMakanan']),
-                    subtitle: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(makanan[index]['hargaMakanan']),
-                      ],
-                    ),
-                  ),
-                  actionPane: SlidableDrawerActionPane(),
+                  actionPane: const SlidableDrawerActionPane(),
                   secondaryActions: [
                     IconSlideAction(
                       caption: 'Update',
@@ -136,6 +126,16 @@ class _ListFoodViewState extends State<ListFoodView> {
                       },
                     )
                   ],
+                  child: ListTile(
+                    title: Text(makanan[index]['namaMakanan']),
+                    subtitle: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(makanan[index]['hargaMakanan']),
+                      ],
+                    ),
+                  ),
                 );
               } else {
                 return Container();

@@ -1,3 +1,6 @@
+// ignore_for_file: file_names
+// ignore_for_file: camel_case_types, prefer_const_constructors_in_immutables
+
 import 'package:flutter/material.dart';
 import 'package:ugd2_pbp/view/maps/map.dart';
 import 'package:ugd2_pbp/view/userView/homeUpper.dart';
@@ -8,7 +11,7 @@ import 'package:ugd2_pbp/view/profile/profile_view.dart';
 class HomeViewStf extends StatefulWidget {
   final int initialSelectedIndex;
 
-  HomeViewStf({super.key, this.initialSelectedIndex = 0});
+  const HomeViewStf({super.key, this.initialSelectedIndex = 0});
 
   @override
   State<HomeViewStf> createState() => _HomeViewStfState();
@@ -18,10 +21,10 @@ int selectedIndex = 0;
 
 class _HomeViewStfState extends State<HomeViewStf> {
   static List<Widget> widgetOptions = <Widget>[
-    Home1View(),
-    RatingView(),
-    OpenMap(),
-    ProfileView(),
+    const Home1View(),
+    const RatingView(),
+    const OpenMap(),
+    const ProfileView(),
   ];
 
   void setSelectedIndex(int index) {
