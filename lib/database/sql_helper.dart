@@ -89,11 +89,4 @@ class SQLHelper {
 
     return await db.delete('user', where: "id = $id");
   }
-
-  static Future<String> selectuser(String username) async {
-    final db = await SQLHelper.db();
-    return await db
-        .rawQuery("SELECT * FROM user WHERE username = $username")
-        .toString();
-  }
 }

@@ -42,7 +42,6 @@ class _LoginViewState extends State<LoginView> {
 
   @override
   Widget build(BuildContext context) {
-    Map? dataForm = widget.data;
     return MaterialApp(
       theme: ThemeData(
           useMaterial3: true,
@@ -136,14 +135,16 @@ class _LoginViewState extends State<LoginView> {
                                           actions: <Widget>[
                                             TextButton(
                                               onPressed: () {
+                                                globals.setRefresh = 1;
                                                 addIntToSF(userId);
                                                 print(userId);
                                                 Navigator.pop(context);
                                                 Navigator.push(
                                                   context,
                                                   MaterialPageRoute(
-                                                      builder: (_) =>
-                                                          HomeView()),
+                                                      builder: (_) => HomeViewStf(
+                                                          initialSelectedIndex:
+                                                              0)),
                                                 );
                                               },
                                               child: const Text('OK'),

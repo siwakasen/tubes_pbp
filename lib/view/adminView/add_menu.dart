@@ -48,17 +48,6 @@ class _InputMakananState extends State<InputMakanan> {
     }
   }
 
-  // loadImageFromPreferences() {
-  //   Utility.getImageFromPreferences().then((img) {
-  //     if (null == img) {
-  //       return;
-  //     }
-  //     setState(() {
-  //       imageFromPreferences = Utility.imageFromBase64String(img);
-  //     });
-  //   });
-  // }
-
   Widget imageFromGallery() {
     return FutureBuilder<File?>(
       future: imageFile,
@@ -160,7 +149,7 @@ class _InputMakananState extends State<InputMakanan> {
                     validator: (value) {
                       if (value!.isEmpty) {
                         return 'Food\'s name can\'t be empty';
-                      } else if (value!.length > 12) {
+                      } else if (value.length > 12) {
                         return 'Food\'s name can\'t have more than 12 words';
                       } else {
                         return null;

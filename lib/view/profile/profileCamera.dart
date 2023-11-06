@@ -1,3 +1,5 @@
+// ignore_for_file: camel_case_types, prefer_const_constructors_in_immutables
+
 import 'dart:io';
 
 import 'package:shared_preferences/shared_preferences.dart';
@@ -5,13 +7,10 @@ import 'package:ugd2_pbp/database/sql_helper.dart';
 import 'package:ugd2_pbp/model/user.dart';
 
 import 'package:ugd2_pbp/view/adminView/Utility.dart';
-import 'package:ugd2_pbp/view/profile/profile_view.dart';
 import 'package:ugd2_pbp/view/userView/homeBottom.dart';
-import 'package:ugd2_pbp/view/userView/homeUpper.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:ugd2_pbp/component/darkModeState.dart' as globals;
 import 'dart:convert';
-import 'package:ugd2_pbp/database/sql_helperMakanan.dart';
 import 'package:image_picker/image_picker.dart';
 
 class profileCameraView extends StatefulWidget {
@@ -26,7 +25,7 @@ class profileCameraView extends StatefulWidget {
 }
 
 class _profileCameraViewState extends State<profileCameraView> {
-  String? ImgString = '';
+  String? imgString = '';
   final _formKey = GlobalKey<FormState>();
   XFile? xFile;
   Future<File?>? imageFile;
@@ -80,7 +79,7 @@ class _profileCameraViewState extends State<profileCameraView> {
         if (snapshot.connectionState == ConnectionState.done &&
             null != snapshot.data) {
           final imgBytes = snapshot.data!.readAsBytesSync();
-          ImgString = Utility.base64String(imgBytes);
+          imgString = Utility.base64String(imgBytes);
 
           Utility.saveImageToPreferences(
               Utility.base64String(snapshot.data!.readAsBytesSync()));
@@ -95,14 +94,14 @@ class _profileCameraViewState extends State<profileCameraView> {
             'Wat',
             textAlign: TextAlign.center,
           );
-        } else if (ImgString != "") {
+        } else if (imgString != "") {
           return CircleAvatar(
               radius: 70,
               backgroundImage: MemoryImage(
-                Base64Decoder().convert(ImgString as String),
+                const Base64Decoder().convert(imgString as String),
               ));
         } else {
-          return CircleAvatar(
+          return const CircleAvatar(
             radius: 70,
             backgroundImage: AssetImage("images/riksi.jpeg"),
           );
@@ -113,7 +112,7 @@ class _profileCameraViewState extends State<profileCameraView> {
 
   @override
   Widget build(BuildContext context) {
-    ImgString = user.photo;
+    imgString = user.photo;
 
     return Scaffold(
       appBar: AppBar(
@@ -128,19 +127,19 @@ class _profileCameraViewState extends State<profileCameraView> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                SizedBox(
+                const SizedBox(
                   height: 20.0,
                 ),
                 imageFromGallery(),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                      backgroundColor: Color.fromARGB(255, 255, 132,
+                      backgroundColor: const Color.fromARGB(255, 255, 132,
                           0), //background color of button //border width and color
                       elevation: 3, //elevation of button
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(5)),
-                      padding: EdgeInsets.only(
+                      padding: const EdgeInsets.only(
                           left: 60, right: 60) //content padding inside button
                       ),
                   child: const Text(
@@ -152,7 +151,7 @@ class _profileCameraViewState extends State<profileCameraView> {
                     setState(() {});
                   },
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                       backgroundColor: const Color.fromARGB(255, 255, 132,
@@ -163,11 +162,14 @@ class _profileCameraViewState extends State<profileCameraView> {
                       padding: const EdgeInsets.only(
                           left: 60, right: 60) //content padding inside button
                       ),
-                  onPressed: () async {
-                    if (_formKey.currentState!.validate()) {
-                      await SQLHelper.editphoto(userId, ImgString!);
-                      Navigator.pop(context);
-                    }
+                  onPressed: () {
+                    globals.setRefresh = 1;
+                    SQLHelper.editphoto(userId, imgString!);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) => HomeViewStf(initialSelectedIndex: 3)),
+                    );
                   },
                   child: const Text(
                     'Konfirmasi',
@@ -185,7 +187,7 @@ class _profileCameraViewState extends State<profileCameraView> {
   getIntValuesSF() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     //Return int
-    int intValue = await prefs.getInt('intValue') ?? 0;
+    int intValue = prefs.getInt('intValue') ?? 0;
     return intValue;
   }
 }
