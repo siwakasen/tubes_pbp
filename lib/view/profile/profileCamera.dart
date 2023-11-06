@@ -139,9 +139,7 @@ class _profileCameraViewState extends State<profileCameraView> {
                       elevation: 3, //elevation of button
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(5)),
-                      padding: const EdgeInsets.only(
-                          left: 60, right: 60) //content padding inside button
-                      ),
+                      padding: const EdgeInsets.symmetric(horizontal: 20)),
                   child: const Text(
                     'Ubah Gambar',
                     style: TextStyle(color: Colors.white),
@@ -159,9 +157,7 @@ class _profileCameraViewState extends State<profileCameraView> {
                       elevation: 3, //elevation of button
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(5)),
-                      padding: const EdgeInsets.only(
-                          left: 60, right: 60) //content padding inside button
-                      ),
+                      padding: const EdgeInsets.symmetric(horizontal: 20)),
                   onPressed: () {
                     globals.setRefresh = 1;
                     SQLHelper.editphoto(userId, imgString!);

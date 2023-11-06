@@ -92,10 +92,10 @@ class _ListFoodViewState extends State<ListFoodView> {
             itemBuilder: (context, index) {
               if (makanan[index]['namaMakanan']
                       .toLowerCase()
-                      .contains(searchText.toLowerCase()) ||
+                      .contains(searchController.text.toLowerCase()) ||
                   makanan[index]['hargaMakanan']
                       .toLowerCase()
-                      .contains(searchText.toLowerCase())) {
+                      .contains(searchController.text.toLowerCase())) {
                 return Slidable(
                   child: ListTile(
                     title: Text(makanan[index]['namaMakanan']),

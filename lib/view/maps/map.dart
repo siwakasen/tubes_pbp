@@ -75,7 +75,7 @@ class _OpenMapState extends State<OpenMap> {
                   child: Container(
                     child: Container(
                       child: Icon(
-                        Icons.storefront,
+                        Icons.storefront_rounded,
                         color: Colors.red.shade900,
                         size: 40,
                       ),
@@ -93,7 +93,7 @@ class _OpenMapState extends State<OpenMap> {
                   child: Container(
                     child: Container(
                       child: Icon(
-                        Icons.storefront,
+                        Icons.storefront_rounded,
                         color: Colors.red.shade900,
                         size: 40,
                       ),
@@ -111,7 +111,7 @@ class _OpenMapState extends State<OpenMap> {
                   child: Container(
                     child: Container(
                       child: Icon(
-                        Icons.storefront,
+                        Icons.storefront_rounded,
                         color: Colors.red.shade900,
                         size: 40,
                       ),
