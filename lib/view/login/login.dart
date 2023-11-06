@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:ugd2_pbp/database/sql_helper.dart';
 import 'package:ugd2_pbp/view/login/register.dart';
-import 'package:ugd2_pbp/view/userView/home_bottom.dart';
-import 'package:ugd2_pbp/component/dark_mode_state.dart' as globals;
+import 'package:ugd2_pbp/view/userView/homeBottom.dart';
+import 'package:ugd2_pbp/component/darkModeState.dart' as globals;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginView extends StatefulWidget {
@@ -58,28 +58,27 @@ class _LoginViewState extends State<LoginView> {
             backgroundColor: Colors.black,
             foregroundColor: Colors.white,
             child: globals.isDarkMode
-                ? const Icon(Icons
+                ? Icon(Icons
                     .wb_sunny_outlined) // Mode gelap, tampilkan ikon matahari
-                : const Icon(Icons.nightlight_round)),
+                : Icon(Icons.nightlight_round)),
         body: SafeArea(
           child: Center(
             child: Container(
-              padding: const EdgeInsets.all(16.0),
+              padding: EdgeInsets.all(16.0),
               decoration: BoxDecoration(
                 // color: Color.fromARGB(255, 255, 187, 0),
                 borderRadius: BorderRadius.circular(12.0),
               ),
-              constraints:
-                  const BoxConstraints(maxWidth: 300.0, maxHeight: 400.0),
+              constraints: BoxConstraints(maxWidth: 300.0, maxHeight: 400.0),
               child: Form(
                 key: _formKey,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text('LOGIN'),
+                    Text('LOGIN'),
                     TextFormField(
                       controller: usernameController,
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         labelText: 'Username',
                       ),
                       validator: (p0) {
@@ -123,6 +122,7 @@ class _LoginViewState extends State<LoginView> {
                       children: [
                         ElevatedButton(
                           onPressed: () async {
+                            print(users);
                             if (_formKey.currentState!.validate()) {
                               if (cekUser(usernameController.text,
                                   passwordController.text)) {
@@ -135,14 +135,16 @@ class _LoginViewState extends State<LoginView> {
                                           actions: <Widget>[
                                             TextButton(
                                               onPressed: () {
+                                                globals.setRefresh = 1;
                                                 addIntToSF(userId);
-
+                                                print(userId);
                                                 Navigator.pop(context);
                                                 Navigator.push(
                                                   context,
                                                   MaterialPageRoute(
-                                                      builder: (_) =>
-                                                          const HomeView()),
+                                                      builder: (_) => HomeViewStf(
+                                                          initialSelectedIndex:
+                                                              0)),
                                                 );
                                               },
                                               child: const Text('OK'),
@@ -169,9 +171,9 @@ class _LoginViewState extends State<LoginView> {
                         ),
                         TextButton(
                           onPressed: () {
-                            Map<String, dynamic> formData = {};
-                            formData['username'] = usernameController.text;
-                            formData['password'] = passwordController.text;
+                            Map<String, dynamic> FormData = {};
+                            FormData['username'] = usernameController.text;
+                            FormData['password'] = passwordController.text;
                             pushRegister(context);
                           },
                           child: Text(

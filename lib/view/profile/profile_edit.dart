@@ -3,11 +3,12 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ugd2_pbp/database/sql_helper.dart';
-import 'package:ugd2_pbp/component/dark_mode_state.dart' as globals;
+import 'package:ugd2_pbp/component/darkModeState.dart' as globals;
 import 'package:ugd2_pbp/model/user.dart';
+import 'package:ugd2_pbp/view/userView/homeBottom.dart';
 
 class ProfileEdit extends StatefulWidget {
-  const ProfileEdit({
+  ProfileEdit({
     super.key,
   });
 
@@ -68,6 +69,7 @@ class _ProfileEditState extends State<ProfileEdit> {
 
   @override
   Widget build(BuildContext context) {
+    globals.setRefresh = 1;
     return MaterialApp(
       theme: ThemeData(
           useMaterial3: true,
@@ -87,7 +89,7 @@ class _ProfileEditState extends State<ProfileEdit> {
                       style:
                           TextStyle(fontSize: 30, fontWeight: FontWeight.w500),
                     ),
-                    contentPadding: EdgeInsets.only(top: 50),
+                    contentPadding: const EdgeInsets.only(top: 50),
                   ),
                   TextFormField(
                       controller: nameController,
@@ -142,7 +144,7 @@ class _ProfileEditState extends State<ProfileEdit> {
                       validator: (value) {
                         if (value == '') {
                           return 'Password can\'t be empty';
-                        } else if (value!.length <= 8) {
+                        } else if (value!.length < 5) {
                           return 'Password length must be greater than 8';
                         } else {
                           return null;
@@ -244,17 +246,11 @@ class _ProfileEditState extends State<ProfileEdit> {
                       if (_formKey.currentState!.validate()) {
                         Map<String, dynamic> formData = {};
                         formData['username'] = usernameController.text;
-
                         formData['email'] = emailController.text;
-
                         formData['password'] = passwordController.text;
-
                         formData['name'] = nameController.text;
-
                         formData['address'] = addressController.text;
-
                         formData['phoneNumber'] = phoneController.text;
-
                         formData['borndate'] = bornController.text;
 
                         if (isSameUsername(usernameController.text, userLog)) {
@@ -294,7 +290,12 @@ class _ProfileEditState extends State<ProfileEdit> {
                               addressController.text,
                               phoneController.text,
                               bornController.text);
-                          Navigator.pop(context);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (_) =>
+                                    HomeViewStf(initialSelectedIndex: 3)),
+                          );
                         }
                       }
                     },

@@ -1,8 +1,8 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:ugd2_pbp/component/dark_mode_state.dart' as globals;
-import 'package:ugd2_pbp/database/sql_helper_makanan.dart';
+import 'package:ugd2_pbp/component/darkModeState.dart' as globals;
+import 'package:ugd2_pbp/database/sql_helperMakanan.dart';
 
 class DashboardView extends StatefulWidget {
   const DashboardView({super.key});
@@ -24,6 +24,7 @@ class _DashboardViewState extends State<DashboardView> {
     });
   }
 
+  TextEditingController searchController = TextEditingController();
   @override
   void initState() {
     refresh();
@@ -51,10 +52,8 @@ class _DashboardViewState extends State<DashboardView> {
                   height: !isExpanded
                       ? ((MediaQuery.of(context).size.height + 100) / 8.2)
                       : (MediaQuery.of(context).size.height / 5.5),
-                  child:
-                      // Image.asset("images/" + gambar[index]),
-                      Image.memory(const Base64Decoder()
-                          .convert(makanan[index]["namaFoto"] as String))),
+                  child: Image.memory(const Base64Decoder()
+                      .convert(makanan[index]["namaFoto"] as String))),
               Flexible(
                 flex: 1,
                 child: Text(makanan[index]["namaMakanan"],

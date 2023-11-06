@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:ugd2_pbp/view/login/login.dart';
-import 'package:ugd2_pbp/component/dark_mode_state.dart' as globals;
+import 'package:ugd2_pbp/component/darkModeState.dart' as globals;
 import 'package:intl/intl.dart';
 import 'package:ugd2_pbp/database/sql_helper.dart';
 import 'package:checkbox_formfield/checkbox_formfield.dart';
@@ -129,7 +129,7 @@ class _RegisterViewState extends State<RegisterView> {
                         validator: (value) {
                           if (value == '') {
                             return 'Password can\'t be empty';
-                          } else if (value!.length <= 8) {
+                          } else if (value!.length < 8) {
                             return 'Password length must be greater than 8';
                           } else {
                             return null;
@@ -202,7 +202,6 @@ class _RegisterViewState extends State<RegisterView> {
                           if (pickDate != null) {
                             String formatDate =
                                 DateFormat('dd-MM-yyyy').format(pickDate);
-
                             bornController.text = formatDate;
                           }
                         },
@@ -243,19 +242,13 @@ class _RegisterViewState extends State<RegisterView> {
                         if (_formKey.currentState!.validate()) {
                           Map<String, dynamic> formData = {};
                           formData['username'] = usernameController.text;
-
                           formData['email'] = emailController.text;
-
                           formData['password'] = passwordController.text;
-
                           formData['name'] = nameController.text;
-
                           formData['address'] = addressController.text;
-
                           formData['phoneNumber'] = phoneController.text;
-
                           formData['borndate'] = bornController.text;
-
+                          String photo = "";
                           showDialog(
                               context: context,
                               builder: (_) => AlertDialog(
@@ -312,7 +305,8 @@ class _RegisterViewState extends State<RegisterView> {
                                                 nameController.text,
                                                 addressController.text,
                                                 phoneController.text,
-                                                bornController.text);
+                                                bornController.text,
+                                                photo);
                                             Navigator.push(
                                                 context,
                                                 MaterialPageRoute(

@@ -11,7 +11,8 @@ class SQLHelper {
       name TEXT,
       address TEXT,
       phoneNumber TEXT,
-      bornDate TEXT
+      bornDate TEXT,
+      photo TEXT
     )
   """);
   }
@@ -24,14 +25,14 @@ class SQLHelper {
   }
 
   static Future<int> adduser(
-    String username,
-    String email,
-    String password,
-    String name,
-    String address,
-    String phoneNumber,
-    String bornDate,
-  ) async {
+      String username,
+      String email,
+      String password,
+      String name,
+      String address,
+      String phoneNumber,
+      String bornDate,
+      String photo) async {
     final db = await SQLHelper.db();
     final data = {
       'name': name,
@@ -41,6 +42,7 @@ class SQLHelper {
       'address': address,
       'borndate': bornDate,
       'phoneNumber': phoneNumber,
+      'photo': photo
     };
     return await db.insert('user', data);
   }
@@ -59,6 +61,7 @@ class SQLHelper {
     String address,
     String phoneNumber,
     String bornDate,
+    // String photo
   ) async {
     final db = await SQLHelper.db();
     final data = {
@@ -74,16 +77,16 @@ class SQLHelper {
     return await db.update('user', data, where: "id = $id");
   }
 
+  static Future<int> editphoto(int id, String photo) async {
+    final db = await SQLHelper.db();
+    final data = {'photo': photo};
+
+    return await db.update('user', data, where: "id = $id");
+  }
+
   static Future<int> deleteuser(int id) async {
     final db = await SQLHelper.db();
 
     return await db.delete('user', where: "id = $id");
-  }
-
-  static Future<String> selectuser(String username) async {
-    final db = await SQLHelper.db();
-    return db
-        .rawQuery("SELECT * FROM user WHERE username = $username")
-        .toString();
   }
 }

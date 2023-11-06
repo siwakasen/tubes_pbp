@@ -1,9 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:ugd2_pbp/database/sql_helper.dart';
-import 'package:ugd2_pbp/component/dark_mode_state.dart' as globals;
+import 'package:ugd2_pbp/component/darkModeState.dart' as globals;
 import 'package:ugd2_pbp/model/user.dart';
 import 'package:ugd2_pbp/view/profile/profile_edit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:ugd2_pbp/view/profile/profileCamera.dart';
 
 class ProfileView extends StatefulWidget {
   const ProfileView({
@@ -27,6 +30,7 @@ class _ProfileViewState extends State<ProfileView> {
 
   User user = User();
   late int userId;
+
   void refresh() async {
     final data = await SQLHelper.getuser();
     userId = await getIntValuesSF();
@@ -41,6 +45,7 @@ class _ProfileViewState extends State<ProfileView> {
           user.address = tempUser['address'];
           user.phoneNumber = tempUser['phoneNumber'];
           user.bornDate = tempUser['bornDate'];
+          user.photo = tempUser['photo'];
         }
       }
     });
@@ -48,16 +53,70 @@ class _ProfileViewState extends State<ProfileView> {
 
   @override
   Widget build(BuildContext context) {
-    refresh();
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: Column(
           children: [
             const SizedBox(height: 40),
-            const CircleAvatar(
-              radius: 70,
-              backgroundImage: AssetImage('images/riksi.jpeg'),
+            Stack(
+              children: [
+                if (user.photo == "") ...[
+                  const CircleAvatar(
+                      radius: 70,
+                      backgroundImage: AssetImage("images/riksi.jpeg")),
+                ] else ...[
+                  CircleAvatar(
+                      radius: 70,
+                      backgroundImage: MemoryImage(
+                          const Base64Decoder().convert(user.photo))),
+                ],
+                // CircleAvatar(
+                //     radius: 70,
+                //     backgroundImage:
+                //         MemoryImage(const Base64Decoder().convert(user.photo))),
+                // // CircleAvatar(
+                // //     radius: 70,
+                // //     backgroundImage: AssetImage("images/riksi.jpeg")),
+                Positioned(
+                  bottom: 1,
+                  right: 1,
+                  child: InkWell(
+                    onTap: () => {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (_) => profileCameraView()))
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                          border: Border.all(
+                            width: 3,
+                            color: Colors.white,
+                          ),
+                          borderRadius: const BorderRadius.all(
+                            Radius.circular(
+                              50,
+                            ),
+                          ),
+                          color: Colors.white,
+                          boxShadow: [
+                            BoxShadow(
+                              offset: const Offset(2, 4),
+                              color: Colors.black.withOpacity(
+                                0.3,
+                              ),
+                              blurRadius: 3,
+                            ),
+                          ]),
+                      child: const Padding(
+                        padding: EdgeInsets.all(2.0),
+                        child: Icon(Icons.add_a_photo, color: Colors.black),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: 20),
             itemProfile('Name', user.name, const Icon(Icons.face)),
@@ -93,7 +152,7 @@ class _ProfileViewState extends State<ProfileView> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => const ProfileEdit(),
+        builder: (_) => ProfileEdit(),
       ),
     );
   }

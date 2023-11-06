@@ -4,7 +4,7 @@ publish_to: 'none'
 version: 0.1.0
 
 environment:
-  sdk: '>=3.1.0 <4.0.0'
+  sdk: '>=3.0.0 <4.0.0'
 
 dependencies:
   flutter:
@@ -16,10 +16,28 @@ dependencies:
   form_builder_validators: ^9.1.0
   checkbox_formfield: ^0.2.0
   image_picker: ^1.0.4
+  async: ^2.11.0
+  path_provider: ^2.1.1
   flutter_slidable: ^0.6.0
+  flutter_rating_bar: ^4.0.1
+  geolocator: ^10.1.0
+  meta: ^1.9.1
+  flutter_map: ^6.0.1
+  geocoding: ^2.1.1
+  tuple: ^2.0.2
+  latlong2: ^0.9.0
+  positioned_tap_detector_2: ^1.0.4
+  transparent_image: ^2.0.1
+  flutter_image: ^4.1.9
+  vector_math: ^2.1.4
+  proj4dart: ^2.1.0
+  collection: ^1.17.2
+  speech_to_text: ^6.4.0
+  permission_handler: ^11.0.1
+  shimmer: ^3.0.0
 
 dev_dependencies:
-  flutter_test:
+  flutter_test: 
     sdk: flutter
   flutter_lints: ^2.0.0
 
