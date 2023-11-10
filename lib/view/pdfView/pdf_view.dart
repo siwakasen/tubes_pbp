@@ -116,13 +116,25 @@ Future<void> createPdf(BuildContext context, List<Map<String, dynamic>> makanan,
                         child: pw.Image(
                             pw.MemoryImage(Base64Decoder()
                                 .convert(makanan[index]["namaFoto"] as String)),
-                            width: 100,
-                            height: 100),
+                            width: 190,
+                            height: 190),
                       ),
                       pw.Center(
-                        child: pw.Text(makanan[index]["namaMakanan"]),
+                        child: pw.Text(
+                          makanan[index]["namaMakanan"],
+                          style: const pw.TextStyle(
+                            fontSize: 18,
+                          ),
+                        ),
                       ),
-                      pw.Center(child: pw.Text(tapCounts[index].toString())),
+                      pw.Center(
+                          child: pw.Text(
+                            tapCounts[index].toString(),
+                            style: const pw.TextStyle(
+                              fontSize: 18,
+                            ),
+                          ),
+                          widthFactor: 3),
                       pw.SizedBox(height: 80),
                     ])
                   : pw.TableRow(children: []);
@@ -146,8 +158,9 @@ Future<void> createPdf(BuildContext context, List<Map<String, dynamic>> makanan,
     },
     build: (pw.Context context) {
       return [
+        pw.SizedBox(height: 20),
         pw.Center(
-          child: pw.Image(imageInvoice, height: 150, width: 150),
+          child: pw.Image(imageInvoice, height: 140, width: 140),
         ),
         pw.SizedBox(height: 20),
         pw.Center(
