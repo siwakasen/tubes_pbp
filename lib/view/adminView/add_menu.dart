@@ -38,7 +38,7 @@ class _InputMakananState extends State<InputMakanan> {
 
   pickImageFromGallery(ImageSource source) async {
     xFile = await ImagePicker()
-        .pickImage(source: ImageSource.camera, imageQuality: 25);
+        .pickImage(source: ImageSource.gallery, imageQuality: 25);
 
     if (xFile != null) {
       final image = File(xFile!.path);

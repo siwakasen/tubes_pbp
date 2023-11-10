@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ugd2_pbp/view/maps/map.dart';
+import 'package:ugd2_pbp/view/delivery/beli_makan.dart';
 import 'package:ugd2_pbp/view/userView/homeUpper.dart';
 import 'package:ugd2_pbp/view/ratings/list_rating.dart';
 import 'package:ugd2_pbp/component/darkModeState.dart' as globals;
@@ -19,8 +20,8 @@ int selectedIndex = 0;
 class _HomeViewStfState extends State<HomeViewStf> {
   static List<Widget> widgetOptions = <Widget>[
     Home1View(),
-    RatingView(),
     OpenMap(),
+    BeliMakanView(), //tinggal ganti
     ProfileView(),
   ];
 
@@ -52,12 +53,12 @@ class _HomeViewStfState extends State<HomeViewStf> {
                   ),
                   label: 'Home'),
               BottomNavigationBarItem(
-                icon: Icon(Icons.star),
-                label: 'Review',
+                icon: Icon(Icons.map),
+                label: 'Restaurant',
               ),
               BottomNavigationBarItem(
-                icon: Icon(Icons.map),
-                label: 'Map',
+                icon: Icon(Icons.delivery_dining),
+                label: 'Delivery',
               ),
               BottomNavigationBarItem(
                   icon: Icon(
