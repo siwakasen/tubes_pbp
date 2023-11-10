@@ -107,19 +107,26 @@ Future<void> createPdf(BuildContext context, List<Map<String, dynamic>> makanan,
     return pw.Padding(
         padding: pw.EdgeInsets.symmetric(horizontal: 45),
         child: pw.Table(
+            defaultVerticalAlignment: pw.TableCellVerticalAlignment.middle,
+            border: pw.TableBorder.all(),
             children: List.generate(makanan.length, (index) {
-          return tapCounts[index] != 0
-              ? pw.TableRow(children: [
-                  pw.Image(
-                      pw.MemoryImage(Base64Decoder()
-                          .convert(makanan[index]["namaFoto"] as String)),
-                      width: 100,
-                      height: 100),
-                  pw.Text(makanan[index]["namaMakanan"]),
-                  pw.Text(tapCounts[index].toString()),
-                ])
-              : pw.TableRow(children: []);
-        })));
+              return tapCounts[index] != 0
+                  ? pw.TableRow(children: [
+                      pw.Center(
+                        child: pw.Image(
+                            pw.MemoryImage(Base64Decoder()
+                                .convert(makanan[index]["namaFoto"] as String)),
+                            width: 100,
+                            height: 100),
+                      ),
+                      pw.Center(
+                        child: pw.Text(makanan[index]["namaMakanan"]),
+                      ),
+                      pw.Center(child: pw.Text(tapCounts[index].toString())),
+                      pw.SizedBox(height: 80),
+                    ])
+                  : pw.TableRow(children: []);
+            })));
   }
 
   final pdfTheme = pw.PageTheme(

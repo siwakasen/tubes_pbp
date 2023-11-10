@@ -17,6 +17,7 @@ class BeliMakanView extends StatefulWidget {
 class _BeliMakanViewState extends State<BeliMakanView> {
   List<Map<String, dynamic>> makanan = [];
   String id = const Uuid().v1();
+  bool isPesan = false;
   void refresh() async {
     final data = await SQLMakanan.getmakanan();
     setState(() {
@@ -97,7 +98,30 @@ class _BeliMakanViewState extends State<BeliMakanView> {
             width: 200,
             child: ElevatedButton(
               onPressed: () {
-                createPdf(context, makanan, tapCounts, id);
+                isPesan = false;
+                for (int i = 0; i < tapCounts.length; i++) {
+                  if (tapCounts[i] > 0) {
+                    isPesan = true;
+                    break;
+                  }
+                }
+                if (isPesan) {
+                  createPdf(context, makanan, tapCounts, id);
+                } else {
+                  showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: const Text('Warning'),
+                      content: const Text('Pesanan belum diisi.'),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(context),
+                          child: const Text('OK'),
+                        ),
+                      ],
+                    ),
+                  );
+                }
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.orange,
