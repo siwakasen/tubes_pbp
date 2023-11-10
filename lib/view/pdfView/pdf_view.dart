@@ -6,10 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
-import 'package:barcode_widget/barcode_widget.dart';
 
 import 'package:intl/intl.dart';
-import 'package:ugd2_pbp/model/makanan.dart';
 import 'package:ugd2_pbp/view/pdfView/preview_screen.dart';
 
 int getSubTotal(List<Map<String, dynamic>> makanan, List<int> tapCounts) {
@@ -32,24 +30,25 @@ Future<void> createPdf(BuildContext context, List<Map<String, dynamic>> makanan,
 
   pw.Padding orderDataInput() {
     return pw.Padding(
-        padding: pw.EdgeInsets.symmetric(horizontal: 20),
+        padding: const pw.EdgeInsets.symmetric(horizontal: 20),
         child: pw.Table(children: [
           pw.TableRow(
             children: [
               pw.Padding(
-                padding: pw.EdgeInsets.symmetric(horizontal: 20),
+                padding: const pw.EdgeInsets.symmetric(horizontal: 20),
                 child: pw.Text(
                   'Subtotal',
-                  style: pw.TextStyle(
+                  style: const pw.TextStyle(
                     fontSize: 16,
                   ),
                 ),
               ),
               pw.Padding(
-                padding: pw.EdgeInsets.symmetric(horizontal: 1, vertical: 1),
+                padding:
+                    const pw.EdgeInsets.symmetric(horizontal: 1, vertical: 1),
                 child: pw.Text(
                   getSubTotal(makanan, tapCounts).toStringAsFixed(2),
-                  style: pw.TextStyle(
+                  style: const pw.TextStyle(
                     fontSize: 16,
                   ),
                 ),
@@ -59,19 +58,20 @@ Future<void> createPdf(BuildContext context, List<Map<String, dynamic>> makanan,
           pw.TableRow(
             children: [
               pw.Padding(
-                padding: pw.EdgeInsets.symmetric(horizontal: 20),
+                padding: const pw.EdgeInsets.symmetric(horizontal: 20),
                 child: pw.Text(
                   'Delivery fee',
-                  style: pw.TextStyle(
+                  style: const pw.TextStyle(
                     fontSize: 16,
                   ),
                 ),
               ),
               pw.Padding(
-                padding: pw.EdgeInsets.symmetric(horizontal: 1, vertical: 1),
+                padding:
+                    const pw.EdgeInsets.symmetric(horizontal: 1, vertical: 1),
                 child: pw.Text(
                   "20000.00",
-                  style: pw.TextStyle(
+                  style: const pw.TextStyle(
                     fontSize: 16,
                   ),
                 ),
@@ -87,7 +87,8 @@ Future<void> createPdf(BuildContext context, List<Map<String, dynamic>> makanan,
                   fontWeight: pw.FontWeight.bold,
                 ),
               ),
-              padding: pw.EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              padding:
+                  const pw.EdgeInsets.symmetric(horizontal: 20, vertical: 10),
             ),
             pw.Padding(
               child: pw.Text(
@@ -97,7 +98,8 @@ Future<void> createPdf(BuildContext context, List<Map<String, dynamic>> makanan,
                   fontWeight: pw.FontWeight.bold,
                 ),
               ),
-              padding: pw.EdgeInsets.symmetric(horizontal: 1, vertical: 10),
+              padding:
+                  const pw.EdgeInsets.symmetric(horizontal: 1, vertical: 10),
             ),
           ])
         ]));
@@ -105,7 +107,7 @@ Future<void> createPdf(BuildContext context, List<Map<String, dynamic>> makanan,
 
   pw.Padding orderList() {
     return pw.Padding(
-        padding: pw.EdgeInsets.symmetric(horizontal: 45),
+        padding: const pw.EdgeInsets.symmetric(horizontal: 45),
         child: pw.Table(
             defaultVerticalAlignment: pw.TableCellVerticalAlignment.middle,
             border: pw.TableBorder.all(),
@@ -137,7 +139,7 @@ Future<void> createPdf(BuildContext context, List<Map<String, dynamic>> makanan,
                           widthFactor: 3),
                       pw.SizedBox(height: 80),
                     ])
-                  : pw.TableRow(children: []);
+                  : const pw.TableRow(children: []);
             })));
   }
 
@@ -169,7 +171,7 @@ Future<void> createPdf(BuildContext context, List<Map<String, dynamic>> makanan,
                   pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 50)),
         ),
         pw.Padding(
-            padding: pw.EdgeInsets.symmetric(horizontal: 40),
+            padding: const pw.EdgeInsets.symmetric(horizontal: 40),
             child: pw.Container(height: 1, color: PdfColors.black)),
         pw.SizedBox(height: 20),
         orderList(),
@@ -177,7 +179,7 @@ Future<void> createPdf(BuildContext context, List<Map<String, dynamic>> makanan,
         orderDataInput(),
         pw.SizedBox(height: 20),
         pw.Padding(
-            padding: pw.EdgeInsets.symmetric(horizontal: 40),
+            padding: const pw.EdgeInsets.symmetric(horizontal: 40),
             child: pw.Text("Created At ${formattedDate}")),
         pw.SizedBox(height: 20),
         barcodeGaris(id),
@@ -202,7 +204,7 @@ pw.Container barcodeGaris(String id) {
 pw.Center footerPDF(String formattedDate) {
   return pw.Center(
       child: pw.Text("Created At ${formattedDate}",
-          style: pw.TextStyle(color: PdfColors.blue)));
+          style: const pw.TextStyle(color: PdfColors.blue)));
 }
 
 pw.Header headerPDF() {
