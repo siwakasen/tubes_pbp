@@ -19,10 +19,10 @@ int selectedIndex = 0;
 
 class _HomeViewStfState extends State<HomeViewStf> {
   static List<Widget> widgetOptions = <Widget>[
-    Home1View(),
-    OpenMap(),
-    BeliMakanView(), //tinggal ganti
-    ProfileView(),
+    const Home1View(),
+    const OpenMap(),
+    const BeliMakanView(), //tinggal ganti
+    const ProfileView(),
   ];
 
   void setSelectedIndex(int index) {
