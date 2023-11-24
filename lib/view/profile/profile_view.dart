@@ -1,6 +1,8 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 import 'package:ugd2_pbp/client/userClient.dart';
 import 'package:ugd2_pbp/database/sql_helper.dart';
 import 'package:ugd2_pbp/component/darkModeState.dart' as globals;
@@ -40,14 +42,17 @@ class _ProfileViewState extends State<ProfileView> {
       phoneNumber: '',
       photo: '');
   late int userId;
-
+  late Response response;
+  String imageLink = '-';
   void refresh() async {
     userId = await getIntValuesSF();
     print(userId);
     final data = await UserClient.find(userId);
+    response = await UserClient.getUrlImage(data.photo);
+    imageLink = json.decode(response.body)['data'];
+
     setState(() {
       user = data;
-      print(data);
     });
   }
 
@@ -67,17 +72,11 @@ class _ProfileViewState extends State<ProfileView> {
                       backgroundImage: AssetImage("images/riksi.jpeg")),
                 ] else ...[
                   CircleAvatar(
-                      radius: 70,
-                      backgroundImage: MemoryImage(
-                          const Base64Decoder().convert(user.photo))),
+                    radius: 70,
+                    backgroundImage:
+                        imageLink != '-' ? NetworkImage(imageLink) : null,
+                  )
                 ],
-                // CircleAvatar(
-                //     radius: 70,
-                //     backgroundImage:
-                //         MemoryImage(const Base64Decoder().convert(user.photo))),
-                // // CircleAvatar(
-                // //     radius: 70,
-                // //     backgroundImage: AssetImage("images/riksi.jpeg")),
                 Positioned(
                   bottom: 1,
                   right: 1,

@@ -90,6 +90,16 @@ class UserClient {
     }
   }
 
+  static Future<Response> getUrlImage(String filename) async {
+    try {
+      var response =
+          await get(Uri.http(url, '$endpoint/users/images/${filename}'));
+      return response;
+    } catch (e) {
+      return Future.error(e.toString());
+    }
+  }
+
   // static Future<Response> destroy(id) async {
   //   try {
   //     var response = await delete(Uri.http(url, '$endpoint/$id'));
