@@ -1,9 +1,14 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
+import 'package:ugd2_pbp/client/userClient.dart';
 import 'package:ugd2_pbp/database/sql_helper.dart';
+import 'package:ugd2_pbp/entity/userEntity.dart';
 import 'package:ugd2_pbp/view/login/register.dart';
 import 'package:ugd2_pbp/view/userView/homeBottom.dart';
 import 'package:ugd2_pbp/component/darkModeState.dart' as globals;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:ugd2_pbp/view/login/forgot_password.dart';
 
 class LoginView extends StatefulWidget {
   final Map? data;
@@ -38,6 +43,28 @@ class _LoginViewState extends State<LoginView> {
   void initState() {
     refresh();
     super.initState();
+  }
+
+  Future<User> onLogin() async {
+    try {
+      print("TEST");
+      User user = await UserClient.login(
+          usernameController.text, passwordController.text);
+      print(user.id);
+      return user;
+    } catch (e) {
+      print(e.toString());
+    }
+    return User(
+        id: -1,
+        username: '',
+        email: '',
+        password: '',
+        name: '',
+        address: '',
+        bornDate: '',
+        phoneNumber: '',
+        photo: '');
   }
 
   @override
@@ -122,12 +149,10 @@ class _LoginViewState extends State<LoginView> {
                       children: [
                         ElevatedButton(
                           onPressed: () async {
-                            print(users);
                             if (_formKey.currentState!.validate()) {
-                              if (cekUser(usernameController.text,
-                                  passwordController.text)) {
-                                int userId = getUserId(usernameController.text,
-                                    passwordController.text);
+                              User a = await onLogin();
+                              if (a.id != -1) {
+                                int userId = a.id;
                                 showDialog(
                                     context: context,
                                     builder: (_) => AlertDialog(
@@ -153,17 +178,32 @@ class _LoginViewState extends State<LoginView> {
                                         ));
                               } else {
                                 showDialog(
-                                    context: context,
-                                    builder: (_) => AlertDialog(
-                                          title: const Text(
-                                              'Username or Password may not correct'),
-                                          actions: <Widget>[
-                                            TextButton(
-                                                onPressed: () => Navigator.pop(
-                                                    context, 'OK'),
-                                                child: const Text('OK')),
-                                          ],
-                                        ));
+                                  context: context,
+                                  builder: (_) => AlertDialog(
+                                    title: const Text(
+                                        'Username or Password may not correct'),
+                                    actions: <Widget>[
+                                      TextButton(
+                                          onPressed: () =>
+                                              Navigator.pop(context, 'OK'),
+                                          child: const Text('OK')),
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.of(context,
+                                                  rootNavigator: true)
+                                              .pop();
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (_) =>
+                                                    const ForgotPasswordView()),
+                                          );
+                                        },
+                                        child: const Text('Forgot Password'),
+                                      ),
+                                    ],
+                                  ),
+                                );
                               }
                             }
                           },
@@ -228,5 +268,15 @@ class _LoginViewState extends State<LoginView> {
   addIntToSF(int userId) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setInt('intValue', userId);
+  }
+
+  void showSnackBar(BuildContext context, String msg, Color bg) {
+    final scaffold = ScaffoldMessenger.of(context);
+    scaffold.showSnackBar(SnackBar(
+      content: Text(msg),
+      backgroundColor: bg,
+      action: SnackBarAction(
+          label: 'hide', onPressed: scaffold.hideCurrentSnackBar),
+    ));
   }
 }
