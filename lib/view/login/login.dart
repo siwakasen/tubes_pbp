@@ -1,9 +1,14 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
+import 'package:ugd2_pbp/client/userClient.dart';
 import 'package:ugd2_pbp/database/sql_helper.dart';
+import 'package:ugd2_pbp/entity/userEntity.dart';
 import 'package:ugd2_pbp/view/login/register.dart';
 import 'package:ugd2_pbp/view/userView/homeBottom.dart';
 import 'package:ugd2_pbp/component/darkModeState.dart' as globals;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:ugd2_pbp/view/login/forgot_password.dart';
 
 class LoginView extends StatefulWidget {
   final Map? data;
@@ -40,6 +45,28 @@ class _LoginViewState extends State<LoginView> {
     super.initState();
   }
 
+  Future<User> onLogin() async {
+    try {
+      print("TEST");
+      User user = await UserClient.login(
+          usernameController.text, passwordController.text);
+      print(user.id);
+      return user;
+    } catch (e) {
+      print(e.toString());
+    }
+    return User(
+        id: -1,
+        username: '',
+        email: '',
+        password: '',
+        name: '',
+        address: '',
+        bornDate: '',
+        phoneNumber: '',
+        photo: '');
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -58,28 +85,27 @@ class _LoginViewState extends State<LoginView> {
             backgroundColor: Colors.black,
             foregroundColor: Colors.white,
             child: globals.isDarkMode
-                ? const Icon(Icons
+                ? Icon(Icons
                     .wb_sunny_outlined) // Mode gelap, tampilkan ikon matahari
-                : const Icon(Icons.nightlight_round)),
+                : Icon(Icons.nightlight_round)),
         body: SafeArea(
           child: Center(
             child: Container(
-              padding: const EdgeInsets.all(16.0),
+              padding: EdgeInsets.all(16.0),
               decoration: BoxDecoration(
                 // color: Color.fromARGB(255, 255, 187, 0),
                 borderRadius: BorderRadius.circular(12.0),
               ),
-              constraints:
-                  const BoxConstraints(maxWidth: 300.0, maxHeight: 400.0),
+              constraints: BoxConstraints(maxWidth: 300.0, maxHeight: 400.0),
               child: Form(
                 key: _formKey,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text('LOGIN'),
+                    Text('LOGIN'),
                     TextFormField(
                       controller: usernameController,
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         labelText: 'Username',
                       ),
                       validator: (p0) {
@@ -124,10 +150,9 @@ class _LoginViewState extends State<LoginView> {
                         ElevatedButton(
                           onPressed: () async {
                             if (_formKey.currentState!.validate()) {
-                              if (cekUser(usernameController.text,
-                                  passwordController.text)) {
-                                int userId = getUserId(usernameController.text,
-                                    passwordController.text);
+                              User a = await onLogin();
+                              if (a.id != -1) {
+                                int userId = a.id;
                                 showDialog(
                                     context: context,
                                     builder: (_) => AlertDialog(
@@ -137,15 +162,14 @@ class _LoginViewState extends State<LoginView> {
                                               onPressed: () {
                                                 globals.setRefresh = 1;
                                                 addIntToSF(userId);
-
+                                                print(userId);
                                                 Navigator.pop(context);
                                                 Navigator.push(
                                                   context,
                                                   MaterialPageRoute(
-                                                      builder: (_) =>
-                                                          const HomeViewStf(
-                                                              initialSelectedIndex:
-                                                                  0)),
+                                                      builder: (_) => HomeViewStf(
+                                                          initialSelectedIndex:
+                                                              0)),
                                                 );
                                               },
                                               child: const Text('OK'),
@@ -154,17 +178,32 @@ class _LoginViewState extends State<LoginView> {
                                         ));
                               } else {
                                 showDialog(
-                                    context: context,
-                                    builder: (_) => AlertDialog(
-                                          title: const Text(
-                                              'Username or Password may not correct'),
-                                          actions: <Widget>[
-                                            TextButton(
-                                                onPressed: () => Navigator.pop(
-                                                    context, 'OK'),
-                                                child: const Text('OK')),
-                                          ],
-                                        ));
+                                  context: context,
+                                  builder: (_) => AlertDialog(
+                                    title: const Text(
+                                        'Username or Password may not correct'),
+                                    actions: <Widget>[
+                                      TextButton(
+                                          onPressed: () =>
+                                              Navigator.pop(context, 'OK'),
+                                          child: const Text('OK')),
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.of(context,
+                                                  rootNavigator: true)
+                                              .pop();
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (_) =>
+                                                    const ForgotPasswordView()),
+                                          );
+                                        },
+                                        child: const Text('Forgot Password'),
+                                      ),
+                                    ],
+                                  ),
+                                );
                               }
                             }
                           },
@@ -172,6 +211,9 @@ class _LoginViewState extends State<LoginView> {
                         ),
                         TextButton(
                           onPressed: () {
+                            Map<String, dynamic> FormData = {};
+                            FormData['username'] = usernameController.text;
+                            FormData['password'] = passwordController.text;
                             pushRegister(context);
                           },
                           child: Text(
@@ -226,5 +268,15 @@ class _LoginViewState extends State<LoginView> {
   addIntToSF(int userId) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setInt('intValue', userId);
+  }
+
+  void showSnackBar(BuildContext context, String msg, Color bg) {
+    final scaffold = ScaffoldMessenger.of(context);
+    scaffold.showSnackBar(SnackBar(
+      content: Text(msg),
+      backgroundColor: bg,
+      action: SnackBarAction(
+          label: 'hide', onPressed: scaffold.hideCurrentSnackBar),
+    ));
   }
 }

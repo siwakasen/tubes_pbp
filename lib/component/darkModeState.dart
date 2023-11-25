@@ -1,5 +1,4 @@
-// ignore_for_file: file_names
-
+// ignore: file_names
 library my_prj.globals;
 
 bool isDarkMode = false;

@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:ugd2_pbp/client/makananClient.dart';
+import 'package:ugd2_pbp/entity/makananEntity.dart';
 import 'package:ugd2_pbp/view/adminView/Utility.dart';
 import 'package:ugd2_pbp/view/userView/homeUpper.dart';
 import 'package:flutter/material.dart';
@@ -23,22 +25,18 @@ class InputMakanan extends StatefulWidget {
 class _InputMakananState extends State<InputMakanan> {
   TextEditingController namaMakananController = TextEditingController();
   TextEditingController hargaMakananController = TextEditingController();
-  String? imgString = '';
+  String? ImgString = '';
   final _formKey = GlobalKey<FormState>();
   XFile? xFile;
   Future<File?>? imageFile;
   Image? imageFromPreferences;
-  List<Map<String, dynamic>> makanan = [];
   void refresh() async {
-    final data = await SQLMakanan.getmakanan();
-    setState(() {
-      makanan = data;
-    });
+    setState(() {});
   }
 
   pickImageFromGallery(ImageSource source) async {
     xFile = await ImagePicker()
-        .pickImage(source: ImageSource.camera, imageQuality: 25);
+        .pickImage(source: ImageSource.gallery, imageQuality: 25);
 
     if (xFile != null) {
       final image = File(xFile!.path);
@@ -56,7 +54,7 @@ class _InputMakananState extends State<InputMakanan> {
         if (snapshot.connectionState == ConnectionState.done &&
             null != snapshot.data) {
           final imgBytes = snapshot.data!.readAsBytesSync();
-          imgString = Utility.base64String(imgBytes);
+          ImgString = Utility.base64String(imgBytes);
           // print(snapshot.data?.path);
           Utility.saveImageToPreferences(
               Utility.base64String(snapshot.data!.readAsBytesSync()));
@@ -71,15 +69,16 @@ class _InputMakananState extends State<InputMakanan> {
             'Wat',
             textAlign: TextAlign.center,
           );
-        } else if (imgString != null) {
-          return Image.memory(
-            const Base64Decoder().convert(imgString as String),
+        } else if (ImgString != null) {
+          return Container(
+              child: Image.memory(
+            Base64Decoder().convert(ImgString as String),
             fit: BoxFit.cover,
             width: 300,
             height: 200,
-          );
+          ));
         } else {
-          return SizedBox(
+          return Container(
             width: 300,
             height: 200,
             child: Image.asset('images/placeholder_image.png'),
@@ -94,17 +93,17 @@ class _InputMakananState extends State<InputMakanan> {
     if (widget.id != null) {
       namaMakananController.text = widget.namaMakanan!;
       hargaMakananController.text = widget.hargaMakanan!;
-      imgString = widget.namaFoto!;
+      ImgString = widget.namaFoto!;
     } else {
       namaMakananController.text = '';
       hargaMakananController.text = '';
-      imgString = null;
+      ImgString = null;
     }
 
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
-        actions: const <Widget>[],
+        actions: <Widget>[],
       ),
       body: SingleChildScrollView(
         child: Form(
@@ -114,19 +113,19 @@ class _InputMakananState extends State<InputMakanan> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
-                const SizedBox(
+                SizedBox(
                   height: 20.0,
                 ),
                 imageFromGallery(),
-                const SizedBox(height: 20),
+                SizedBox(height: 20),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromARGB(255, 255, 132,
+                      backgroundColor: Color.fromARGB(255, 255, 132,
                           0), //background color of button //border width and color
                       elevation: 3, //elevation of button
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(5)),
-                      padding: const EdgeInsets.only(
+                      padding: EdgeInsets.only(
                           left: 60, right: 60) //content padding inside button
                       ),
                   child: const Text(
@@ -138,7 +137,7 @@ class _InputMakananState extends State<InputMakanan> {
                     setState(() {});
                   },
                 ),
-                const SizedBox(height: 20),
+                SizedBox(height: 20),
                 TextFormField(
                     controller: namaMakananController,
                     decoration: const InputDecoration(
@@ -154,7 +153,7 @@ class _InputMakananState extends State<InputMakanan> {
                         return null;
                       }
                     }),
-                const SizedBox(height: 20),
+                SizedBox(height: 20),
                 TextFormField(
                     controller: hargaMakananController,
                     keyboardType: TextInputType.number,
@@ -172,7 +171,7 @@ class _InputMakananState extends State<InputMakanan> {
                         return null;
                       }
                     }),
-                const SizedBox(height: 20),
+                SizedBox(height: 20),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                       backgroundColor: const Color.fromARGB(255, 255, 132,
@@ -200,22 +199,22 @@ class _InputMakananState extends State<InputMakanan> {
                                 ));
                       } else {
                         if (widget.id == null) {
-                          await SQLMakanan.addmakanan(
-                              namaMakananController.text,
-                              hargaMakananController.text,
-                              imgString!);
+                          await MakananClient.create(Makanan(
+                              namaMakanan: namaMakananController.text,
+                              hargaMakanan: hargaMakananController.text,
+                              namaFoto: ImgString!));
                         } else {
-                          await SQLMakanan.editmakanan(
-                              widget.id!,
-                              namaMakananController.text,
-                              hargaMakananController.text,
-                              imgString!);
+                          await MakananClient.update(
+                              Makanan(
+                                  namaMakanan: namaMakananController.text,
+                                  hargaMakanan: hargaMakananController.text,
+                                  namaFoto: ImgString!),
+                              widget.id!);
                         }
-                        // ignore: use_build_context_synchronously
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => const Home1View(),
+                              builder: (context) => Home1View(),
                             ));
                       }
                     }

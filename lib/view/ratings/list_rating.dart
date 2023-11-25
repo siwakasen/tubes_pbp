@@ -35,12 +35,12 @@ class _RatingViewState extends State<RatingView> {
           backgroundColor: Colors.amber[600],
           actions: [
             IconButton(
-              icon: const Icon(Icons.add),
+              icon: Icon(Icons.add),
               onPressed: () async {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const InputRating(
+                      builder: (context) => InputRating(
                         id: null,
                         rateStar: null,
                         textReview: null,
@@ -55,7 +55,7 @@ class _RatingViewState extends State<RatingView> {
           itemCount: rating.length, //var.length
           itemBuilder: (context, index) {
             return Slidable(
-              actionPane: const SlidableDrawerActionPane(),
+              actionPane: SlidableDrawerActionPane(),
               secondaryActions: [
                 IconSlideAction(
                   caption: 'Update',

@@ -1,9 +1,10 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:ugd2_pbp/database/sql_helper.dart';
+import 'package:http/http.dart';
+import 'package:ugd2_pbp/client/userClient.dart';
 import 'package:ugd2_pbp/component/darkModeState.dart' as globals;
-import 'package:ugd2_pbp/model/user.dart';
+import 'package:ugd2_pbp/entity/userEntity.dart';
 import 'package:ugd2_pbp/view/profile/profile_edit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ugd2_pbp/view/profile/profileCamera.dart';
@@ -28,26 +29,25 @@ class _ProfileViewState extends State<ProfileView> {
 
   List<Map<String, dynamic>> users = [];
 
-  User user = User();
+  User user = User(
+      id: -1,
+      username: '',
+      email: '',
+      password: '',
+      name: '',
+      address: '',
+      bornDate: '',
+      phoneNumber: '',
+      photo: '-');
   late int userId;
-
   void refresh() async {
-    final data = await SQLHelper.getuser();
     userId = await getIntValuesSF();
+    print(userId);
+    final data = await UserClient.find(userId);
+
     setState(() {
-      users = data;
-      for (var tempUser in users) {
-        if (userId == tempUser['id']) {
-          user.username = tempUser['username'];
-          user.email = tempUser['email'];
-          user.password = tempUser['password'];
-          user.name = tempUser['name'];
-          user.address = tempUser['address'];
-          user.phoneNumber = tempUser['phoneNumber'];
-          user.bornDate = tempUser['bornDate'];
-          user.photo = tempUser['photo'];
-        }
-      }
+      user = data;
+      print(user.photo);
     });
   }
 
@@ -61,23 +61,13 @@ class _ProfileViewState extends State<ProfileView> {
             const SizedBox(height: 40),
             Stack(
               children: [
-                if (user.photo == "") ...[
-                  const CircleAvatar(
-                      radius: 70,
-                      backgroundImage: AssetImage("images/riksi.jpeg")),
-                ] else ...[
-                  CircleAvatar(
-                      radius: 70,
-                      backgroundImage: MemoryImage(
-                          const Base64Decoder().convert(user.photo))),
-                ],
-                // CircleAvatar(
-                //     radius: 70,
-                //     backgroundImage:
-                //         MemoryImage(const Base64Decoder().convert(user.photo))),
-                // // CircleAvatar(
-                // //     radius: 70,
-                // //     backgroundImage: AssetImage("images/riksi.jpeg")),
+                CircleAvatar(
+                    radius: 70,
+                    backgroundImage: user.photo != "-"
+                        ? MemoryImage(
+                            Base64Decoder().convert(user.photo as String),
+                          )
+                        : null),
                 Positioned(
                   bottom: 1,
                   right: 1,
@@ -152,7 +142,7 @@ class _ProfileViewState extends State<ProfileView> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => const ProfileEdit(),
+        builder: (_) => ProfileEdit(),
       ),
     );
   }

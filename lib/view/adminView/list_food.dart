@@ -1,4 +1,6 @@
+import 'package:ugd2_pbp/client/makananClient.dart';
 import 'package:ugd2_pbp/database/sql_helperMakanan.dart';
+import 'package:ugd2_pbp/entity/makananEntity.dart';
 import 'package:ugd2_pbp/view/adminView/add_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -19,7 +21,7 @@ class _ListFoodViewState extends State<ListFoodView> {
   String searchText = '';
 
   void refresh() async {
-    final data = await SQLMakanan.getmakanan();
+    final data = await MakananClient.fetchAll2();
     setState(() {
       makanan = data;
     });
@@ -39,19 +41,68 @@ class _ListFoodViewState extends State<ListFoodView> {
     super.initState();
   }
 
+  Slidable slidableList(int index) {
+    Makanan m = Makanan(
+        namaMakanan: makanan[index]["namaMakanan"],
+        hargaMakanan: makanan[index]["hargaMakanan"].toString(),
+        id: makanan[index]["id"],
+        namaFoto: makanan[index]["namaFoto"]);
+
+    return Slidable(
+      child: ListTile(
+        title: Text(m.namaMakanan!),
+        subtitle: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(m.hargaMakanan!),
+          ],
+        ),
+      ),
+      actionPane: SlidableDrawerActionPane(),
+      secondaryActions: [
+        IconSlideAction(
+          caption: 'Update',
+          color: Colors.blue,
+          icon: Icons.update,
+          onTap: () async {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => InputMakanan(
+                        id: m.id,
+                        namaMakanan: m.namaMakanan,
+                        hargaMakanan: m.hargaMakanan,
+                        namaFoto: m.namaFoto,
+                      )),
+            ).then((_) => refresh());
+          },
+        ),
+        IconSlideAction(
+          caption: 'Delete',
+          color: Colors.red,
+          icon: Icons.delete,
+          onTap: () async {
+            await MakananClient.delet(m.id!);
+          },
+        )
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text("TAMBAH MAKANAN"),
+          title: Text("TAMBAH MAKANAN"),
           actions: [
             IconButton(
-              icon: const Icon(Icons.add),
+              icon: Icon(Icons.add),
               onPressed: () async {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const InputMakanan(
+                    builder: (context) => InputMakanan(
                       id: null,
                       namaMakanan: null,
                       hargaMakanan: null,
@@ -73,7 +124,7 @@ class _ListFoodViewState extends State<ListFoodView> {
                 },
                 decoration: InputDecoration(
                   labelText: 'Search',
-                  prefixIcon: const Icon(Icons.search),
+                  prefixIcon: Icon(Icons.search),
                   suffixIcon: IconButton(
                     icon: Icon(_isListening ? Icons.mic : Icons.mic_off),
                     onPressed: () {
@@ -96,47 +147,7 @@ class _ListFoodViewState extends State<ListFoodView> {
                   makanan[index]['hargaMakanan']
                       .toLowerCase()
                       .contains(searchController.text.toLowerCase())) {
-                return Slidable(
-                  actionPane: const SlidableDrawerActionPane(),
-                  secondaryActions: [
-                    IconSlideAction(
-                      caption: 'Update',
-                      color: Colors.blue,
-                      icon: Icons.update,
-                      onTap: () async {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => InputMakanan(
-                                    id: makanan[index]['id'],
-                                    namaMakanan: makanan[index]['namaMakanan'],
-                                    hargaMakanan: makanan[index]
-                                        ['hargaMakanan'],
-                                    namaFoto: makanan[index]['namaFoto'],
-                                  )),
-                        ).then((_) => refresh());
-                      },
-                    ),
-                    IconSlideAction(
-                      caption: 'Delete',
-                      color: Colors.red,
-                      icon: Icons.delete,
-                      onTap: () async {
-                        await deleteMakanan(makanan[index]['id']);
-                      },
-                    )
-                  ],
-                  child: ListTile(
-                    title: Text(makanan[index]['namaMakanan']),
-                    subtitle: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(makanan[index]['hargaMakanan']),
-                      ],
-                    ),
-                  ),
-                );
+                return slidableList(index);
               } else {
                 return Container();
               }

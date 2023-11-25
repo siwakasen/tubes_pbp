@@ -1,8 +1,11 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:ugd2_pbp/client/makananClient.dart';
 import 'package:ugd2_pbp/component/darkModeState.dart' as globals;
 import 'package:ugd2_pbp/database/sql_helperMakanan.dart';
+import 'package:ugd2_pbp/entity/makananEntity.dart';
 
 class DashboardView extends StatefulWidget {
   const DashboardView({super.key});
@@ -16,7 +19,7 @@ class _DashboardViewState extends State<DashboardView> {
   List<bool> expandableState = [];
   late int itemCount = 0;
   void refresh() async {
-    final data = await SQLMakanan.getmakanan();
+    final data = await MakananClient.fetchAll2();
     setState(() {
       makanan = data;
       itemCount = makanan.length;
@@ -78,20 +81,30 @@ class _DashboardViewState extends State<DashboardView> {
     );
   }
 
-  @override
+  ListTile scrollViewItem(int index) {
+    Makanan b = Makanan(
+        namaMakanan: makanan[index]["namaMakanan"],
+        hargaMakanan: makanan[index]["hargaMakanan"].toString(),
+        namaFoto: makanan[index]["namaFoto"]);
+    return ListTile(
+      leading:
+          Image.memory(const Base64Decoder().convert(b.namaFoto as String)),
+      title: Text(b.namaMakanan!),
+      subtitle: Text(b.hargaMakanan!),
+      onTap: () {},
+    );
+  }
+
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      body: Align(
-        child: SingleChildScrollView(
-          child: Wrap(
-            children: List.generate(itemCount, (index) {
-              return bloc(width, index);
-            }),
-          ),
-        ),
+        body: SingleChildScrollView(
+      child: Column(
+        children: List.generate(itemCount, (index) {
+          return scrollViewItem(index);
+        }),
       ),
-    );
+    ));
   }
 }
