@@ -1,10 +1,8 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:ugd2_pbp/client/userClient.dart';
-import 'package:ugd2_pbp/database/sql_helper.dart';
 import 'package:ugd2_pbp/component/darkModeState.dart' as globals;
 import 'package:ugd2_pbp/entity/userEntity.dart';
 import 'package:ugd2_pbp/view/profile/profile_edit.dart';
@@ -48,7 +46,7 @@ class _ProfileViewState extends State<ProfileView> {
     userId = await getIntValuesSF();
     print(userId);
     final data = await UserClient.find(userId);
-    response = await UserClient.getUrlImage(data.photo);
+    response = await UserClient.getImageUser(data.photo);
     imageLink = json.decode(response.body)['data'];
 
     setState(() {
@@ -67,9 +65,7 @@ class _ProfileViewState extends State<ProfileView> {
             Stack(
               children: [
                 if (user.photo == "-") ...[
-                  const CircleAvatar(
-                      radius: 70,
-                      backgroundImage: AssetImage("images/riksi.jpeg")),
+                  const CircleAvatar(radius: 70, backgroundImage: null),
                 ] else ...[
                   CircleAvatar(
                     radius: 70,

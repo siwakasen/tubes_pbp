@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ugd2_pbp/client/userClient.dart';
-import 'package:ugd2_pbp/database/sql_helper.dart';
 import 'package:ugd2_pbp/component/darkModeState.dart' as globals;
 import 'package:ugd2_pbp/view/userView/homeBottom.dart';
 
@@ -53,7 +52,6 @@ class _ProfileEditState extends State<ProfileEdit> {
       phoneController.text = data.phoneNumber;
       bornController.text = data.bornDate;
       photo = data.photo;
-      print(data);
     });
   }
 
@@ -246,16 +244,18 @@ class _ProfileEditState extends State<ProfileEdit> {
                         formData['address'] = addressController.text;
                         formData['phoneNumber'] = phoneController.text;
                         formData['borndate'] = bornController.text;
-                        UserClient.update(User(
-                            id: userId,
-                            username: usernameController.text,
-                            email: emailController.text,
-                            password: passwordController.text,
-                            name: nameController.text,
-                            address: addressController.text,
-                            phoneNumber: phoneController.text,
-                            bornDate: bornController.text,
-                            photo: photo));
+                        UserClient.update(
+                            User(
+                                id: userId,
+                                username: usernameController.text,
+                                email: emailController.text,
+                                password: passwordController.text,
+                                name: nameController.text,
+                                address: addressController.text,
+                                phoneNumber: phoneController.text,
+                                bornDate: bornController.text,
+                                photo: photo),
+                            userId);
                         Navigator.push(
                           context,
                           MaterialPageRoute(
