@@ -3,6 +3,7 @@
 import 'dart:io';
 
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:ugd2_pbp/client/userClient.dart';
 import 'package:ugd2_pbp/database/sql_helper.dart';
 import 'package:ugd2_pbp/model/user.dart';
 
@@ -30,6 +31,7 @@ class _profileCameraViewState extends State<profileCameraView> {
   XFile? xFile;
   Future<File?>? imageFile;
   Image? imageFromPreferences;
+  File? image;
 
   @override
   void initState() {
@@ -37,32 +39,16 @@ class _profileCameraViewState extends State<profileCameraView> {
     super.initState();
   }
 
-  List<Map<String, dynamic>> users = [];
   User user = User();
   late int userId;
   void refresh() async {
-    final data = await SQLHelper.getuser();
     userId = await getIntValuesSF();
-    setState(() {
-      users = data;
-      for (var tempUser in users) {
-        if (userId == tempUser['id']) {
-          user.username = tempUser['username'];
-          user.email = tempUser['email'];
-          user.password = tempUser['password'];
-          user.name = tempUser['name'];
-          user.address = tempUser['address'];
-          user.phoneNumber = tempUser['phoneNumber'];
-          user.bornDate = tempUser['bornDate'];
-          user.photo = tempUser['photo'];
-        }
-      }
-    });
+    setState(() {});
   }
 
   pickImageFromGallery(ImageSource source) async {
     xFile = await ImagePicker()
-        .pickImage(source: ImageSource.camera, imageQuality: 25);
+        .pickImage(source: ImageSource.gallery, imageQuality: 25);
 
     if (xFile != null) {
       final image = File(xFile!.path);
@@ -78,6 +64,7 @@ class _profileCameraViewState extends State<profileCameraView> {
       builder: (BuildContext context, AsyncSnapshot<File?> snapshot) {
         if (snapshot.connectionState == ConnectionState.done &&
             null != snapshot.data) {
+          image = snapshot.data;
           final imgBytes = snapshot.data!.readAsBytesSync();
           imgString = Utility.base64String(imgBytes);
 
@@ -89,21 +76,11 @@ class _profileCameraViewState extends State<profileCameraView> {
               snapshot.data!,
             ),
           );
-        } else if (null != snapshot.error) {
-          return const Text(
-            'Wat',
-            textAlign: TextAlign.center,
-          );
-        } else if (imgString != "") {
-          return CircleAvatar(
-              radius: 70,
-              backgroundImage: MemoryImage(
-                const Base64Decoder().convert(imgString as String),
-              ));
         } else {
+          print("MASUK 4");
           return const CircleAvatar(
             radius: 70,
-            backgroundImage: AssetImage("images/riksi.jpeg"),
+            backgroundImage: null,
           );
         }
       },
@@ -130,6 +107,7 @@ class _profileCameraViewState extends State<profileCameraView> {
                 const SizedBox(
                   height: 20.0,
                 ),
+                //SHOWING IMAGE IS HERE
                 imageFromGallery(),
                 const SizedBox(height: 20),
                 ElevatedButton(
@@ -147,11 +125,14 @@ class _profileCameraViewState extends State<profileCameraView> {
                     style: TextStyle(color: Colors.white),
                   ),
                   onPressed: () {
+                    //TAKING IMAGE FROM GALERY
                     pickImageFromGallery(ImageSource.gallery);
                     setState(() {});
                   },
                 ),
                 const SizedBox(height: 20),
+
+                //Saving image here
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                       backgroundColor: const Color.fromARGB(255, 255, 132,
@@ -164,8 +145,10 @@ class _profileCameraViewState extends State<profileCameraView> {
                       ),
                   onPressed: () {
                     globals.setRefresh = 1;
-                    SQLHelper.editphoto(userId, imgString!);
-                    Navigator.push(
+                    print("PRINTING IMAGE");
+                    print(image);
+                    UserClient.updateImageUser(image!, userId);
+                    Navigator.pop(
                       context,
                       MaterialPageRoute(
                           builder: (_) => HomeViewStf(initialSelectedIndex: 3)),

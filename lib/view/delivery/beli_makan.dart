@@ -1,9 +1,7 @@
 import 'dart:convert';
 
 import 'package:ugd2_pbp/database/sql_helperMakanan.dart';
-import 'package:ugd2_pbp/view/adminView/add_menu.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:ugd2_pbp/view/pdfView/pdf_view.dart';
 import 'package:uuid/uuid.dart';
 
@@ -37,7 +35,7 @@ class _BeliMakanViewState extends State<BeliMakanView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("DELIVERY MAKANAN"),
+        title: const Text("DELIVERY MAKANAN"),
       ),
       body: Column(
         children: [
@@ -71,21 +69,21 @@ class _BeliMakanViewState extends State<BeliMakanView> {
                               }
                             });
                           },
-                          child: Icon(Icons.remove),
+                          child: const Icon(Icons.remove),
                         ),
-                        SizedBox(width: 10),
+                        const SizedBox(width: 10),
                         Text(
                           tapCounts[index].toString(),
-                          style: TextStyle(fontSize: 17),
+                          style: const TextStyle(fontSize: 17),
                         ),
-                        SizedBox(width: 10),
+                        const SizedBox(width: 10),
                         GestureDetector(
                           onTap: () {
                             setState(() {
                               tapCounts[index]++;
                             });
                           },
-                          child: Icon(Icons.add),
+                          child: const Icon(Icons.add),
                         ),
                       ],
                     ),

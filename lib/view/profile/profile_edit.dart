@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:ugd2_pbp/database/sql_helper.dart';
+import 'package:ugd2_pbp/client/userClient.dart';
 import 'package:ugd2_pbp/component/darkModeState.dart' as globals;
-import 'package:ugd2_pbp/model/user.dart';
 import 'package:ugd2_pbp/view/userView/homeBottom.dart';
+
+import '../../entity/userEntity.dart';
 
 class ProfileEdit extends StatefulWidget {
   ProfileEdit({
@@ -37,29 +38,20 @@ class _ProfileEditState extends State<ProfileEdit> {
   }
 
   late int userId;
-  List<Map<String, dynamic>> users = [];
-  User userLog = User();
-
+  late String photo;
   void refresh() async {
-    final data = await SQLHelper.getuser();
     userId = await getIntValuesSF();
+    print(userId);
+    final data = await UserClient.find(userId);
     setState(() {
-      users = data;
-      for (var user in users) {
-        if (userId == user['id']) {
-          usernameController.text = user['username'];
-          emailController.text = user['email'];
-          passwordController.text = user['password'];
-          nameController.text = user['name'];
-          addressController.text = user['address'];
-          phoneController.text = user['phoneNumber'];
-          bornController.text = user['bornDate'];
-
-          //digunakan untuk cek user saat ini pada 2 function paling bawah
-          userLog.username = user['username'];
-          userLog.email = user['email'];
-        }
-      }
+      usernameController.text = data.username;
+      emailController.text = data.email;
+      passwordController.text = data.password;
+      nameController.text = data.name;
+      addressController.text = data.address;
+      phoneController.text = data.phoneNumber;
+      bornController.text = data.bornDate;
+      photo = data.photo;
     });
   }
 
@@ -252,51 +244,25 @@ class _ProfileEditState extends State<ProfileEdit> {
                         formData['address'] = addressController.text;
                         formData['phoneNumber'] = phoneController.text;
                         formData['borndate'] = bornController.text;
-
-                        if (isSameUsername(usernameController.text, userLog)) {
-                          showDialog(
-                              context: context,
-                              builder: (_) => AlertDialog(
-                                    title:
-                                        const Text('Username tidak tersedia!'),
-                                    actions: <Widget>[
-                                      TextButton(
-                                          onPressed: () => Navigator.of(context,
-                                                  rootNavigator: true)
-                                              .pop(),
-                                          child: const Text('OK')),
-                                    ],
-                                  ));
-                        } else if (isSameEmail(emailController.text, userLog)) {
-                          showDialog(
-                              context: context,
-                              builder: (_) => AlertDialog(
-                                    title: const Text('Email tidak tersedia!'),
-                                    actions: <Widget>[
-                                      TextButton(
-                                          onPressed: () => Navigator.of(context,
-                                                  rootNavigator: true)
-                                              .pop(),
-                                          child: const Text('OK')),
-                                    ],
-                                  ));
-                        } else {
-                          SQLHelper.edituser(
-                              userId,
-                              usernameController.text,
-                              emailController.text,
-                              passwordController.text,
-                              nameController.text,
-                              addressController.text,
-                              phoneController.text,
-                              bornController.text);
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (_) =>
-                                    HomeViewStf(initialSelectedIndex: 3)),
-                          );
-                        }
+                        UserClient.update(
+                            User(
+                                id: userId,
+                                username: usernameController.text,
+                                email: emailController.text,
+                                password: passwordController.text,
+                                name: nameController.text,
+                                address: addressController.text,
+                                phoneNumber: phoneController.text,
+                                bornDate: bornController.text,
+                                photo: photo),
+                            userId);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (_) =>
+                                  HomeViewStf(initialSelectedIndex: 3)),
+                        );
+                        // }
                       }
                     },
                     child: const Text(
@@ -311,23 +277,23 @@ class _ProfileEditState extends State<ProfileEdit> {
     );
   }
 
-  bool isSameEmail(String email, User userLog) {
-    for (var user in users) {
-      if (email == user['email'] && email != userLog.email) {
-        return true;
-      }
-    }
-    return false;
-  }
+  // bool isSameEmail(String email, User userLog) {
+  //   for (var user in users) {
+  //     if (email == user['email'] && email != userLog.email) {
+  //       return true;
+  //     }
+  //   }
+  //   return false;
+  // }
 
-  bool isSameUsername(String username, User userLog) {
-    for (var user in users) {
-      if (username == user['username'] && username != userLog.username) {
-        return true;
-      }
-    }
-    return false;
-  }
+  // bool isSameUsername(String username, User userLog) {
+  //   for (var user in users) {
+  //     if (username == user['username'] && username != userLog.username) {
+  //       return true;
+  //     }
+  //   }
+  //   return false;
+  // }
 
   getIntValuesSF() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
