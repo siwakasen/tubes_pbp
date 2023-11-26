@@ -81,27 +81,32 @@ class UserClient {
   static Future<Response> getImageUser(String filename) async {
     try {
       var response =
-          await get(Uri.http(url, '$endpoint/users/images/${filename}'));
+          await get(Uri.http(url, '$endpoint/users/images/$filename'));
       return response;
     } catch (e) {
       return Future.error(e.toString());
     }
   }
 
-  static Future<void> updateImageUser(File imageInput, int id) async {
-    final newUrl = Uri.parse('$url$endpoint/users/images');
-    final request = http.MultipartRequest('POST', newUrl)
-      ..files.add(await http.MultipartFile.fromPath('photo', imageInput.path));
-
+  static Future<void> updateImageUser(
+      File imageFile, id, String filename) async {
     try {
-      final response = await request.send();
-      if (response.statusCode == 200) {
-        print('Image updated successfully');
-      } else {
-        print('Failed to update image. Status code: ${response.statusCode}');
-      }
-    } catch (error) {
-      print('Error updating image: $error');
+      var apiUrl = 'http://$url$endpoint/users/images/$id';
+
+      // Create a multipart request
+      var request = http.MultipartRequest(
+        'POST',
+        Uri.parse(apiUrl),
+      );
+      request.files.add(
+        await http.MultipartFile.fromPath(
+          'photo',
+          imageFile.path,
+          filename: filename,
+        ),
+      );
+    } catch (e) {
+      print('Error uploading image: $e');
     }
   }
 }

@@ -28,10 +28,10 @@ class profileCameraView extends StatefulWidget {
 class _profileCameraViewState extends State<profileCameraView> {
   String? imgString = '';
   final _formKey = GlobalKey<FormState>();
-  XFile? xFile;
+  late XFile xFile;
   Future<File?>? imageFile;
   Image? imageFromPreferences;
-  File? image;
+  File? imageInput;
 
   @override
   void initState() {
@@ -47,11 +47,13 @@ class _profileCameraViewState extends State<profileCameraView> {
   }
 
   pickImageFromGallery(ImageSource source) async {
-    xFile = await ImagePicker()
-        .pickImage(source: ImageSource.gallery, imageQuality: 25);
+    xFile = (await ImagePicker()
+        .pickImage(source: ImageSource.gallery, imageQuality: 25))!;
 
     if (xFile != null) {
       final image = File(xFile!.path);
+      imageInput = image;
+
       setState(() {
         imageFile = Future.value(image);
       });
@@ -64,7 +66,6 @@ class _profileCameraViewState extends State<profileCameraView> {
       builder: (BuildContext context, AsyncSnapshot<File?> snapshot) {
         if (snapshot.connectionState == ConnectionState.done &&
             null != snapshot.data) {
-          image = snapshot.data;
           final imgBytes = snapshot.data!.readAsBytesSync();
           imgString = Utility.base64String(imgBytes);
 
@@ -77,7 +78,6 @@ class _profileCameraViewState extends State<profileCameraView> {
             ),
           );
         } else {
-          print("MASUK 4");
           return const CircleAvatar(
             radius: 70,
             backgroundImage: null,
@@ -145,13 +145,11 @@ class _profileCameraViewState extends State<profileCameraView> {
                       ),
                   onPressed: () {
                     globals.setRefresh = 1;
-                    print("PRINTING IMAGE");
-                    print(image);
-                    UserClient.updateImageUser(image!, userId);
+                    UserClient.updateImageUser(
+                        File(xFile.path), userId, xFile.name);
+
                     Navigator.pop(
                       context,
-                      MaterialPageRoute(
-                          builder: (_) => HomeViewStf(initialSelectedIndex: 3)),
                     );
                   },
                   child: const Text(
