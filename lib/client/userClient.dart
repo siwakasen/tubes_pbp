@@ -105,6 +105,10 @@ class UserClient {
           filename: filename,
         ),
       );
+
+      // Send the request
+      var response = await request.send();
+      print(response);
     } catch (e) {
       print('Error uploading image: $e');
     }

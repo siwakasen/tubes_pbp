@@ -148,8 +148,10 @@ class _profileCameraViewState extends State<profileCameraView> {
                     UserClient.updateImageUser(
                         File(xFile.path), userId, xFile.name);
 
-                    Navigator.pop(
+                    Navigator.push(
                       context,
+                      MaterialPageRoute(
+                          builder: (_) => HomeViewStf(initialSelectedIndex: 3)),
                     );
                   },
                   child: const Text(
