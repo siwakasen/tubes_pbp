@@ -14,6 +14,8 @@ class MakananClient {
       if (response.statusCode != 200) {
         if (response.statusCode != 404) throw Exception(response.reasonPhrase);
       }
+      print(response.body);
+
       Iterable list = json.decode(response.body)['data'];
 
       return list.map((e) => Makanan.fromJson(e)).toList();
@@ -76,6 +78,21 @@ class MakananClient {
       return response;
     } catch (e) {
       return Future.error(e.toString());
+    }
+  }
+
+  static Future<Response> getImageMakanan(String filename) async {
+    try {
+      var response =
+          await get(Uri.http(url, '$endpoint/makanans/images/$filename'));
+      print(response.body);
+      if (response.statusCode == 200) {
+        return response;
+      } else {
+        throw Exception('Failed to fetch image: ${response.reasonPhrase}');
+      }
+    } catch (e) {
+      return Future.error([e.toString()]);
     }
   }
 
