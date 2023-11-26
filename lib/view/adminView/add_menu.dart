@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:ugd2_pbp/client/makananClient.dart';
+import 'package:ugd2_pbp/entity/makananEntity.dart';
 import 'package:ugd2_pbp/view/adminView/Utility.dart';
 import 'package:ugd2_pbp/view/userView/homeUpper.dart';
 import 'package:flutter/material.dart';
@@ -28,12 +30,8 @@ class _InputMakananState extends State<InputMakanan> {
   XFile? xFile;
   Future<File?>? imageFile;
   Image? imageFromPreferences;
-  List<Map<String, dynamic>> makanan = [];
   void refresh() async {
-    final data = await SQLMakanan.getmakanan();
-    setState(() {
-      makanan = data;
-    });
+    setState(() {});
   }
 
   pickImageFromGallery(ImageSource source) async {
@@ -201,16 +199,18 @@ class _InputMakananState extends State<InputMakanan> {
                                 ));
                       } else {
                         if (widget.id == null) {
-                          await SQLMakanan.addmakanan(
-                              namaMakananController.text,
-                              hargaMakananController.text,
-                              ImgString!);
+                          print("here");
+                          await MakananClient.create(Makanan(
+                              namaMakanan: namaMakananController.text,
+                              hargaMakanan: hargaMakananController.text,
+                              namaFoto: ImgString!));
                         } else {
-                          await SQLMakanan.editmakanan(
-                              widget.id!,
-                              namaMakananController.text,
-                              hargaMakananController.text,
-                              ImgString!);
+                          await MakananClient.update(
+                              Makanan(
+                                  namaMakanan: namaMakananController.text,
+                                  hargaMakanan: hargaMakananController.text,
+                                  namaFoto: ImgString!),
+                              widget.id!);
                         }
                         Navigator.push(
                             context,
