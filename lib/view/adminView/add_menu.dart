@@ -54,6 +54,7 @@ class _InputMakananState extends State<InputMakanan> {
     final image = File(xFile.path);
     setState(() {
       imageFile = Future.value(image);
+      isChoosingImage = true;
     });
   }
 
@@ -149,9 +150,6 @@ class _InputMakananState extends State<InputMakanan> {
                   ),
                   onPressed: () {
                     pickImageFromGallery(ImageSource.gallery);
-                    setState(() {
-                      isChoosingImage = true;
-                    });
                   },
                 ),
                 SizedBox(height: 20),
@@ -201,7 +199,7 @@ class _InputMakananState extends State<InputMakanan> {
                       ),
                   onPressed: () async {
                     if (_formKey.currentState!.validate()) {
-                      if (widget.id == null) {
+                      if (widget.id == null && isChoosingImage == false) {
                         showDialog(
                             context: context,
                             builder: (_) => AlertDialog(
