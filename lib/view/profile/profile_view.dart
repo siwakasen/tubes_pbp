@@ -38,7 +38,7 @@ class _ProfileViewState extends State<ProfileView> {
       address: '',
       bornDate: '',
       phoneNumber: '',
-      photo: '-');
+      photo: '');
   late int userId;
   late Response response;
   String imageLink = '-';
@@ -51,7 +51,6 @@ class _ProfileViewState extends State<ProfileView> {
     setState(() {
       imageLink = json.decode(response.body)['data'];
       user = data;
-      print(user.photo);
     });
   }
 
@@ -65,13 +64,15 @@ class _ProfileViewState extends State<ProfileView> {
             const SizedBox(height: 40),
             Stack(
               children: [
-                CircleAvatar(
+                if (user.photo == "-") ...[
+                  const CircleAvatar(radius: 70, backgroundImage: null),
+                ] else ...[
+                  CircleAvatar(
                     radius: 70,
-                    backgroundImage: user.photo != "-"
-                        ? MemoryImage(
-                            Base64Decoder().convert(user.photo as String),
-                          )
-                        : null),
+                    backgroundImage:
+                        imageLink != '-' ? NetworkImage(imageLink) : null,
+                  )
+                ],
                 Positioned(
                   bottom: 1,
                   right: 1,

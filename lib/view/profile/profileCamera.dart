@@ -1,6 +1,5 @@
 // ignore_for_file: camel_case_types, prefer_const_constructors_in_immutables
 
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:shared_preferences/shared_preferences.dart';
@@ -69,11 +68,11 @@ class _profileCameraViewState extends State<profileCameraView> {
 
           Utility.saveImageToPreferences(
               Utility.base64String(snapshot.data!.readAsBytesSync()));
-          return Image.memory(
-            Base64Decoder().convert(imgString as String),
-            fit: BoxFit.cover,
-            width: 300,
-            height: 200,
+          return CircleAvatar(
+            radius: 70,
+            backgroundImage: FileImage(
+              snapshot.data!,
+            ),
           );
         } else {
           return const CircleAvatar(
@@ -115,7 +114,9 @@ class _profileCameraViewState extends State<profileCameraView> {
                       elevation: 3, //elevation of button
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(5)),
-                      padding: const EdgeInsets.symmetric(horizontal: 20)),
+                      padding: const EdgeInsets.only(
+                          left: 60, right: 60) //content padding inside button
+                      ),
                   child: const Text(
                     'Ubah Gambar',
                     style: TextStyle(color: Colors.white),
