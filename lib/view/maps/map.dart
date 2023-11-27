@@ -54,10 +54,14 @@ class _OpenMapState extends State<OpenMap> {
                       _currentPosition.latitude, _currentPosition.longitude),
                   width: 30.0,
                   height: 30.0,
-                  child: const Icon(
-                    Icons.location_on,
-                    color: Colors.blueAccent,
-                    size: 40,
+                  child: Container(
+                    child: Container(
+                      child: const Icon(
+                        Icons.location_on,
+                        color: Colors.blueAccent,
+                        size: 40,
+                      ),
+                    ),
                   ),
                 ),
               ],
@@ -68,10 +72,14 @@ class _OpenMapState extends State<OpenMap> {
                   point: const LatLng(-7.776475408894669, 110.41189568694772),
                   width: 30.0,
                   height: 30.0,
-                  child: Icon(
-                    Icons.storefront_rounded,
-                    color: Colors.red.shade900,
-                    size: 40,
+                  child: Container(
+                    child: Container(
+                      child: Icon(
+                        Icons.storefront_rounded,
+                        color: Colors.red.shade900,
+                        size: 40,
+                      ),
+                    ),
                   ),
                 ),
               ],
@@ -82,10 +90,14 @@ class _OpenMapState extends State<OpenMap> {
                   point: const LatLng(-7.781738040773426, 110.41416005489336),
                   width: 30.0,
                   height: 30.0,
-                  child: Icon(
-                    Icons.storefront_rounded,
-                    color: Colors.red.shade900,
-                    size: 40,
+                  child: Container(
+                    child: Container(
+                      child: Icon(
+                        Icons.storefront_rounded,
+                        color: Colors.red.shade900,
+                        size: 40,
+                      ),
+                    ),
                   ),
                 ),
               ],
@@ -96,10 +108,14 @@ class _OpenMapState extends State<OpenMap> {
                   point: const LatLng(-7.775941357253614, 110.41539230794986),
                   width: 30.0,
                   height: 30.0,
-                  child: Icon(
-                    Icons.storefront_rounded,
-                    color: Colors.red.shade900,
-                    size: 40,
+                  child: Container(
+                    child: Container(
+                      child: Icon(
+                        Icons.storefront_rounded,
+                        color: Colors.red.shade900,
+                        size: 40,
+                      ),
+                    ),
                   ),
                 ),
               ],
@@ -129,7 +145,7 @@ class _OpenMapState extends State<OpenMap> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               FloatingActionButton(
-                child: const Icon(Icons.navigation),
+                child: Icon(Icons.navigation),
                 onPressed: () {
                   _mapController.move(
                       LatLng(_currentPosition.latitude,
@@ -157,7 +173,6 @@ class _OpenMapState extends State<OpenMap> {
         _getAddressFromLatLng(_currentPosition);
       });
     }).catchError((e) {
-      // ignore: avoid_print
       print(e);
     });
   }

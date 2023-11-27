@@ -1,8 +1,11 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
+import 'package:ugd2_pbp/client/makananClient.dart';
 import 'package:ugd2_pbp/component/darkModeState.dart' as globals;
-import 'package:ugd2_pbp/database/sql_helperMakanan.dart';
+import 'package:ugd2_pbp/entity/makananEntity.dart';
+import 'package:extended_image/extended_image.dart';
 
 class DashboardView extends StatefulWidget {
   const DashboardView({super.key});
@@ -12,13 +15,31 @@ class DashboardView extends StatefulWidget {
 }
 
 class _DashboardViewState extends State<DashboardView> {
-  List<Map<String, dynamic>> makanan = [];
+  List<Makanan> makanan = [];
   List<bool> expandableState = [];
   late int itemCount = 0;
+  late Response response;
+  late Response response2;
+  List<String> imageLink = [];
+  List<Makanan> makanan2 = [];
+
   void refresh() async {
-    final data = await SQLMakanan.getmakanan();
+    final makanan2 = await MakananClient.fetchAll();
+    imageLink = List.filled(makanan2.length, '');
+
+    //clear cache image makanan
+    clearMemoryImageCache();
+    clearDiskCachedImages();
+
+    //mengambil image semua makanan yang tersimpan di dalam folder public
+    //laravel, berdasarkan nama image yang tersimpan di database
+    response2 = await MakananClient.getAllImageMakanan();
+    //bentuk response2.body[data] ini adalah array of string
+    //kemudian disimpan di imageLink yg berupa list
+    imageLink = json.decode(response2.body)['data'].cast<String>();
+
     setState(() {
-      makanan = data;
+      makanan = makanan2;
       itemCount = makanan.length;
       expandableState = List.generate(itemCount, (index) => false);
     });
@@ -52,11 +73,18 @@ class _DashboardViewState extends State<DashboardView> {
                   height: !isExpanded
                       ? ((MediaQuery.of(context).size.height + 100) / 8.2)
                       : (MediaQuery.of(context).size.height / 5.5),
-                  child: Image.memory(const Base64Decoder()
-                      .convert(makanan[index]["namaFoto"] as String))),
+                  child: ExtendedImage.network(
+                    imageLink[index],
+                    width: 400,
+                    height: 400,
+                    fit: BoxFit.fill,
+                    cache: true,
+                    borderRadius: BorderRadius.all(Radius.circular(30.0)),
+                    //cancelToken: cancellationToken,
+                  )),
               Flexible(
                 flex: 1,
-                child: Text(makanan[index]["namaMakanan"],
+                child: Text(makanan[index].namaMakanan!,
                     style: TextStyle(
                       fontFamily: 'Oswald',
                       fontSize: 18,
@@ -68,7 +96,7 @@ class _DashboardViewState extends State<DashboardView> {
               Flexible(
                   flex: 1,
                   child: Text(
-                    !isExpanded ? '' : makanan[index]["hargaMakanan"],
+                    !isExpanded ? '' : makanan[index].hargaMakanan!.toString(),
                     textAlign: TextAlign.center,
                   )),
             ],
@@ -78,18 +106,31 @@ class _DashboardViewState extends State<DashboardView> {
     );
   }
 
-  @override
+  //nampilin list makanan
+  ListTile scrollViewItem(int index) {
+    Makanan b = Makanan(
+        namaMakanan: makanan[index].namaMakanan!,
+        hargaMakanan: makanan[index].hargaMakanan,
+        namaFoto: imageLink[index]);
+    return ListTile(
+      leading: Image.network(
+        b.namaFoto!,
+      ),
+      title: Text(b.namaMakanan!),
+      subtitle: Text(b.hargaMakanan!.toString()),
+      onTap: () {},
+    );
+  }
+
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      body: Align(
-        child: SingleChildScrollView(
-          child: Wrap(
-            children: List.generate(itemCount, (index) {
-              return bloc(width, index);
-            }),
-          ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: List.generate(itemCount, (index) {
+            return bloc(width, index); // Use the bloc function here
+          }),
         ),
       ),
     );

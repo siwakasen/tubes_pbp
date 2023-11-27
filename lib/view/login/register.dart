@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:ugd2_pbp/client/userClient.dart';
+import 'package:ugd2_pbp/entity/userEntity.dart';
 import 'package:ugd2_pbp/view/login/login.dart';
 import 'package:ugd2_pbp/component/darkModeState.dart' as globals;
 import 'package:intl/intl.dart';
@@ -201,14 +203,14 @@ class _RegisterViewState extends State<RegisterView> {
 
                           if (pickDate != null) {
                             String formatDate =
-                                DateFormat('dd-MM-yyyy').format(pickDate);
+                                DateFormat('yyyy-MM-dd').format(pickDate);
                             bornController.text = formatDate;
                           }
                         },
                         validator: (value) {
                           if (value == '' || value == null) {
                             return 'Date of birth can\'t be empty';
-                          } else if (DateFormat('dd-MM-yyyy')
+                          } else if (DateFormat('yyyy-MM-dd')
                               .parse(value)
                               .isAfter(DateTime.now())) {
                             return 'Date of birth can\'t be greater than today';
@@ -248,7 +250,7 @@ class _RegisterViewState extends State<RegisterView> {
                           formData['address'] = addressController.text;
                           formData['phoneNumber'] = phoneController.text;
                           formData['borndate'] = bornController.text;
-                          String photo = "";
+                          String photo = "-";
                           showDialog(
                               context: context,
                               builder: (_) => AlertDialog(
@@ -261,59 +263,24 @@ class _RegisterViewState extends State<RegisterView> {
                                           child: const Text('No')),
                                       TextButton(
                                         onPressed: () {
-                                          if (isSameUsername(
-                                              usernameController.text)) {
-                                            Navigator.pop(context);
-                                            showDialog(
-                                                context: context,
-                                                builder: (_) => AlertDialog(
-                                                      title: const Text(
-                                                          'Username tidak tersedia!'),
-                                                      actions: <Widget>[
-                                                        TextButton(
-                                                            onPressed: () =>
-                                                                Navigator.pop(
-                                                                    context,
-                                                                    'OK'),
-                                                            child: const Text(
-                                                                'OK')),
-                                                      ],
-                                                    ));
-                                          } else if (isSameEmail(
-                                              emailController.text)) {
-                                            Navigator.pop(context);
-                                            showDialog(
-                                                context: context,
-                                                builder: (_) => AlertDialog(
-                                                      title: const Text(
-                                                          'Email terdaftar dalam sistem!'),
-                                                      actions: <Widget>[
-                                                        TextButton(
-                                                            onPressed: () =>
-                                                                Navigator.pop(
-                                                                    context,
-                                                                    'OK'),
-                                                            child: const Text(
-                                                                'OK')),
-                                                      ],
-                                                    ));
-                                          } else {
-                                            SQLHelper.adduser(
-                                                usernameController.text,
-                                                emailController.text,
-                                                passwordController.text,
-                                                nameController.text,
-                                                addressController.text,
-                                                phoneController.text,
-                                                bornController.text,
-                                                photo);
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (_) => LoginView(
-                                                          data: formData,
-                                                        )));
-                                          }
+                                          UserClient.create(User(
+                                              id: 0,
+                                              username: usernameController.text,
+                                              email: emailController.text,
+                                              password: passwordController.text,
+                                              name: nameController.text,
+                                              address: addressController.text,
+                                              bornDate: bornController.text,
+                                              phoneNumber: phoneController.text,
+                                              photo: photo));
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (_) => LoginView(
+                                                data: formData,
+                                              ),
+                                            ),
+                                          );
                                         },
                                         child: const Text('Yes'),
                                       ),

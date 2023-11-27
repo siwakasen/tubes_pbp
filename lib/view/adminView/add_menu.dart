@@ -1,11 +1,13 @@
 import 'dart:io';
 
+import 'package:http/http.dart';
+import 'package:ugd2_pbp/client/makananClient.dart';
+import 'package:ugd2_pbp/entity/makananEntity.dart';
 import 'package:ugd2_pbp/view/adminView/Utility.dart';
 import 'package:ugd2_pbp/view/userView/homeUpper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:convert';
-import 'package:ugd2_pbp/database/sql_helperMakanan.dart';
 import 'package:image_picker/image_picker.dart';
 
 class InputMakanan extends StatefulWidget {
@@ -13,7 +15,6 @@ class InputMakanan extends StatefulWidget {
       {super.key, this.id, this.namaMakanan, this.hargaMakanan, this.namaFoto});
   final String? namaMakanan, hargaMakanan, namaFoto;
   final int? id;
-
   final String title = "Add New Menu";
 
   @override
@@ -24,29 +25,39 @@ class _InputMakananState extends State<InputMakanan> {
   TextEditingController namaMakananController = TextEditingController();
   TextEditingController hargaMakananController = TextEditingController();
   String? imgString = '';
+  String imgLink = '';
   final _formKey = GlobalKey<FormState>();
-  XFile? xFile;
+  late XFile xFile;
   Future<File?>? imageFile;
   Image? imageFromPreferences;
-  List<Map<String, dynamic>> makanan = [];
-  void refresh() async {
-    final data = await SQLMakanan.getmakanan();
-    setState(() {
-      makanan = data;
-    });
+  late Response response;
+  String message = '';
+  bool isChoosingImage = false;
+
+  //mengambil image makanan dari file public laravel berdasarkan nama image
+  //di database
+  void getImageLink() async {
+    if (widget.id != null) {
+      response = await MakananClient.getImageMakanan(widget.namaFoto!);
+      imgLink = json.decode(response.body)['data'];
+    }
+    setState(() {});
   }
 
   pickImageFromGallery(ImageSource source) async {
-    xFile = await ImagePicker()
-        .pickImage(source: ImageSource.camera, imageQuality: 25);
+    xFile = (await ImagePicker()
+        .pickImage(source: ImageSource.gallery, imageQuality: 25))!;
+    final image = File(xFile.path);
+    setState(() {
+      imageFile = Future.value(image);
+      isChoosingImage = true;
+    });
+  }
 
-    if (xFile != null) {
-      final image = File(xFile!.path);
-      // String imgString = Utility.base64String(image.readAsBytesSync());
-      setState(() {
-        imageFile = Future.value(image);
-      });
-    }
+  @override
+  void initState() {
+    getImageLink();
+    super.initState();
   }
 
   Widget imageFromGallery() {
@@ -55,8 +66,10 @@ class _InputMakananState extends State<InputMakanan> {
       builder: (BuildContext context, AsyncSnapshot<File?> snapshot) {
         if (snapshot.connectionState == ConnectionState.done &&
             null != snapshot.data) {
+          print("baru masuk");
           final imgBytes = snapshot.data!.readAsBytesSync();
           imgString = Utility.base64String(imgBytes);
+
           // print(snapshot.data?.path);
           Utility.saveImageToPreferences(
               Utility.base64String(snapshot.data!.readAsBytesSync()));
@@ -72,14 +85,18 @@ class _InputMakananState extends State<InputMakanan> {
             textAlign: TextAlign.center,
           );
         } else if (imgString != null) {
-          return Image.memory(
-            const Base64Decoder().convert(imgString as String),
-            fit: BoxFit.cover,
-            width: 300,
-            height: 200,
-          );
+          print("baru masuk 2");
+          return Container(
+              child: imgLink == ''
+                  ? null
+                  : Image.network(
+                      imgLink,
+                      fit: BoxFit.cover,
+                      width: 300,
+                      height: 200,
+                    ));
         } else {
-          return SizedBox(
+          return Container(
             width: 300,
             height: 200,
             child: Image.asset('images/placeholder_image.png'),
@@ -104,7 +121,7 @@ class _InputMakananState extends State<InputMakanan> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
-        actions: const <Widget>[],
+        actions: <Widget>[],
       ),
       body: SingleChildScrollView(
         child: Form(
@@ -114,19 +131,19 @@ class _InputMakananState extends State<InputMakanan> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
-                const SizedBox(
+                SizedBox(
                   height: 20.0,
                 ),
                 imageFromGallery(),
-                const SizedBox(height: 20),
+                SizedBox(height: 20),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromARGB(255, 255, 132,
+                      backgroundColor: Color.fromARGB(255, 255, 132,
                           0), //background color of button //border width and color
                       elevation: 3, //elevation of button
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(5)),
-                      padding: const EdgeInsets.only(
+                      padding: EdgeInsets.only(
                           left: 60, right: 60) //content padding inside button
                       ),
                   child: const Text(
@@ -135,10 +152,9 @@ class _InputMakananState extends State<InputMakanan> {
                   ),
                   onPressed: () {
                     pickImageFromGallery(ImageSource.gallery);
-                    setState(() {});
                   },
                 ),
-                const SizedBox(height: 20),
+                SizedBox(height: 20),
                 TextFormField(
                     controller: namaMakananController,
                     decoration: const InputDecoration(
@@ -148,13 +164,13 @@ class _InputMakananState extends State<InputMakanan> {
                     validator: (value) {
                       if (value!.isEmpty) {
                         return 'Food\'s name can\'t be empty';
-                      } else if (value.length > 12) {
+                      } else if (value.length > 20) {
                         return 'Food\'s name can\'t have more than 12 words';
                       } else {
                         return null;
                       }
                     }),
-                const SizedBox(height: 20),
+                SizedBox(height: 20),
                 TextFormField(
                     controller: hargaMakananController,
                     keyboardType: TextInputType.number,
@@ -172,7 +188,7 @@ class _InputMakananState extends State<InputMakanan> {
                         return null;
                       }
                     }),
-                const SizedBox(height: 20),
+                SizedBox(height: 20),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                       backgroundColor: const Color.fromARGB(255, 255, 132,
@@ -185,7 +201,7 @@ class _InputMakananState extends State<InputMakanan> {
                       ),
                   onPressed: () async {
                     if (_formKey.currentState!.validate()) {
-                      if (widget.id == null && xFile == null) {
+                      if (widget.id == null && isChoosingImage == false) {
                         showDialog(
                             context: context,
                             builder: (_) => AlertDialog(
@@ -200,22 +216,37 @@ class _InputMakananState extends State<InputMakanan> {
                                 ));
                       } else {
                         if (widget.id == null) {
-                          await SQLMakanan.addmakanan(
-                              namaMakananController.text,
-                              hargaMakananController.text,
-                              imgString!);
+                          await MakananClient.create(
+                              Makanan(
+                                  namaMakanan: namaMakananController.text,
+                                  hargaMakanan:
+                                      int.parse(hargaMakananController.text),
+                                  namaFoto: ''),
+                              File(xFile.path));
                         } else {
-                          await SQLMakanan.editmakanan(
-                              widget.id!,
-                              namaMakananController.text,
-                              hargaMakananController.text,
-                              imgString!);
+                          if (isChoosingImage) {
+                            await MakananClient.update(
+                                Makanan(
+                                    namaMakanan: namaMakananController.text,
+                                    hargaMakanan:
+                                        int.parse(hargaMakananController.text),
+                                    namaFoto: ''),
+                                widget.id!,
+                                File(xFile.path));
+                          } else {
+                            await MakananClient.updateWithoutImage(
+                                Makanan(
+                                    namaMakanan: namaMakananController.text,
+                                    hargaMakanan:
+                                        int.parse(hargaMakananController.text),
+                                    namaFoto: ''),
+                                widget.id!);
+                          }
                         }
-                        // ignore: use_build_context_synchronously
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => const Home1View(),
+                              builder: (context) => Home1View(),
                             ));
                       }
                     }
@@ -224,7 +255,8 @@ class _InputMakananState extends State<InputMakanan> {
                     'Input',
                     style: TextStyle(color: Colors.white),
                   ),
-                )
+                ),
+                Text(message),
               ],
             ),
           ),
