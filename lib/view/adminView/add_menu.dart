@@ -8,7 +8,6 @@ import 'package:ugd2_pbp/view/userView/homeUpper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:convert';
-import 'package:ugd2_pbp/database/sql_helperMakanan.dart';
 import 'package:image_picker/image_picker.dart';
 
 class InputMakanan extends StatefulWidget {
@@ -25,7 +24,7 @@ class InputMakanan extends StatefulWidget {
 class _InputMakananState extends State<InputMakanan> {
   TextEditingController namaMakananController = TextEditingController();
   TextEditingController hargaMakananController = TextEditingController();
-  String? ImgString = '';
+  String? imgString = '';
   String imgLink = '';
   final _formKey = GlobalKey<FormState>();
   late XFile xFile;
@@ -33,6 +32,7 @@ class _InputMakananState extends State<InputMakanan> {
   Image? imageFromPreferences;
   late Response response;
   String message = '';
+  bool isChoosingImage = false;
 
   @override
   void initState() {
@@ -51,7 +51,7 @@ class _InputMakananState extends State<InputMakanan> {
   pickImageFromGallery(ImageSource source) async {
     xFile = (await ImagePicker()
         .pickImage(source: ImageSource.gallery, imageQuality: 25))!;
-    final image = File(xFile!.path);
+    final image = File(xFile.path);
     setState(() {
       imageFile = Future.value(image);
     });
@@ -65,7 +65,7 @@ class _InputMakananState extends State<InputMakanan> {
             null != snapshot.data) {
           print("baru masuk");
           final imgBytes = snapshot.data!.readAsBytesSync();
-          ImgString = Utility.base64String(imgBytes);
+          imgString = Utility.base64String(imgBytes);
 
           // print(snapshot.data?.path);
           Utility.saveImageToPreferences(
@@ -81,7 +81,7 @@ class _InputMakananState extends State<InputMakanan> {
             'Wat',
             textAlign: TextAlign.center,
           );
-        } else if (ImgString != null) {
+        } else if (imgString != null) {
           print("baru masuk 2");
           return Container(
               child: imgLink == ''
@@ -108,11 +108,11 @@ class _InputMakananState extends State<InputMakanan> {
     if (widget.id != null) {
       namaMakananController.text = widget.namaMakanan!;
       hargaMakananController.text = widget.hargaMakanan!;
-      ImgString = widget.namaFoto!;
+      imgString = widget.namaFoto!;
     } else {
       namaMakananController.text = '';
       hargaMakananController.text = '';
-      ImgString = null;
+      imgString = null;
     }
 
     return Scaffold(
@@ -149,7 +149,9 @@ class _InputMakananState extends State<InputMakanan> {
                   ),
                   onPressed: () {
                     pickImageFromGallery(ImageSource.gallery);
-                    setState(() {});
+                    setState(() {
+                      isChoosingImage = true;
+                    });
                   },
                 ),
                 SizedBox(height: 20),
@@ -162,7 +164,7 @@ class _InputMakananState extends State<InputMakanan> {
                     validator: (value) {
                       if (value!.isEmpty) {
                         return 'Food\'s name can\'t be empty';
-                      } else if (value.length > 12) {
+                      } else if (value.length > 20) {
                         return 'Food\'s name can\'t have more than 12 words';
                       } else {
                         return null;
@@ -199,7 +201,7 @@ class _InputMakananState extends State<InputMakanan> {
                       ),
                   onPressed: () async {
                     if (_formKey.currentState!.validate()) {
-                      if (widget.id == null && xFile == null) {
+                      if (widget.id == null) {
                         showDialog(
                             context: context,
                             builder: (_) => AlertDialog(
@@ -213,7 +215,6 @@ class _InputMakananState extends State<InputMakanan> {
                                   ],
                                 ));
                       } else {
-                        await Future.delayed(const Duration(seconds: 1));
                         if (widget.id == null) {
                           await MakananClient.create(
                               Makanan(
@@ -223,16 +224,25 @@ class _InputMakananState extends State<InputMakanan> {
                                   namaFoto: ''),
                               File(xFile.path));
                         } else {
-                          await MakananClient.update(
-                              Makanan(
-                                  namaMakanan: namaMakananController.text,
-                                  hargaMakanan:
-                                      int.parse(hargaMakananController.text),
-                                  namaFoto: ''),
-                              widget.id!,
-                              File(xFile.path));
+                          if (isChoosingImage) {
+                            await MakananClient.update(
+                                Makanan(
+                                    namaMakanan: namaMakananController.text,
+                                    hargaMakanan:
+                                        int.parse(hargaMakananController.text),
+                                    namaFoto: ''),
+                                widget.id!,
+                                File(xFile.path));
+                          } else {
+                            await MakananClient.updateWithoutImage(
+                                Makanan(
+                                    namaMakanan: namaMakananController.text,
+                                    hargaMakanan:
+                                        int.parse(hargaMakananController.text),
+                                    namaFoto: ''),
+                                widget.id!);
+                          }
                         }
-                        await Future.delayed(const Duration(seconds: 1));
                         Navigator.push(
                             context,
                             MaterialPageRoute(

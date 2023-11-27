@@ -4,14 +4,12 @@ import 'dart:io';
 
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ugd2_pbp/client/userClient.dart';
-import 'package:ugd2_pbp/database/sql_helper.dart';
 import 'package:ugd2_pbp/model/user.dart';
 
 import 'package:ugd2_pbp/view/adminView/Utility.dart';
 import 'package:ugd2_pbp/view/userView/homeBottom.dart';
 import 'package:flutter/material.dart';
 import 'package:ugd2_pbp/component/darkModeState.dart' as globals;
-import 'dart:convert';
 import 'package:image_picker/image_picker.dart';
 
 class profileCameraView extends StatefulWidget {
@@ -51,14 +49,12 @@ class _profileCameraViewState extends State<profileCameraView> {
     xFile = (await ImagePicker()
         .pickImage(source: ImageSource.gallery, imageQuality: 25))!;
 
-    if (xFile != null) {
-      final image = File(xFile!.path);
-      imageInput = image;
+    final image = File(xFile.path);
+    imageInput = image;
 
-      setState(() {
-        imageFile = Future.value(image);
-      });
-    }
+    setState(() {
+      imageFile = Future.value(image);
+    });
   }
 
   Widget imageFromGallery() {

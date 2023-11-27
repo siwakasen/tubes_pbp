@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:ugd2_pbp/view/maps/map.dart';
 import 'package:ugd2_pbp/view/delivery/beli_makan.dart';
 import 'package:ugd2_pbp/view/userView/homeUpper.dart';
-import 'package:ugd2_pbp/view/ratings/list_rating.dart';
 import 'package:ugd2_pbp/component/darkModeState.dart' as globals;
 import 'package:ugd2_pbp/view/profile/profile_view.dart';
 

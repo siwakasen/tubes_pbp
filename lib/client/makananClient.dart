@@ -80,8 +80,7 @@ class MakananClient {
     }
   }
 
-  static Future<StreamedResponse> update(
-      Makanan makanan, id, File photo) async {
+  static Future<void> update(Makanan makanan, id, File photo) async {
     try {
       print("update makanan");
       var request = http.MultipartRequest(
@@ -94,16 +93,20 @@ class MakananClient {
 
       // Send the request
       var response = await request.send();
-      return response;
+      print(response.reasonPhrase);
     } catch (e) {
       return Future.error(e.toString());
     }
   }
 
   static Future<Response> updateWithoutImage(Makanan makanan, id) async {
-    print("getting certain image");
     try {
-      var response = await put(Uri.http(url, '$endpoint/makanans/noImage/$id'));
+      var response = await put(Uri.http(url, '$endpoint/makanans/noImage/$id'),
+          headers: {'Content-Type': 'application/json'},
+          body: jsonEncode(<String, String>{
+            'namaMakanan': makanan.namaMakanan!,
+            'hargaMakanan': makanan.hargaMakanan.toString(),
+          }));
       print(response.body);
       if (response.statusCode == 200) {
         return response;

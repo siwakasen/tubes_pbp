@@ -1,11 +1,9 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart';
 import 'package:ugd2_pbp/client/makananClient.dart';
 import 'package:ugd2_pbp/component/darkModeState.dart' as globals;
-import 'package:ugd2_pbp/database/sql_helperMakanan.dart';
 import 'package:ugd2_pbp/entity/makananEntity.dart';
 import 'package:extended_image/extended_image.dart';
 
@@ -21,15 +19,27 @@ class _DashboardViewState extends State<DashboardView> {
   List<bool> expandableState = [];
   late int itemCount = 0;
   late Response response;
-  late Response response1;
+  late Response response2;
   List<String> imageLink = [];
   List<Makanan> makanan2 = [];
 
   void refresh() async {
     final makanan2 = await MakananClient.fetchAll();
     imageLink = List.filled(makanan2.length, '');
-    response1 = await MakananClient.getAllImageMakanan();
-    imageLink = json.decode(response1.body)['data'].cast<String>();
+
+    clearMemoryImageCache();
+    clearDiskCachedImages();
+
+    //INI AMBIL LANGSUNG SEMUA
+    response2 = await MakananClient.getAllImageMakanan();
+    imageLink = json.decode(response2.body)['data'].cast<String>();
+
+    //INI AMBIL IMAGE SATU SATU
+    // for (int i = 0; i < makanan2.length; i++) {
+    //   response = await MakananClient.getImageMakanan(makanan2[i].namaFoto!);
+    //   imageLink[i] = json.decode(response.body)['data'];
+    // }
+
     setState(() {
       makanan = makanan2;
       itemCount = makanan.length;
@@ -104,7 +114,9 @@ class _DashboardViewState extends State<DashboardView> {
         hargaMakanan: makanan[index].hargaMakanan,
         namaFoto: imageLink[index]);
     return ListTile(
-      leading: Image.network(b.namaFoto!),
+      leading: Image.network(
+        b.namaFoto!,
+      ),
       title: Text(b.namaMakanan!),
       subtitle: Text(b.hargaMakanan!.toString()),
       onTap: () {},
