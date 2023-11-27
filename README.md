@@ -1,6 +1,6 @@
 # Kelompok 9
 ## Kelas : PBP A
-## Anggota Kelompok & Pembagian Tugas
+### Anggota Kelompok & Pembagian Tugas
 
 Made Riksi Purnama (210711396) : Merge hasil kerja, membuat pdf view\
 Deby Juwita (210711041) : Membuat view delivery dan image picker\
