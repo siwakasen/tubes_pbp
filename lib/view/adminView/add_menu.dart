@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:http/http.dart';
 import 'package:ugd2_pbp/client/makananClient.dart';
 import 'package:ugd2_pbp/entity/makananEntity.dart';
 import 'package:ugd2_pbp/view/adminView/Utility.dart';
@@ -15,7 +16,6 @@ class InputMakanan extends StatefulWidget {
       {super.key, this.id, this.namaMakanan, this.hargaMakanan, this.namaFoto});
   final String? namaMakanan, hargaMakanan, namaFoto;
   final int? id;
-
   final String title = "Add New Menu";
 
   @override
@@ -26,24 +26,35 @@ class _InputMakananState extends State<InputMakanan> {
   TextEditingController namaMakananController = TextEditingController();
   TextEditingController hargaMakananController = TextEditingController();
   String? ImgString = '';
+  String imgLink = '';
   final _formKey = GlobalKey<FormState>();
-  XFile? xFile;
+  late XFile xFile;
   Future<File?>? imageFile;
   Image? imageFromPreferences;
-  void refresh() async {
+  late Response response;
+  String message = '';
+
+  @override
+  void initState() {
+    getImageLink();
+    super.initState();
+  }
+
+  void getImageLink() async {
+    if (widget.id != null) {
+      response = await MakananClient.getImageMakanan(widget.namaFoto!);
+      imgLink = json.decode(response.body)['data'];
+    }
     setState(() {});
   }
 
   pickImageFromGallery(ImageSource source) async {
-    xFile = await ImagePicker()
-        .pickImage(source: ImageSource.gallery, imageQuality: 25);
-
-    if (xFile != null) {
-      final image = File(xFile!.path);
-      setState(() {
-        imageFile = Future.value(image);
-      });
-    }
+    xFile = (await ImagePicker()
+        .pickImage(source: ImageSource.gallery, imageQuality: 25))!;
+    final image = File(xFile!.path);
+    setState(() {
+      imageFile = Future.value(image);
+    });
   }
 
   Widget imageFromGallery() {
@@ -52,6 +63,7 @@ class _InputMakananState extends State<InputMakanan> {
       builder: (BuildContext context, AsyncSnapshot<File?> snapshot) {
         if (snapshot.connectionState == ConnectionState.done &&
             null != snapshot.data) {
+          print("baru masuk");
           final imgBytes = snapshot.data!.readAsBytesSync();
           ImgString = Utility.base64String(imgBytes);
 
@@ -70,13 +82,16 @@ class _InputMakananState extends State<InputMakanan> {
             textAlign: TextAlign.center,
           );
         } else if (ImgString != null) {
+          print("baru masuk 2");
           return Container(
-              child: Image.memory(
-            Base64Decoder().convert(ImgString as String),
-            fit: BoxFit.cover,
-            width: 300,
-            height: 200,
-          ));
+              child: imgLink == ''
+                  ? null
+                  : Image.network(
+                      imgLink,
+                      fit: BoxFit.cover,
+                      width: 300,
+                      height: 200,
+                    ));
         } else {
           return Container(
             width: 300,
@@ -198,20 +213,26 @@ class _InputMakananState extends State<InputMakanan> {
                                   ],
                                 ));
                       } else {
+                        await Future.delayed(const Duration(seconds: 1));
                         if (widget.id == null) {
-                          print("here");
-                          await MakananClient.create(Makanan(
-                              namaMakanan: namaMakananController.text,
-                              hargaMakanan: hargaMakananController.text,
-                              namaFoto: ImgString!));
+                          await MakananClient.create(
+                              Makanan(
+                                  namaMakanan: namaMakananController.text,
+                                  hargaMakanan:
+                                      int.parse(hargaMakananController.text),
+                                  namaFoto: ''),
+                              File(xFile.path));
                         } else {
                           await MakananClient.update(
                               Makanan(
                                   namaMakanan: namaMakananController.text,
-                                  hargaMakanan: hargaMakananController.text,
-                                  namaFoto: ImgString!),
-                              widget.id!);
+                                  hargaMakanan:
+                                      int.parse(hargaMakananController.text),
+                                  namaFoto: ''),
+                              widget.id!,
+                              File(xFile.path));
                         }
+                        await Future.delayed(const Duration(seconds: 1));
                         Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -224,7 +245,8 @@ class _InputMakananState extends State<InputMakanan> {
                     'Input',
                     style: TextStyle(color: Colors.white),
                   ),
-                )
+                ),
+                Text(message),
               ],
             ),
           ),

@@ -26,6 +26,7 @@ class profileCameraView extends StatefulWidget {
 }
 
 class _profileCameraViewState extends State<profileCameraView> {
+  String uploadingMessage = '';
   String? imgString = '';
   final _formKey = GlobalKey<FormState>();
   late XFile xFile;
@@ -135,30 +136,45 @@ class _profileCameraViewState extends State<profileCameraView> {
                 //Saving image here
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromARGB(255, 255, 132,
-                          0), //background color of button //border width and color
-                      elevation: 3, //elevation of button
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(5)),
-                      padding: const EdgeInsets.only(
-                          left: 60, right: 60) //content padding inside button
-                      ),
-                  onPressed: () {
+                    backgroundColor: const Color.fromARGB(255, 255, 132, 0),
+                    elevation: 3,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    padding: const EdgeInsets.only(left: 60, right: 60),
+                  ),
+                  onPressed: () async {
+                    setState(() {
+                      uploadingMessage = 'Uploading Image...';
+                    });
                     globals.setRefresh = 1;
-                    UserClient.updateImageUser(
+                    await UserClient.updateImageUser(
                         File(xFile.path), userId, xFile.name);
 
-                    Navigator.push(
+                    await Future.delayed(Duration(seconds: 1));
+
+                    setState(() {
+                      uploadingMessage = 'Success';
+                    });
+                    await Future.delayed(Duration(milliseconds: 20));
+                    Navigator.pop(
                       context,
                       MaterialPageRoute(
-                          builder: (_) => HomeViewStf(initialSelectedIndex: 3)),
+                        builder: (_) => HomeViewStf(initialSelectedIndex: 3),
+                      ),
                     );
                   },
-                  child: const Text(
-                    'Konfirmasi',
-                    style: TextStyle(color: Colors.white),
+                  child: const Column(
+                    children: [
+                      Text(
+                        'Konfirmasi',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      SizedBox(height: 8),
+                    ],
                   ),
-                )
+                ),
+                Text(uploadingMessage),
               ],
             ),
           ),

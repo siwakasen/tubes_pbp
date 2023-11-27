@@ -47,9 +47,8 @@ class _ProfileViewState extends State<ProfileView> {
     print(userId);
     final data = await UserClient.find(userId);
     response = await UserClient.getImageUser(data.photo);
-    imageLink = json.decode(response.body)['data'];
-
     setState(() {
+      imageLink = json.decode(response.body)['data'];
       user = data;
     });
   }
@@ -77,12 +76,7 @@ class _ProfileViewState extends State<ProfileView> {
                   bottom: 1,
                   right: 1,
                   child: InkWell(
-                    onTap: () => {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (_) => profileCameraView()))
-                    },
+                    onTap: () => {pushCameraView(context, widget)},
                     child: Container(
                       decoration: BoxDecoration(
                           border: Border.all(
@@ -143,13 +137,22 @@ class _ProfileViewState extends State<ProfileView> {
     );
   }
 
+  void pushCameraView(BuildContext context, ProfileView widget) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => profileCameraView(),
+      ),
+    ).then((value) => refresh());
+  }
+
   void pushEditView(BuildContext context, ProfileView widget) {
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (_) => ProfileEdit(),
       ),
-    );
+    ).then((value) => refresh());
   }
 
   //profile function

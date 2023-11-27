@@ -21,16 +21,15 @@ class _DashboardViewState extends State<DashboardView> {
   List<bool> expandableState = [];
   late int itemCount = 0;
   late Response response;
+  late Response response1;
   List<String> imageLink = [];
   List<Makanan> makanan2 = [];
 
   void refresh() async {
     final makanan2 = await MakananClient.fetchAll();
     imageLink = List.filled(makanan2.length, '');
-    for (int i = 0; i < makanan2.length; i++) {
-      response = await MakananClient.getImageMakanan(makanan2[i].namaFoto!);
-      imageLink[i] = json.decode(response.body)['data'];
-    }
+    response1 = await MakananClient.getAllImageMakanan();
+    imageLink = json.decode(response1.body)['data'].cast<String>();
     setState(() {
       makanan = makanan2;
       itemCount = makanan.length;
@@ -72,7 +71,6 @@ class _DashboardViewState extends State<DashboardView> {
                     height: 400,
                     fit: BoxFit.fill,
                     cache: true,
-                    border: Border.all(color: Colors.red, width: 1.0),
                     borderRadius: BorderRadius.all(Radius.circular(30.0)),
                     //cancelToken: cancellationToken,
                   )),
@@ -103,12 +101,12 @@ class _DashboardViewState extends State<DashboardView> {
   ListTile scrollViewItem(int index) {
     Makanan b = Makanan(
         namaMakanan: makanan[index].namaMakanan!,
-        hargaMakanan: makanan[index].hargaMakanan.toString(),
+        hargaMakanan: makanan[index].hargaMakanan,
         namaFoto: imageLink[index]);
     return ListTile(
       leading: Image.network(b.namaFoto!),
       title: Text(b.namaMakanan!),
-      subtitle: Text(b.hargaMakanan!),
+      subtitle: Text(b.hargaMakanan!.toString()),
       onTap: () {},
     );
   }

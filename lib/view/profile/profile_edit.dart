@@ -256,7 +256,7 @@ class _ProfileEditState extends State<ProfileEdit> {
                                 bornDate: bornController.text,
                                 photo: photo),
                             userId);
-                        Navigator.push(
+                        Navigator.pop(
                           context,
                           MaterialPageRoute(
                               builder: (_) =>

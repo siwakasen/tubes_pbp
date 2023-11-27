@@ -1,6 +1,9 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:http/http.dart';
+import 'package:http/http.dart' as http;
+
 import 'package:ugd2_pbp/entity/makananEntity.dart';
 
 class MakananClient {
@@ -8,6 +11,7 @@ class MakananClient {
   static final String endpoint = '/api';
 
   static Future<List<Makanan>> fetchAll() async {
+    print("fetching all");
     try {
       var response = await get(Uri.http(url, '$endpoint/makanans'));
 
@@ -25,6 +29,8 @@ class MakananClient {
   }
 
   static Future<List<Map<String, dynamic>>> fetchAll2() async {
+    print("fetching all 2");
+
     try {
       var response = await get(Uri.http(url, '$endpoint/makanans'));
 
@@ -42,21 +48,26 @@ class MakananClient {
     }
   }
 
-  static Future<Response> create(Makanan makanan) async {
+  static Future<void> create(Makanan makanan, File photo) async {
     try {
-      print(makanan.namaFoto);
-      var response = await post(Uri.http(url, '$endpoint/makanans'),
-          headers: {'Content-Type': 'application/json'},
-          body: makanan.toRawJson());
-      print(response.body);
-      if (response.statusCode != 200) throw Exception(response.reasonPhrase);
-      return response;
+      var request = http.MultipartRequest(
+          'POST', Uri.parse('http://$url$endpoint/makanans'));
+      request.files
+          .add(await http.MultipartFile.fromPath('namaFoto', photo.path));
+
+      request.fields['hargaMakanan'] = makanan.hargaMakanan.toString();
+      request.fields['namaMakanan'] = makanan.namaMakanan!;
+
+      // Send the request
+      var response = await request.send();
+      print(response);
     } catch (e) {
       return Future.error(e.toString());
     }
   }
 
   static Future<Makanan> find(id) async {
+    print("finding makanan");
     try {
       var response = await get(Uri.http(url, '$endpoint/makanans/$id'));
       print((response.body));
@@ -69,24 +80,63 @@ class MakananClient {
     }
   }
 
-  static Future<Response> update(Makanan makanan, int id) async {
+  static Future<StreamedResponse> update(
+      Makanan makanan, id, File photo) async {
     try {
-      var response = await put(Uri.http(url, '$endpoint/makanans/$id'),
-          headers: {'Content-Type': 'application/json'},
-          body: makanan.toRawJson());
-      if (response.statusCode != 200) throw Exception(response.reasonPhrase);
+      print("update makanan");
+      var request = http.MultipartRequest(
+          'POST', Uri.parse('http://$url$endpoint/makanans/$id'));
+      request.files
+          .add(await http.MultipartFile.fromPath('namaFoto', photo.path));
+
+      request.fields['hargaMakanan'] = makanan.hargaMakanan.toString();
+      request.fields['namaMakanan'] = makanan.namaMakanan!;
+
+      // Send the request
+      var response = await request.send();
       return response;
     } catch (e) {
       return Future.error(e.toString());
     }
   }
 
+  static Future<Response> updateWithoutImage(Makanan makanan, id) async {
+    print("getting certain image");
+    try {
+      var response = await put(Uri.http(url, '$endpoint/makanans/noImage/$id'));
+      print(response.body);
+      if (response.statusCode == 200) {
+        return response;
+      } else {
+        throw Exception('Failed to fetch image: ${response.reasonPhrase}');
+      }
+    } catch (e) {
+      return Future.error([e.toString()]);
+    }
+  }
+
   static Future<Response> getImageMakanan(String filename) async {
+    print("getting certain image");
     try {
       var response =
           await get(Uri.http(url, '$endpoint/makanans/images/$filename'));
       print(response.body);
       if (response.statusCode == 200) {
+        return response;
+      } else {
+        throw Exception('Failed to fetch image: ${response.reasonPhrase}');
+      }
+    } catch (e) {
+      return Future.error([e.toString()]);
+    }
+  }
+
+  static Future<Response> getAllImageMakanan() async {
+    print("getting all image");
+    try {
+      var response = await get(Uri.http(url, '$endpoint/makanans/images/all'));
+      if (response.statusCode == 200) {
+        print(response.body);
         return response;
       } else {
         throw Exception('Failed to fetch image: ${response.reasonPhrase}');

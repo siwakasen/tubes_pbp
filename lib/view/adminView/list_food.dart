@@ -44,21 +44,11 @@ class _ListFoodViewState extends State<ListFoodView> {
   Slidable slidableList(int index) {
     Makanan m = Makanan(
         namaMakanan: makanan[index]["namaMakanan"],
-        hargaMakanan: makanan[index]["hargaMakanan"].toString(),
+        hargaMakanan: makanan[index]["hargaMakanan"],
         id: makanan[index]["id"],
         namaFoto: makanan[index]["namaFoto"]);
 
     return Slidable(
-      child: ListTile(
-        title: Text(m.namaMakanan!),
-        subtitle: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(m.hargaMakanan!),
-          ],
-        ),
-      ),
       actionPane: SlidableDrawerActionPane(),
       secondaryActions: [
         IconSlideAction(
@@ -72,7 +62,7 @@ class _ListFoodViewState extends State<ListFoodView> {
                   builder: (context) => InputMakanan(
                         id: m.id,
                         namaMakanan: m.namaMakanan,
-                        hargaMakanan: m.hargaMakanan,
+                        hargaMakanan: m.hargaMakanan.toString(),
                         namaFoto: m.namaFoto,
                       )),
             ).then((_) => refresh());
@@ -84,9 +74,20 @@ class _ListFoodViewState extends State<ListFoodView> {
           icon: Icons.delete,
           onTap: () async {
             await MakananClient.deleteMakanan(m.id!);
+            refresh();
           },
         )
       ],
+      child: ListTile(
+        title: Text(m.namaMakanan!),
+        subtitle: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(m.hargaMakanan!.toString()),
+          ],
+        ),
+      ),
     );
   }
 
@@ -94,7 +95,7 @@ class _ListFoodViewState extends State<ListFoodView> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("TAMBAH MAKANAN"),
+          title: const Text("TAMBAH MAKANAN"),
           actions: [
             IconButton(
               icon: Icon(Icons.add),
@@ -102,7 +103,7 @@ class _ListFoodViewState extends State<ListFoodView> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => InputMakanan(
+                    builder: (context) => const InputMakanan(
                       id: null,
                       namaMakanan: null,
                       hargaMakanan: null,

@@ -3,7 +3,7 @@ import 'dart:convert';
 class Makanan {
   int? id;
   String? namaMakanan;
-  String? hargaMakanan;
+  int? hargaMakanan;
   String? namaFoto;
 
   Makanan({this.id = 0, this.namaMakanan, this.hargaMakanan, this.namaFoto});
