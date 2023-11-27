@@ -42,6 +42,7 @@ class _ProfileViewState extends State<ProfileView> {
   late int userId;
   late Response response;
   String imageLink = '-';
+
   void refresh() async {
     userId = await getIntValuesSF();
     print(userId);

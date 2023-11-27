@@ -263,45 +263,6 @@ class _RegisterViewState extends State<RegisterView> {
                                           child: const Text('No')),
                                       TextButton(
                                         onPressed: () {
-                                          // if (isSameUsername(
-                                          //     usernameController.text)) {
-                                          //   Navigator.pop(context);
-                                          //   showDialog(
-                                          //       context: context,
-                                          //       builder: (_) => AlertDialog(
-                                          //             title: const Text(
-                                          //                 'Username tidak tersedia!'),
-                                          //             actions: <Widget>[
-                                          //               TextButton(
-                                          //                   onPressed: () =>
-                                          //                       Navigator.pop(
-                                          //                           context,
-                                          //                           'OK'),
-                                          //                   child: const Text(
-                                          //                       'OK')),
-                                          //             ],
-                                          //           ));
-                                          // } else if (isSameEmail(
-                                          //     emailController.text)) {
-                                          //   Navigator.pop(context);
-                                          //   showDialog(
-                                          //       context: context,
-                                          //       builder: (_) => AlertDialog(
-                                          //             title: const Text(
-                                          //                 'Email terdaftar dalam sistem!'),
-                                          //             actions: <Widget>[
-                                          //               TextButton(
-                                          //                   onPressed: () =>
-                                          //                       Navigator.pop(
-                                          //                           context,
-                                          //                           'OK'),
-                                          //                   child: const Text(
-                                          //                       'OK')),
-                                          //             ],
-                                          //           ));
-                                          // } else {
-
-                                          // }
                                           UserClient.create(User(
                                               id: 0,
                                               username: usernameController.text,

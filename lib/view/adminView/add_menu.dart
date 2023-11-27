@@ -34,12 +34,8 @@ class _InputMakananState extends State<InputMakanan> {
   String message = '';
   bool isChoosingImage = false;
 
-  @override
-  void initState() {
-    getImageLink();
-    super.initState();
-  }
-
+  //mengambil image makanan dari file public laravel berdasarkan nama image
+  //di database
   void getImageLink() async {
     if (widget.id != null) {
       response = await MakananClient.getImageMakanan(widget.namaFoto!);
@@ -56,6 +52,12 @@ class _InputMakananState extends State<InputMakanan> {
       imageFile = Future.value(image);
       isChoosingImage = true;
     });
+  }
+
+  @override
+  void initState() {
+    getImageLink();
+    super.initState();
   }
 
   Widget imageFromGallery() {

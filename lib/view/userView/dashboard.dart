@@ -27,18 +27,16 @@ class _DashboardViewState extends State<DashboardView> {
     final makanan2 = await MakananClient.fetchAll();
     imageLink = List.filled(makanan2.length, '');
 
+    //clear cache image makanan
     clearMemoryImageCache();
     clearDiskCachedImages();
 
-    //INI AMBIL LANGSUNG SEMUA
+    //mengambil image semua makanan yang tersimpan di dalam folder public
+    //laravel, berdasarkan nama image yang tersimpan di database
     response2 = await MakananClient.getAllImageMakanan();
+    //bentuk response2.body[data] ini adalah array of string
+    //kemudian disimpan di imageLink yg berupa list
     imageLink = json.decode(response2.body)['data'].cast<String>();
-
-    //INI AMBIL IMAGE SATU SATU
-    // for (int i = 0; i < makanan2.length; i++) {
-    //   response = await MakananClient.getImageMakanan(makanan2[i].namaFoto!);
-    //   imageLink[i] = json.decode(response.body)['data'];
-    // }
 
     setState(() {
       makanan = makanan2;
@@ -108,6 +106,7 @@ class _DashboardViewState extends State<DashboardView> {
     );
   }
 
+  //nampilin list makanan
   ListTile scrollViewItem(int index) {
     Makanan b = Makanan(
         namaMakanan: makanan[index].namaMakanan!,
@@ -123,16 +122,6 @@ class _DashboardViewState extends State<DashboardView> {
     );
   }
 
-  // Widget build(BuildContext context) {
-  //   return Scaffold(
-  //       body: SingleChildScrollView(
-  //     child: Column(
-  //       children: List.generate(itemCount, (index) {
-  //         return scrollViewItem(index);
-  //       }),
-  //     ),
-  //   ));
-  // }
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
 
