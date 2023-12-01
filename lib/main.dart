@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ugd2_pbp/view/login/login.dart';
 
 void main() {
-  runApp(ProviderScope(child: MainApp()));
+  runApp(MainApp());
 }
 
 class MainApp extends StatelessWidget {

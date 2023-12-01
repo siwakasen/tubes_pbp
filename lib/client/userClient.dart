@@ -18,7 +18,7 @@ class UserClient {
             'username': username,
             'password': password,
           }));
-      print((response.body));
+      //print((response.body));
 
       if (response.statusCode != 200) throw Exception(response.reasonPhrase);
       return User.fromJson(json.decode(response.body)['data']);
@@ -111,6 +111,37 @@ class UserClient {
       print(response);
     } catch (e) {
       print('Error uploading image: $e');
+    }
+  }
+
+  static Future<User?> logintesting(String username, String password) async {
+    try {
+      var response = await post(Uri.http('127.0.0.1:8000', '$endpoint/login'),
+          headers: {'Content-Type': 'application/json'},
+          body: jsonEncode(<String, String>{
+            'username': username,
+            'password': password,
+          }));
+      //print((response.body));
+
+      if (response.statusCode != 200) return null;
+      return User.fromJson(json.decode(response.body)['data']);
+    } catch (e) {
+      return Future.error(e.toString());
+    }
+  }
+
+  static Future<Response> createtesting(User user) async {
+    try {
+      var response = await post(
+          Uri.http('127.0.0.1:8000', '$endpoint/register'),
+          headers: {'Content-Type': 'application/json'},
+          body: user.toRawJson());
+      print(response.body);
+      if (response.statusCode != 200) return response;
+      return response;
+    } catch (e) {
+      return Future.error(e.toString());
     }
   }
 }

@@ -102,7 +102,6 @@ class _LoginViewState extends State<LoginView> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text('LOGIN'),
                     TextFormField(
                       controller: usernameController,
                       decoration: InputDecoration(
