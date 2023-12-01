@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart';
 import 'package:ugd2_pbp/client/makananClient.dart';
 import 'package:ugd2_pbp/component/darkModeState.dart' as globals;
@@ -19,24 +20,19 @@ class _DashboardViewState extends State<DashboardView> {
   List<bool> expandableState = [];
   late int itemCount = 0;
   late Response response;
-  late Response response2;
+  late Response response1;
   List<String> imageLink = [];
   List<Makanan> makanan2 = [];
 
   void refresh() async {
     final makanan2 = await MakananClient.fetchAll();
     imageLink = List.filled(makanan2.length, '');
-
-    //clear cache image makanan
-    clearMemoryImageCache();
-    clearDiskCachedImages();
-
-    //mengambil image semua makanan yang tersimpan di dalam folder public
-    //laravel, berdasarkan nama image yang tersimpan di database
-    response2 = await MakananClient.getAllImageMakanan();
-    //bentuk response2.body[data] ini adalah array of string
-    //kemudian disimpan di imageLink yg berupa list
-    imageLink = json.decode(response2.body)['data'].cast<String>();
+    try {
+      response1 = await MakananClient.getAllImageMakanan();
+      imageLink = json.decode(response1.body)['data'].cast<String>();
+    } catch (e) {
+      print(e.toString());
+    }
 
     setState(() {
       makanan = makanan2;
@@ -106,22 +102,29 @@ class _DashboardViewState extends State<DashboardView> {
     );
   }
 
-  //nampilin list makanan
   ListTile scrollViewItem(int index) {
     Makanan b = Makanan(
         namaMakanan: makanan[index].namaMakanan!,
         hargaMakanan: makanan[index].hargaMakanan,
         namaFoto: imageLink[index]);
     return ListTile(
-      leading: Image.network(
-        b.namaFoto!,
-      ),
+      leading: Image.network(b.namaFoto!),
       title: Text(b.namaMakanan!),
       subtitle: Text(b.hargaMakanan!.toString()),
       onTap: () {},
     );
   }
 
+  // Widget build(BuildContext context) {
+  //   return Scaffold(
+  //       body: SingleChildScrollView(
+  //     child: Column(
+  //       children: List.generate(itemCount, (index) {
+  //         return scrollViewItem(index);
+  //       }),
+  //     ),
+  //   ));
+  // }
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
 
