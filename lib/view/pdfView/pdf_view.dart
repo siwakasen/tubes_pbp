@@ -8,17 +8,18 @@ import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 
 import 'package:intl/intl.dart';
+import 'package:ugd2_pbp/entity/makananEntity.dart';
 import 'package:ugd2_pbp/view/pdfView/preview_screen.dart';
 
-int getSubTotal(List<Map<String, dynamic>> makanan, List<int> tapCounts) {
+int getSubTotal(List<Makanan> makanan, List<int> tapCounts) {
   int subHarga = 0;
   for (int i = 0; i < makanan.length; i++) {
-    subHarga += int.parse(makanan[i]["hargaMakanan"]) * tapCounts[i];
+    subHarga += makanan[i].hargaMakanan! * tapCounts[i];
   }
   return subHarga;
 }
 
-Future<void> createPdf(BuildContext context, List<Map<String, dynamic>> makanan,
+Future<void> createPdf(BuildContext context, List<Makanan> makanan,
     List<int> tapCounts, String id) async {
   final doc = pw.Document();
   final now = DateTime.now();
@@ -117,13 +118,13 @@ Future<void> createPdf(BuildContext context, List<Map<String, dynamic>> makanan,
                       pw.Center(
                         child: pw.Image(
                             pw.MemoryImage(Base64Decoder()
-                                .convert(makanan[index]["namaFoto"] as String)),
+                                .convert(makanan[index].namaFoto as String)),
                             width: 190,
                             height: 190),
                       ),
                       pw.Center(
                         child: pw.Text(
-                          makanan[index]["namaMakanan"],
+                          makanan[index].namaMakanan!,
                           style: const pw.TextStyle(
                             fontSize: 18,
                           ),
