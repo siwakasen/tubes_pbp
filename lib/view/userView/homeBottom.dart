@@ -65,6 +65,7 @@ class _HomeViewStfState extends State<HomeViewStf> {
                   ),
                   label: 'Profile'),
             ],
+            backgroundColor: Colors.orange,
             currentIndex: selectedIndex,
             onTap: _onItemTapped,
           ),
