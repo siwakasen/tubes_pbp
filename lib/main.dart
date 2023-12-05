@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:ugd2_pbp/view/BaruRehan/home_view.dart';
 import 'package:ugd2_pbp/view/login/login.dart';
 
 void main() {
@@ -14,7 +15,7 @@ class MainApp extends StatelessWidget {
     return const MaterialApp(
       home: Scaffold(
         body: Center(
-          child: LoginView(),
+          child: HomeView(),
         ),
       ),
     );
