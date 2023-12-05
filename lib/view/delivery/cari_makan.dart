@@ -6,18 +6,16 @@ import 'package:ugd2_pbp/client/makananClient.dart';
 import 'package:flutter/material.dart';
 import 'package:ugd2_pbp/component/delivery_drawer.dart';
 import 'package:ugd2_pbp/entity/makananEntity.dart';
-import 'package:ugd2_pbp/view/delivery/cari_makan.dart';
-import 'package:ugd2_pbp/view/userView/homeBottom.dart';
 import 'package:uuid/uuid.dart';
 
-class BeliMakanView extends StatefulWidget {
-  const BeliMakanView({super.key});
+class CariMakanView extends StatefulWidget {
+  const CariMakanView({super.key});
 
   @override
-  State<BeliMakanView> createState() => _BeliMakanViewState();
+  State<CariMakanView> createState() => _CariMakanViewState();
 }
 
-class _BeliMakanViewState extends State<BeliMakanView> {
+class _CariMakanViewState extends State<CariMakanView> {
   String id = const Uuid().v1();
   bool isPesan = false;
   List<Makanan> makanan = [];
@@ -26,8 +24,10 @@ class _BeliMakanViewState extends State<BeliMakanView> {
   late Response response2;
   List<String> imageLink = [];
   List<Makanan> makanan2 = [];
-  bool isHavePesanan = false;
-  List<Makanan> pesanan = [];
+  List<Makanan> makananFromDatabase = [];
+
+  TextEditingController searchController = TextEditingController();
+
   void refresh() async {
     final makanan2 = await MakananClient.fetchAll();
     imageLink = List.filled(makanan2.length, '');
@@ -45,6 +45,7 @@ class _BeliMakanViewState extends State<BeliMakanView> {
 
     setState(() {
       makanan = makanan2;
+      makananFromDatabase = makanan2;
       itemCount = makanan.length;
     });
   }
@@ -94,9 +95,7 @@ class _BeliMakanViewState extends State<BeliMakanView> {
                       ),
                     ),
                     TextButton(
-                        onPressed: () {
-                          addPesanan(index);
-                        },
+                        onPressed: () {},
                         child: Container(
                             decoration: const BoxDecoration(
                               color: Colors.red,
@@ -132,130 +131,60 @@ class _BeliMakanViewState extends State<BeliMakanView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("DELIVERY MAKANAN"),
+        title: const Text("SEARCH RESULT"),
       ),
-      body: Column(
-        children: [
-          Container(
-            height: isHavePesanan ? 550 : 650,
-            child: SingleChildScrollView(
-              child: Column(
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Container(
+              alignment: Alignment.centerRight,
+              width: double.infinity,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Container(
-                    alignment: Alignment.centerRight,
-                    width: double.infinity,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Container(
-                            width: 220,
-                            padding: EdgeInsets.only(left: 20),
-                            decoration: const ShapeDecoration(
-                                color: Colors.amber,
-                                shape: RoundedRectangleBorder(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(50)))),
-                            child: TextButton(
-                              child: const Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text("Food"),
-                                  Icon(Icons.arrow_downward),
-                                ],
-                              ),
-                              onPressed: () {
-                                Scaffold.of(context).showBottomSheet<void>(
-                                  (BuildContext context) {
-                                    return bottomSheet();
-                                  },
-                                );
-                              },
-                            )),
-                        TextButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (_) => HomeViewStf(
-                                          initialSelectedIndex: 4,
-                                        )),
-                              );
-                            },
-                            child: Container(
-                                decoration: const BoxDecoration(
-                                  color: Colors.amber,
-                                  shape: BoxShape.circle,
-                                ),
-                                child: const Padding(
-                                  padding: EdgeInsets.all(8.0),
-                                  child: Padding(
-                                    padding: EdgeInsets.all(8.0),
-                                    child: Icon(Icons.search),
-                                  ),
-                                )))
-                      ],
+                    width: 220,
+                    padding: EdgeInsets.only(left: 20),
+                    foregroundDecoration: BoxDecoration(
+                        border: Border.all(color: Colors.black),
+                        borderRadius: BorderRadius.all(Radius.circular(50))),
+                    decoration: const ShapeDecoration(
+                        shape: RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(50)))),
+                    child: TextField(
+                      controller: searchController,
+                      decoration: InputDecoration(border: InputBorder.none),
                     ),
                   ),
-                  SingleChildScrollView(
-                    child: Column(
-                      children: List.generate(itemCount, (index) {
-                        return bloc(index); // Use the bloc function here
-                      }),
-                    ),
-                  ),
+                  TextButton(
+                      onPressed: () {
+                        searchMakanan(searchController.text);
+                      },
+                      child: Container(
+                          decoration: const BoxDecoration(
+                            color: Colors.amber,
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Icon(Icons.search),
+                            ),
+                          )))
                 ],
               ),
             ),
-          ),
-          isHavePesanan
-              ? Container(
-                  width: double.infinity,
-                  height: 100,
-                  decoration: BoxDecoration(
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(1),
-                        spreadRadius: 2,
-                        blurRadius: 5,
-                        offset: Offset(0, -5), // changes position of shadow
-                      ),
-                    ],
-                  ),
-                  child: Container(
-                    color: Colors.white,
-                    child: Center(
-                      child: Container(
-                          width: 300,
-                          padding: EdgeInsets.symmetric(horizontal: 20),
-                          decoration: const ShapeDecoration(
-                              color: Colors.red,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(10)))),
-                          child: TextButton(
-                            child: const Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Icon(Icons.collections_bookmark,
-                                    color: Colors.white),
-                                Text(
-                                  "1 Item(s)",
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                                Text(
-                                  "Harga",
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                              ],
-                            ),
-                            onPressed: () {},
-                          )),
-                    ),
-                  ),
-                )
-              : Container(),
-        ],
+            SingleChildScrollView(
+              child: Column(
+                children: List.generate(itemCount, (index) {
+                  return bloc(index); // Use the bloc function here
+                }),
+              ),
+            ),
+          ],
+        ),
       ),
       drawer: delivery(context),
     );
@@ -267,13 +196,6 @@ class _BeliMakanViewState extends State<BeliMakanView> {
       width: double.infinity,
       decoration: const ShapeDecoration(
           color: Colors.white,
-          shadows: [
-            BoxShadow(
-                color: Colors.grey,
-                spreadRadius: 10,
-                blurRadius: 9,
-                offset: Offset(0, 5)),
-          ],
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.vertical(top: Radius.circular(50)))),
       child: Padding(
@@ -334,15 +256,17 @@ class _BeliMakanViewState extends State<BeliMakanView> {
     );
   }
 
-  void addPesanan(int index) {
-    pesanan.add(makanan[index]);
+  void searchMakanan(String query) {
+    List<Makanan> hasilCari = [];
+    for (var element in makananFromDatabase) {
+      if (element.namaMakanan!.contains(query)) {
+        hasilCari.add(element);
+      }
+    }
 
     setState(() {
-      if (pesanan.isNotEmpty) {
-        isHavePesanan = true;
-      } else {
-        isHavePesanan = false;
-      }
+      makanan = hasilCari;
+      itemCount = makanan.length;
     });
   }
 }

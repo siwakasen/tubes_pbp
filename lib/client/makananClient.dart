@@ -7,7 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:ugd2_pbp/entity/makananEntity.dart';
 
 class MakananClient {
-  static final String url = '192.168.18.22';
+  static final String url = '192.168.100.211';
   static final String endpoint = '/tugbes/public/api';
 
   static Future<List<Makanan>> fetchAll() async {

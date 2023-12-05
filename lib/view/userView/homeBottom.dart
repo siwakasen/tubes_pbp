@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:ugd2_pbp/view/delivery/cari_makan.dart';
+import 'package:ugd2_pbp/view/delivery/history.dart';
 import 'package:ugd2_pbp/view/maps/map.dart';
 import 'package:ugd2_pbp/view/delivery/beli_makan.dart';
 import 'package:ugd2_pbp/view/userView/homeUpper.dart';
 import 'package:ugd2_pbp/component/darkModeState.dart' as globals;
 import 'package:ugd2_pbp/view/profile/profile_view.dart';
+
+int selectedIndex = 0;
 
 class HomeViewStf extends StatefulWidget {
   final int initialSelectedIndex;
@@ -14,20 +18,27 @@ class HomeViewStf extends StatefulWidget {
   State<HomeViewStf> createState() => _HomeViewStfState();
 }
 
-int selectedIndex = 0;
-
 class _HomeViewStfState extends State<HomeViewStf> {
   static List<Widget> widgetOptions = <Widget>[
     const Home1View(),
     const OpenMap(),
     const BeliMakanView(), //tinggal ganti
     const ProfileView(),
+    const CariMakanView(),
+    const HistoryView(),
   ];
 
   void setSelectedIndex(int index) {
     setState(() {
       selectedIndex = index;
     });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    selectedIndex = widget.initialSelectedIndex;
+    super.initState();
   }
 
   @override
@@ -65,7 +76,7 @@ class _HomeViewStfState extends State<HomeViewStf> {
                   ),
                   label: 'Profile'),
             ],
-            currentIndex: selectedIndex,
+            currentIndex: 3,
             onTap: _onItemTapped,
           ),
         ));
