@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:ugd2_pbp/entity/makananEntity.dart';
-import 'package:ugd2_pbp/lib_tubes/components_order/order_items.dart';
-import 'package:ugd2_pbp/lib_tubes/components_order/summary.dart';
-import 'package:ugd2_pbp/lib_tubes/components_order/transaction_details.dart';
-import 'package:ugd2_pbp/lib_tubes/nota_page.dart';
+import 'package:ugd2_pbp/components/order_items.dart';
+import 'package:ugd2_pbp/components/summary.dart';
+import 'package:ugd2_pbp/components/transaction_details.dart';
+import 'package:ugd2_pbp/view/order/nota/note_pdf_builder.dart';
 
 class OrderNoteView extends StatefulWidget {
   const OrderNoteView({super.key});

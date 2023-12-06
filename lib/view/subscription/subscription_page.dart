@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:ugd2_pbp/lib_tubes/history_order_page.dart';
-import 'package:ugd2_pbp/lib_tubes/ratings_page.dart';
+import 'package:ugd2_pbp/view/order/history_page.dart';
+import 'package:ugd2_pbp/view/order/ratings_page.dart';
 
 class SubscriptionView extends StatefulWidget {
   const SubscriptionView({super.key});

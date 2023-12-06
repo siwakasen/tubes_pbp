@@ -6,10 +6,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ugd2_pbp/client/userClient.dart';
 import 'package:ugd2_pbp/model/user.dart';
 
-import 'package:ugd2_pbp/view/adminView/Utility.dart';
-import 'package:ugd2_pbp/view/userView/homeBottom.dart';
+import 'package:ugd2_pbp/utils/Utility.dart';
 import 'package:flutter/material.dart';
-import 'package:ugd2_pbp/component/darkModeState.dart' as globals;
+// import 'package:ugd2_pbp/component/darkModeState.dart' as globals;
 import 'package:image_picker/image_picker.dart';
 
 class profileCameraView extends StatefulWidget {
@@ -143,7 +142,6 @@ class _profileCameraViewState extends State<profileCameraView> {
                     setState(() {
                       uploadingMessage = 'Uploading Image...';
                     });
-                    globals.setRefresh = 1;
                     await UserClient.updateImageUser(
                         File(xFile.path), userId, xFile.name);
 
@@ -153,12 +151,12 @@ class _profileCameraViewState extends State<profileCameraView> {
                       uploadingMessage = 'Success';
                     });
                     await Future.delayed(Duration(milliseconds: 20));
-                    Navigator.pop(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => HomeViewStf(initialSelectedIndex: 3),
-                      ),
-                    );
+                    // Navigator.pop(
+                    //   context,
+                    //   MaterialPageRoute(
+                    //     builder: (_) => HomeViewStf(initialSelectedIndex: 3),
+                    //   ),
+                    // );
                   },
                   child: const Column(
                     children: [

@@ -7,7 +7,7 @@ import 'package:pdf/widgets.dart' as pw;
 
 import 'package:intl/intl.dart';
 import 'package:ugd2_pbp/entity/makananEntity.dart';
-import 'package:ugd2_pbp/view/pdfView/preview_screen.dart';
+import 'package:ugd2_pbp/view/order/nota/note_preview_pdf.dart';
 
 Future<void> createPdf(BuildContext context) async {
   final doc = pw.Document();
