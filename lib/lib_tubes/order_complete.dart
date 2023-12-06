@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:ugd2_pbp/entity/makananEntity.dart';
+import 'package:ugd2_pbp/lib_tubes/components_order/order_items.dart';
 import 'package:ugd2_pbp/lib_tubes/components_order/summary.dart';
+import 'package:ugd2_pbp/lib_tubes/components_order/transaction_details.dart';
+import 'package:ugd2_pbp/lib_tubes/history_order.dart';
 
 class OrderCompleteView extends StatefulWidget {
   const OrderCompleteView({super.key});
@@ -63,15 +66,24 @@ class _OrderCompleteViewState extends State<OrderCompleteView> {
             endIndent: 10,
           ),
           Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              width: screenWidth,
+              child: Column(
+                children: List.generate(
+                    makanan.length, (index) => listItem(index, makanan, desc)),
+              )),
+          Container(
+            //Container payment method
+            decoration: const BoxDecoration(
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(10), topRight: Radius.circular(10)),
             ),
+            padding:
+                const EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
             width: screenWidth,
-            child: Column(
-              children: [
-                buildCart(context),
-              ],
-            ),
+            child: transDetails(),
           ),
           Container(
             //Container payment method
@@ -84,6 +96,7 @@ class _OrderCompleteViewState extends State<OrderCompleteView> {
             width: screenWidth,
             child: summary(),
           ),
+          const SizedBox(height: 20),
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -97,12 +110,12 @@ class _OrderCompleteViewState extends State<OrderCompleteView> {
                   child: InkWell(
                     onTap: () {
                       setState(() {
-                        // Navigator.push(
-                        //   context,
-                        //   MaterialPageRoute(
-                        //     builder: (context) => const OrderCompleteView(),
-                        //   ),
-                        // );
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const HistoryOrderView(),
+                          ),
+                        );
                       });
                     },
                     borderRadius: BorderRadius.circular(20),
@@ -155,89 +168,6 @@ class _OrderCompleteViewState extends State<OrderCompleteView> {
           const SizedBox(height: 30),
         ]),
       ),
-    );
-  }
-
-  Widget buildCart(BuildContext context) {
-    return Column(
-      children: List.generate(makanan.length, (index) => listCart(index)),
-    );
-  }
-
-  Widget listCart(index) {
-    Makanan m = Makanan(
-      namaMakanan: makanan[index].namaMakanan!,
-      hargaMakanan: makanan[index].hargaMakanan,
-      namaFoto: makanan[index].namaFoto,
-    );
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Container(
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Image(
-                image: AssetImage('images/${m.namaFoto}'),
-                width: 110,
-                height: 110,
-                fit: BoxFit.cover,
-              ),
-              const SizedBox(width: 10),
-              Column(
-                children: [
-                  const SizedBox(height: 12),
-                  SizedBox(
-                    width: 250,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        SizedBox(
-                          width: 150,
-                          child: Text(
-                            m.namaMakanan!,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.w500,
-                              fontFamily: 'Poppins',
-                              fontSize: 16,
-                              color: Colors.black,
-                            ),
-                            // overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                        Container(
-                          alignment: Alignment.centerRight,
-                          width: 100,
-                          child: Text(
-                            "IDR ${m.hargaMakanan}",
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontFamily: 'Poppins',
-                              fontSize: 16,
-                              color: Colors.black,
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                  Container(
-                    width: 250,
-                    child: Text(
-                      desc[index],
-                      style:
-                          const TextStyle(fontFamily: 'Poppins', fontSize: 14),
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                  const SizedBox(height: 5),
-                ],
-              )
-            ],
-          ),
-        ),
-        const SizedBox(height: 1),
-      ],
     );
   }
 }

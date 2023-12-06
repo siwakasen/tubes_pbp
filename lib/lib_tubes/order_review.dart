@@ -603,53 +603,55 @@ class _OrderReviewViewState extends State<OrderReviewView> {
                 child: summary(),
               ),
               Container(
-                  decoration: const BoxDecoration(
-                    borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(10),
-                        bottomRight: Radius.circular(10)),
-                    color: Colors.white,
-                  ),
-                  width: screenWidth,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      SizedBox(
-                        width: 250,
-                        height: 50,
-                        child: Material(
-                          borderRadius: BorderRadius.circular(50),
-                          color: Colors.red,
-                          child: InkWell(
-                            onTap: () {
-                              setState(() {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        const OrderCompleteView(),
-                                  ),
-                                );
-                              });
-                            },
-                            borderRadius: BorderRadius.circular(50),
-                            highlightColor: Colors.transparent,
-                            child: const Center(
-                              child: Text(
-                                "Order Now!",
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500,
-                                  fontFamily: 'Poppins',
-                                  color: Colors.white,
+                decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(10),
+                      bottomRight: Radius.circular(10)),
+                  color: Colors.white,
+                ),
+                width: screenWidth,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      width: 250,
+                      height: 50,
+                      child: Material(
+                        borderRadius: BorderRadius.circular(50),
+                        color: Colors.red,
+                        child: InkWell(
+                          onTap: () {
+                            setState(() {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      const OrderCompleteView(),
                                 ),
+                              );
+                            });
+                          },
+                          borderRadius: BorderRadius.circular(50),
+                          highlightColor: Colors.transparent,
+                          child: const Center(
+                            child: Text(
+                              "Order Now!",
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                                fontFamily: 'Poppins',
+                                color: Colors.white,
                               ),
                             ),
                           ),
                         ),
                       ),
-                      const SizedBox(height: 30),
-                    ],
-                  ))
+                    ),
+                    const SizedBox(height: 20),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 20),
             ],
           ),
         ),
