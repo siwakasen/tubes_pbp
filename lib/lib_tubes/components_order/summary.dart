@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 Widget summary() {
+  bool isSubs = true;
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
@@ -102,6 +103,30 @@ Widget summary() {
                 ),
               ],
             ),
+            isSubs ? const SizedBox(height: 5) : const SizedBox(height: 0),
+            isSubs
+                ? Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Subscription discount",
+                        style: TextStyle(
+                            fontFamily: 'Poppins',
+                            fontSize: 14,
+                            fontWeight: FontWeight.normal),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      Text(
+                        "10% off",
+                        style: TextStyle(
+                            fontFamily: 'Poppins',
+                            fontSize: 14,
+                            fontWeight: FontWeight.normal),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  )
+                : const SizedBox(height: 0),
             const Divider(
               color: Color.fromARGB(255, 167, 167, 167),
               thickness: 1,

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:ugd2_pbp/lib_tubes/history_order.dart';
+import 'package:ugd2_pbp/lib_tubes/history_order_page.dart';
 
 class RatingView extends StatefulWidget {
   const RatingView({super.key});

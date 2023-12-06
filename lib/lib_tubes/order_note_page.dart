@@ -3,16 +3,16 @@ import 'package:ugd2_pbp/entity/makananEntity.dart';
 import 'package:ugd2_pbp/lib_tubes/components_order/order_items.dart';
 import 'package:ugd2_pbp/lib_tubes/components_order/summary.dart';
 import 'package:ugd2_pbp/lib_tubes/components_order/transaction_details.dart';
-import 'package:ugd2_pbp/lib_tubes/history_order.dart';
+import 'package:ugd2_pbp/lib_tubes/nota_page.dart';
 
-class OrderSummaryView extends StatefulWidget {
-  const OrderSummaryView({super.key});
+class OrderNoteView extends StatefulWidget {
+  const OrderNoteView({super.key});
 
   @override
-  State<OrderSummaryView> createState() => _OrderSummaryViewState();
+  State<OrderNoteView> createState() => _OrderNoteViewState();
 }
 
-class _OrderSummaryViewState extends State<OrderSummaryView> {
+class _OrderNoteViewState extends State<OrderNoteView> {
   List<Makanan> makanan = [];
   List<String> desc = ["Pedas", "Goreng mateng", "tes"];
 
@@ -53,7 +53,7 @@ class _OrderSummaryViewState extends State<OrderSummaryView> {
         padding: EdgeInsets.all(10),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           const Text(
-            'Order Summary',
+            'Order Note',
             style: TextStyle(
                 fontSize: 24,
                 fontFamily: 'Poppins',
@@ -98,6 +98,30 @@ class _OrderSummaryViewState extends State<OrderSummaryView> {
           ),
         ]),
       ),
+      persistentFooterButtons: [
+        Container(
+          width: MediaQuery.of(context).size.width,
+          height: 50,
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10))),
+            onPressed: () {
+              setState(() {
+                createPdf(context);
+              });
+            },
+            child: const Text(
+              "Print Note",
+              style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.white),
+            ),
+          ),
+        )
+      ],
     );
   }
 }

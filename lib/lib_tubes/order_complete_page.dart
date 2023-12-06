@@ -3,7 +3,7 @@ import 'package:ugd2_pbp/entity/makananEntity.dart';
 import 'package:ugd2_pbp/lib_tubes/components_order/order_items.dart';
 import 'package:ugd2_pbp/lib_tubes/components_order/summary.dart';
 import 'package:ugd2_pbp/lib_tubes/components_order/transaction_details.dart';
-import 'package:ugd2_pbp/lib_tubes/history_order.dart';
+import 'package:ugd2_pbp/lib_tubes/history_order_page.dart';
 
 class OrderCompleteView extends StatefulWidget {
   const OrderCompleteView({super.key});

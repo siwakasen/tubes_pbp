@@ -7,6 +7,8 @@ Widget listItem(index, makanan, desc) {
     hargaMakanan: makanan[index].hargaMakanan,
     namaFoto: makanan[index].namaFoto,
   );
+  List<String> qty = ["1", "2", "3"];
+
   return Column(
     crossAxisAlignment: CrossAxisAlignment.center,
     children: [
@@ -15,7 +17,7 @@ Widget listItem(index, makanan, desc) {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Container(
-              padding: EdgeInsets.all(10),
+              padding: const EdgeInsets.all(10),
               width: 110,
               height: 110,
               child: Image(
@@ -45,18 +47,32 @@ Widget listItem(index, makanan, desc) {
                           // overflow: TextOverflow.ellipsis,
                         ),
                       ),
-                      Container(
-                        alignment: Alignment.centerRight,
-                        width: 100,
-                        child: Text(
-                          "IDR ${m.hargaMakanan}",
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontFamily: 'Poppins',
-                            fontSize: 16,
-                            color: Colors.black,
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            alignment: Alignment.centerRight,
+                            child: Text(
+                              "IDR ${m.hargaMakanan}",
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontFamily: 'Poppins',
+                                fontSize: 16,
+                                color: Colors.black,
+                              ),
+                            ),
                           ),
-                        ),
+                          Text(
+                            " x ${qty[index]}",
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'Poppins',
+                              fontSize: 16,
+                              color: Colors.black,
+                            ),
+                          )
+                        ],
                       )
                     ],
                   ),

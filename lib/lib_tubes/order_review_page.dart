@@ -6,7 +6,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:ugd2_pbp/lib_tubes/components_order/summary.dart';
-import 'package:ugd2_pbp/lib_tubes/order_complete.dart';
+import 'package:ugd2_pbp/lib_tubes/order_complete_page.dart';
 
 class OrderReviewView extends StatefulWidget {
   const OrderReviewView({super.key});

@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:ugd2_pbp/lib_tubes/history_order.dart';
-import 'package:ugd2_pbp/lib_tubes/order_complete.dart';
-import 'package:ugd2_pbp/lib_tubes/order_progress.dart';
+import 'package:ugd2_pbp/lib_tubes/history_order_page.dart';
+import 'package:ugd2_pbp/lib_tubes/order_complete_page.dart';
+import 'package:ugd2_pbp/lib_tubes/order_progress_page.dart';
 // import 'package:ugd2_pbp/view/login/login.dart';
-import 'package:ugd2_pbp/lib_tubes/order_review.dart';
-import 'package:ugd2_pbp/lib_tubes/order_summary.dart';
+import 'package:ugd2_pbp/lib_tubes/order_review_page.dart';
+import 'package:ugd2_pbp/lib_tubes/order_note_page.dart';
+import 'package:ugd2_pbp/lib_tubes/subscription_page.dart';
+import 'package:ugd2_pbp/view/delivery/beli_makan.dart';
 import 'package:ugd2_pbp/view/login/login.dart';
 import 'package:ugd2_pbp/view/userView/homeBottom.dart';
 
@@ -20,7 +22,7 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: OrderReviewView(),
+      home: SubscriptionView(),
     );
   }
 }

@@ -1,10 +1,7 @@
-import 'dart:ffi';
-import 'dart:isolate';
-
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:ugd2_pbp/lib_tubes/ratings.dart';
+import 'package:ugd2_pbp/lib_tubes/order_note_page.dart';
+import 'package:ugd2_pbp/lib_tubes/ratings_page.dart';
 
 class HistoryOrderView extends StatefulWidget {
   const HistoryOrderView({super.key});
@@ -172,13 +169,52 @@ class _HistoryOrderViewState extends State<HistoryOrderView> {
                           },
                         ),
                       )
-                    : RatingBarIndicator(
-                        rating: double.parse(rating[index]),
-                        itemBuilder: (context, index) => const Icon(
-                          Icons.star,
-                          color: Colors.amber,
-                        ),
-                        itemSize: 20,
+                    : Row(
+                        children: [
+                          Material(
+                            color: Colors.transparent,
+                            child: InkWell(
+                              splashColor: Colors.transparent,
+                              highlightColor: Colors.transparent,
+                              borderRadius: BorderRadius.circular(50),
+                              child: RatingBarIndicator(
+                                rating: double.parse(rating[index]),
+                                itemBuilder: (context, index) => const Icon(
+                                  Icons.star,
+                                  color: Colors.amber,
+                                ),
+                                itemSize: 20,
+                              ),
+                              onTap: () {
+                                setState(() {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              const RatingView()));
+                                });
+                              },
+                            ),
+                          ),
+                          SizedBox(width: 5),
+                          Material(
+                            color: Colors.transparent,
+                            child: InkWell(
+                              splashColor: Colors.transparent,
+                              highlightColor: Colors.transparent,
+                              borderRadius: BorderRadius.circular(50),
+                              child: Icon(
+                                Icons.delete,
+                                color: Colors.red,
+                              ),
+                              onTap: () {
+                                setState(() {
+                                  //hapus rating
+                                });
+                              },
+                            ),
+                          ),
+                        ],
                       ),
                 Material(
                   color: Colors.transparent,
@@ -187,14 +223,19 @@ class _HistoryOrderViewState extends State<HistoryOrderView> {
                     highlightColor: Colors.transparent,
                     borderRadius: BorderRadius.circular(50),
                     child: const Text(
-                      "Order Summary",
+                      "Order Note",
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
                     onTap: () {
-                      setState(() {});
+                      setState(() {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const OrderNoteView()));
+                      });
                     },
                   ),
                 ),

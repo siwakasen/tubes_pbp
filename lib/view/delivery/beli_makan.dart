@@ -96,7 +96,7 @@ class _BeliMakanViewState extends State<BeliMakanView> {
             width: 200,
             child: ElevatedButton(
               onPressed: () {
-                isPesan = false;
+                isPesan = true;
                 for (int i = 0; i < tapCounts.length; i++) {
                   if (tapCounts[i] > 0) {
                     isPesan = true;
