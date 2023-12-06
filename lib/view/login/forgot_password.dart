@@ -43,7 +43,27 @@ class _ForgotPasswordState extends State<ForgotPasswordView> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Forgot Password'),
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(
+            Icons.arrow_back,
+            size: 40,
+          ),
+          splashColor: Colors.transparent,
+          highlightColor: Colors.transparent,
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        title: Text(
+          'Forgot Password',
+          style: TextStyle(
+            fontSize: 25,
+            fontWeight: FontWeight.bold,
+            fontFamily: 'Poppins',
+            color: Colors.black,
+          ),
+        ),
       ),
       body: Container(
           padding: const EdgeInsets.all(10),
@@ -57,8 +77,19 @@ class _ForgotPasswordState extends State<ForgotPasswordView> {
                     child: TextFormField(
                       decoration: const InputDecoration(
                           border: UnderlineInputBorder(),
-                          labelText: 'Masukkan Password Baru'),
+                          labelStyle: TextStyle(color: Colors.black),
+                          focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.black),
+                          ),
+                          enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.black),
+                          ),
+                          errorBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.red),
+                          ),
+                          labelText: 'Enter New Password'),
                       controller: passwordController,
+                      cursorColor: Colors.black,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Field Required';
@@ -73,8 +104,19 @@ class _ForgotPasswordState extends State<ForgotPasswordView> {
                     child: TextFormField(
                       decoration: const InputDecoration(
                           border: UnderlineInputBorder(),
-                          labelText: 'Masukkan Validasi Password Baru'),
+                          labelStyle: TextStyle(color: Colors.black),
+                          focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.black),
+                          ),
+                          enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.black),
+                          ),
+                          errorBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.red),
+                          ),
+                          labelText: 'Enter Validate New Password'),
                       controller: passwordValidateController,
+                      cursorColor: Colors.black,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Field Required';
@@ -89,8 +131,29 @@ class _ForgotPasswordState extends State<ForgotPasswordView> {
                     child: TextFormField(
                       decoration: const InputDecoration(
                           border: UnderlineInputBorder(),
-                          labelText: 'Masukkan Email'),
+                          labelStyle: TextStyle(color: Colors.black),
+                          focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.black),
+                          ),
+                          enabledBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.black),
+                          ),
+                          errorBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Colors.red),
+                          ),
+                          labelText: 'Your Email'),
                       controller: emailController,
+                      cursorColor: Colors.black,
+                      style: const TextStyle(
+                        fontFamily: 'Poppins',
+                        color: Colors.black, // Change text color
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Field Required';
+                        }
+                        return null;
+                      },
                     ),
                   ),
                   Container(
@@ -98,7 +161,16 @@ class _ForgotPasswordState extends State<ForgotPasswordView> {
                     padding: const EdgeInsets.symmetric(
                         horizontal: 25, vertical: 10),
                     child: ElevatedButton(
-                        onPressed: onSubmit, child: Text('Simpan')),
+                        onPressed: onSubmit,
+                        child: Text('Change Password'),
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor:
+                                const Color.fromARGB(255, 255, 132, 0),
+                            elevation: 3,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(5)),
+                            padding:
+                                const EdgeInsets.only(left: 60, right: 60))),
                   )
                 ],
               ))),
