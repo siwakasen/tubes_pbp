@@ -306,29 +306,38 @@ class _LoginNewState extends State<LoginNew> {
                                             builder: (_) => HomeViewStf(
                                                 initialSelectedIndex: 3)),
                                       );
-                                      // User a = await onLogin();
-                                      // if (a.id != -1) {
-                                      //   int userId = a.id;
-                                      //   ScaffoldMessenger.of(context)
-                                      //       .showSnackBar(
-                                      //     const SnackBar(
-                                      //       content: Text('Login Successful!'),
-                                      //       backgroundColor: Color.fromARGB(
+                                      //   User a = await onLogin();
+                                      //   if (a.id != -1) {
+                                      //     int userId = a.id;
+                                      //     Fluttertoast.showToast(
+                                      //       msg: 'Login Successful!',
+                                      //       toastLength: Toast.LENGTH_SHORT,
+                                      //       gravity: ToastGravity.BOTTOM,
+                                      //       timeInSecForIosWeb: 3,
+                                      //       backgroundColor: const Color.fromARGB(
                                       //           255, 245, 110, 73),
-                                      //     ),
-                                      //   );
-                                      //   addIntToSF(userId);
-                                      // } else {
-
-                                      //   ScaffoldMessenger.of(context)
-                                      //       .showSnackBar(
-                                      //     const SnackBar(
-                                      //       content: Text(
-                                      //           'Username/password may incorrect!'),
-                                      //       backgroundColor: Color.fromARGB(
+                                      //       textColor: Colors.white,
+                                      //       fontSize: 16.0,
+                                      //     );
+                                      //     addIntToSF(userId);
+                                      //     Navigator.push(
+                                      //       context,
+                                      //       MaterialPageRoute(
+                                      //           builder: (_) => HomeViewStf(
+                                      //               initialSelectedIndex: 3)),
+                                      //     );
+                                      //   } else {
+                                      //     Fluttertoast.showToast(
+                                      //       msg: 'Username/Password may be wrong',
+                                      //       toastLength: Toast.LENGTH_SHORT,
+                                      //       gravity: ToastGravity.BOTTOM,
+                                      //       timeInSecForIosWeb: 3,
+                                      //       backgroundColor: const Color.fromARGB(
                                       //           255, 245, 110, 73),
-                                      //     ),
-                                      //   );
+                                      //       textColor: Colors.white,
+                                      //       fontSize: 16.0,
+                                      //     );
+                                      //   }
                                       // }
                                     }
                                   },

@@ -286,7 +286,7 @@ class _EditProfileNewState extends State<EditProfileNew> {
                       cursorColor: Colors.black,
                       style: const TextStyle(
                         fontFamily: 'Poppins',
-                        color: Colors.black, // Change text color
+                        color: Colors.black,
                       ),
                       validator: (value) {
                         if (value == '') {
@@ -317,7 +317,7 @@ class _EditProfileNewState extends State<EditProfileNew> {
                         cursorColor: Colors.black,
                         style: const TextStyle(
                           fontFamily: 'Poppins',
-                          color: Colors.black, // Change text color
+                          color: Colors.black,
                         ),
                         validator: (value) {
                           if (value == '') {
@@ -351,7 +351,7 @@ class _EditProfileNewState extends State<EditProfileNew> {
                         cursorColor: Colors.black,
                         style: const TextStyle(
                           fontFamily: 'Poppins',
-                          color: Colors.black, // Change text color
+                          color: Colors.black,
                         ),
                         validator: (value) {
                           if (value == '') {
@@ -381,7 +381,7 @@ class _EditProfileNewState extends State<EditProfileNew> {
                         cursorColor: Colors.black,
                         style: const TextStyle(
                           fontFamily: 'Poppins',
-                          color: Colors.black, // Change text color
+                          color: Colors.black,
                         ),
                         validator: (value) {
                           if (value == '') {
@@ -415,7 +415,7 @@ class _EditProfileNewState extends State<EditProfileNew> {
                         cursorColor: Colors.black,
                         style: const TextStyle(
                           fontFamily: 'Poppins',
-                          color: Colors.black, // Change text color
+                          color: Colors.black,
                         ),
                         onTap: () async {
                           DateTime? pickDate = await showDatePicker(
@@ -552,15 +552,6 @@ class _EditProfileNewState extends State<EditProfileNew> {
         );
       },
     );
-  }
-
-  void pushCameraView(BuildContext context, ProfileViewNew widget) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => profileCameraView(),
-      ),
-    ).then((value) => refresh());
   }
 
   getIntValuesSF() async {
