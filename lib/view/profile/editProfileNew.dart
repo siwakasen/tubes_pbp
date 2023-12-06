@@ -7,9 +7,9 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ugd2_pbp/client/userClient.dart';
-import 'package:ugd2_pbp/lib_tubes/LoginNew/profileViewNew.dart';
-import 'package:ugd2_pbp/lib_tubes/lightDark/theme.dart';
-import 'package:ugd2_pbp/lib_tubes/lightDark/theme_provider.dart';
+import 'package:ugd2_pbp/view/profile/profileViewNew.dart';
+import 'package:ugd2_pbp/theme/theme.dart';
+import 'package:ugd2_pbp/theme/theme_provider.dart';
 
 import '../../entity/userEntity.dart';
 

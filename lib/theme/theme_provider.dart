@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ugd2_pbp/lib_tubes/lightDark/theme.dart';
+import 'package:ugd2_pbp/theme/theme.dart';
 
 class ThemeProvider extends ChangeNotifier {
   bool isDarkMode = false;

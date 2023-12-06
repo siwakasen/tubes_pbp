@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ugd2_pbp/lib_tubes/home_bottom.dart';
+import 'package:ugd2_pbp/view/home/home_bottom.dart';
 
 class RestaurantList extends StatelessWidget {
   @override

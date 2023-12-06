@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:ugd2_pbp/lib_tubes/ListRestaurant.dart';
+import 'package:ugd2_pbp/view/restaurant/ListRestaurant.dart';
 
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:geocoding/geocoding.dart';
-import 'package:ugd2_pbp/lib_tubes/components_order/summary.dart';
-import 'package:ugd2_pbp/lib_tubes/order_complete_page.dart';
+import 'package:ugd2_pbp/components/summary.dart';
+import 'package:ugd2_pbp/view/order/order_success_page.dart';
 
 class MapsView extends StatefulWidget {
   const MapsView({Key? key}) : super(key: key);

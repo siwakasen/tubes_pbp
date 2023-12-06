@@ -7,9 +7,9 @@ import 'package:ugd2_pbp/entity/userEntity.dart';
 import 'package:ugd2_pbp/view/login_register/registerNew.dart';
 import 'package:ugd2_pbp/view/home/home_bottom.dart';
 import 'package:ugd2_pbp/view/home/home_view.dart';
-import 'package:ugd2_pbp/lib_tubes/lightDark/theme.dart';
+import 'package:ugd2_pbp/theme/theme.dart';
 import 'package:ugd2_pbp/view/login_register/forgot_password.dart';
-import '../../lib_tubes/lightDark/theme_provider.dart';
+import '../../theme/theme_provider.dart';
 
 class LoginNew extends StatefulWidget {
   const LoginNew({super.key});

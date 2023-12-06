@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:ugd2_pbp/lib_tubes/order_note_page.dart';
-import 'package:ugd2_pbp/lib_tubes/ratings_page.dart';
+import 'package:ugd2_pbp/view/order/nota/note_page.dart';
+import 'package:ugd2_pbp/view/order/ratings_page.dart';
 
 class HistoryOrderView extends StatefulWidget {
   const HistoryOrderView({super.key});
@@ -31,7 +31,7 @@ class _HistoryOrderViewState extends State<HistoryOrderView> {
           splashColor: Colors.transparent,
           highlightColor: Colors.transparent,
           onPressed: () {
-            //Navigator.pop(context);
+            Navigator.pop(context);
           },
         ),
       ),
@@ -42,13 +42,7 @@ class _HistoryOrderViewState extends State<HistoryOrderView> {
           children: [
             Row(
               children: [
-                Container(
-                  width: 40,
-                  height: 37,
-                  child: const Image(
-                    image: AssetImage('images/icon_clock.png'),
-                  ),
-                ),
+                Icon(Icons.lock_clock, size: 40, color: Colors.black),
                 Padding(
                   padding: const EdgeInsets.only(left: 10, top: 5),
                   child: Text(

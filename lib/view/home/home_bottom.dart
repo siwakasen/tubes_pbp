@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:ugd2_pbp/lib_tubes/LoginNew/loginNew.dart';
-import 'package:ugd2_pbp/lib_tubes/LoginNew/profileViewNew.dart';
-import 'package:ugd2_pbp/lib_tubes/home_view.dart';
-import 'package:ugd2_pbp/lib_tubes/maps.dart';
-// import 'package:ugd2_pbp/view/delivery/beli_makan.dart';
+import 'package:ugd2_pbp/view/delivery/beli_makan.dart';
+import 'package:ugd2_pbp/view/login_register/loginNew.dart';
+import 'package:ugd2_pbp/view/profile/profileViewNew.dart';
+import 'package:ugd2_pbp/view/home/home_view.dart';
+import 'package:ugd2_pbp/view/restaurant/maps.dart';
 
 class HomeBottomView extends StatefulWidget {
   final int initialSelectedIndex;
@@ -111,7 +111,7 @@ class _HomeBottomViewState extends State<HomeBottomView> {
       case 1:
         return MapsView();
       case 2:
-      // return BeliMakanView();
+        return BeliMakanView();
       case 3:
         {
           if (lastKnownIndex == 0) {
@@ -119,8 +119,7 @@ class _HomeBottomViewState extends State<HomeBottomView> {
           } else if (lastKnownIndex == 1) {
             return MapsView();
           } else if (lastKnownIndex == 2) {
-            // return BeliMakanView();
-            return Container();
+            return BeliMakanView();
           } else {
             return ProfileViewNew();
           }

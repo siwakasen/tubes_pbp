@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:ugd2_pbp/client/userClient.dart';
 import 'package:ugd2_pbp/entity/userEntity.dart';
-import 'package:ugd2_pbp/lib_tubes/LoginNew/editProfileNew.dart';
+import 'package:ugd2_pbp/view/profile/editProfileNew.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:ugd2_pbp/lib_tubes/LoginNew/profileCamera.dart';
+import 'package:ugd2_pbp/view/profile/profileCamera.dart';
 
 class ProfileViewNew extends StatefulWidget {
   const ProfileViewNew({

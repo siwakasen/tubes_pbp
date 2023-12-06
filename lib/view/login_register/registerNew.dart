@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:ugd2_pbp/client/userClient.dart';
 import 'package:ugd2_pbp/entity/userEntity.dart';
-import 'package:ugd2_pbp/lib_tubes/LoginNew/loginNew.dart';
+import 'package:ugd2_pbp/view/login_register/loginNew.dart';
 
 class RegisterViewNew extends StatefulWidget {
   const RegisterViewNew({super.key});

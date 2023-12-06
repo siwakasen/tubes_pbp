@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:ugd2_pbp/lib_tubes/LoginNew/loginNew.dart';
-import 'package:ugd2_pbp/lib_tubes/lightDark/theme_provider.dart';
-import 'package:ugd2_pbp/lib_tubes/order_review_page.dart';
+import 'package:ugd2_pbp/view/login_register/loginNew.dart';
+import 'package:ugd2_pbp/theme/theme_provider.dart';
+import 'package:ugd2_pbp/view/order/order_review_page.dart';
 
 void main() {
   runApp(

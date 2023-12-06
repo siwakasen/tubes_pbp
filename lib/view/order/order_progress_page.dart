@@ -25,7 +25,7 @@ class _OrderProcessViewState extends State<OrderProcessView> {
           splashColor: Colors.transparent,
           highlightColor: Colors.transparent,
           onPressed: () {
-            //Navigator.pop(context);
+            Navigator.pop(context);
           },
         ),
       ),
