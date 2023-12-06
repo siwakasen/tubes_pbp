@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:ugd2_pbp/entity/makananEntity.dart';
+import 'package:ugd2_pbp/view/delivery/onBeli_makan.dart';
 import 'package:ugd2_pbp/view/login_register/loginNew.dart';
 import 'package:ugd2_pbp/theme/theme_provider.dart';
 import 'package:ugd2_pbp/view/order/order_review_page.dart';
@@ -21,7 +23,12 @@ class MainApp extends StatelessWidget {
     return Consumer<ThemeProvider>(
       builder: (context, themeProvider, child) {
         return MaterialApp(
-          home: LoginNew(),
+          home: onBeliView(
+            makanan: Makanan(
+                namaMakanan: "Nama Makanan",
+                hargaMakanan: 10000,
+                namaFoto: "nama Foto"),
+          ),
           theme: themeProvider.themeData,
         );
       },
