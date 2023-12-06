@@ -1,8 +1,6 @@
-import 'package:async/async.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:ugd2_pbp/LoginNew/loginNew.dart';
-import 'package:ugd2_pbp/LoginNew/subsView.dart';
 import 'package:ugd2_pbp/lightDark/theme_provider.dart';
 import 'package:ugd2_pbp/view/login/login.dart';
 
@@ -23,7 +21,7 @@ class MainApp extends StatelessWidget {
     return Consumer<ThemeProvider>(
       builder: (context, themeProvider, child) {
         return MaterialApp(
-          home: SubscriptionView(),
+          home: LoginNew(),
           theme: themeProvider.themeData,
         );
       },
