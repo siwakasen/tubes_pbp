@@ -45,6 +45,7 @@ dependencies:
   extended_image: ^8.1.1
   fluttertoast: ^8.2.4
   toast: ^0.3.0
+  flutter_cart: ^0.1.0
 
 dev_dependencies:
   flutter_test:
