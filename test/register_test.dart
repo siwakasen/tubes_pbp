@@ -14,7 +14,7 @@ void main() {
       bornDate: "2023-12-01",
       phoneNumber: "08123123123",
       photo: "-",
-      id_restaurant: -1,
+      idRestaurant: -1,
     );
     final hasil = await UserClient.createtesting(user);
 
@@ -32,7 +32,7 @@ void main() {
       bornDate: "2023-12-01",
       phoneNumber: "08123123123",
       photo: "-",
-      id_restaurant: -1,
+      idRestaurant: -1,
     );
     final hasil = await UserClient.createtesting(user);
 

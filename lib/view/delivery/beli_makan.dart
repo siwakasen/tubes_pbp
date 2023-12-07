@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:extended_image/extended_image.dart';
 import 'package:http/http.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ugd2_pbp/client/makananClient.dart';
 import 'package:flutter/material.dart';
 import 'package:ugd2_pbp/components/delivery_drawer.dart';
@@ -72,13 +73,18 @@ class _BeliMakanViewState extends State<BeliMakanView> {
     //   makanan = makanan2;
     //   itemCount = makanan.length;
     // });
+    userId = await getIntValuesSF();
   }
 
+  int userId = -1;
   List<int> tapCounts = [];
   @override
   void initState() {
-    refresh();
     super.initState();
+    refresh();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      showAlertDialog();
+    });
   }
 
   @override
@@ -241,6 +247,25 @@ class _BeliMakanViewState extends State<BeliMakanView> {
           ],
         ),
         drawer: delivery(context));
+  }
+
+  void showAlertDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Welcome to BeliMakanView"),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text("OK"),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   Column bottomSheet() {
@@ -476,6 +501,12 @@ class _BeliMakanViewState extends State<BeliMakanView> {
           ),
         ),
       );
+  getIntValuesSF() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    //Return int
+    int intValue = prefs.getInt('intValue') ?? 0;
+    return intValue;
+  }
 
   void addPesanan(int index) {
     pesanan.add(makanan[index]);

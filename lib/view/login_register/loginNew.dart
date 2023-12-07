@@ -38,7 +38,7 @@ class _LoginNewState extends State<LoginNew> {
       bornDate: '',
       phoneNumber: '',
       photo: '',
-      id_restaurant: -1,
+      idRestaurant: null,
     );
   }
 
@@ -293,24 +293,8 @@ class _LoginNewState extends State<LoginNew> {
                                   ),
                                   onPressed: () async {
                                     if (_formKey.currentState!.validate()) {
-                                      Fluttertoast.showToast(
-                                        msg: 'Login Successful!',
-                                        toastLength: Toast.LENGTH_SHORT,
-                                        gravity: ToastGravity.BOTTOM,
-                                        timeInSecForIosWeb: 3,
-                                        backgroundColor: const Color.fromARGB(
-                                            255, 245, 110, 73),
-                                        textColor: Colors.white,
-                                        fontSize: 16.0,
-                                      );
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (_) => HomeBottomView(
-                                                  initialSelectedIndex: 0,
-                                                )),
-                                      );
                                       User a = await onLogin();
+                                      print(a.id);
                                       if (a.id != -1) {
                                         int userId = a.id;
                                         Fluttertoast.showToast(

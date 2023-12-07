@@ -2,6 +2,7 @@ import 'package:checkbox_formfield/checkbox_formfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ugd2_pbp/client/userClient.dart';
 import 'package:ugd2_pbp/entity/userEntity.dart';
 import 'package:ugd2_pbp/view/login_register/loginNew.dart';

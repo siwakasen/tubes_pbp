@@ -7,8 +7,8 @@ import 'package:http/http.dart';
 import 'package:http/http.dart' as http;
 
 class UserClient {
-  static final String url = '192.168.100.211';
-  static final String endpoint = 'tugbes/public/api';
+  static final String url = '10.0.2.2:8000';
+  static final String endpoint = '/api';
 
   static Future<User> login(String username, String password) async {
     try {

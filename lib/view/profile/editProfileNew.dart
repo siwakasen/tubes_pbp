@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ugd2_pbp/client/userClient.dart';
+import 'package:ugd2_pbp/utils/Utility.dart';
 import 'package:ugd2_pbp/view/profile/profileViewNew.dart';
 import 'package:ugd2_pbp/theme/theme.dart';
 import 'package:ugd2_pbp/theme/theme_provider.dart';
@@ -62,7 +63,7 @@ class _EditProfileNewState extends State<EditProfileNew> {
 
   String uploadingMessage = '';
   String? imgString = '';
-
+  bool pickingImage = false;
   late XFile xFile;
   Future<File?>? imageFile;
   Image? imageFromPreferences;
@@ -73,7 +74,7 @@ class _EditProfileNewState extends State<EditProfileNew> {
 
     final image = File(xFile.path);
     imageInput = image;
-
+    pickingImage = true;
     setState(() {
       imageFile = Future.value(image);
     });
@@ -85,10 +86,37 @@ class _EditProfileNewState extends State<EditProfileNew> {
 
     final image = File(xFile.path);
     imageInput = image;
-
+    pickingImage = true;
     setState(() {
       imageFile = Future.value(image);
     });
+  }
+
+  Widget imageFromGallery() {
+    return FutureBuilder<File?>(
+      future: imageFile,
+      builder: (BuildContext context, AsyncSnapshot<File?> snapshot) {
+        if (snapshot.connectionState == ConnectionState.done &&
+            null != snapshot.data) {
+          final imgBytes = snapshot.data!.readAsBytesSync();
+          imgString = Utility.base64String(imgBytes);
+
+          Utility.saveImageToPreferences(
+              Utility.base64String(snapshot.data!.readAsBytesSync()));
+          return CircleAvatar(
+            radius: 70,
+            backgroundImage: FileImage(
+              snapshot.data!,
+            ),
+          );
+        } else {
+          return const CircleAvatar(
+            radius: 70,
+            backgroundImage: null,
+          );
+        }
+      },
+    );
   }
 
   late String username, name, password, email, phoneNumber, address, bornDate;
@@ -128,10 +156,15 @@ class _EditProfileNewState extends State<EditProfileNew> {
         child: Column(
           children: [
             Stack(
-              children: [
+              children: <Widget>[
                 if (photo == "-") ...[
                   const CircleAvatar(radius: 70, backgroundImage: null),
-                ] else ...[
+                ]
+                // else if (!pickingImage)
+                //   [
+                //     imageFromGallery(),
+                // ]
+                else ...[
                   CircleAvatar(
                     radius: 70,
                     backgroundImage: photo != '-' ? NetworkImage(photo) : null,
@@ -484,7 +517,7 @@ class _EditProfileNewState extends State<EditProfileNew> {
                                 phoneNumber: phoneController.text,
                                 bornDate: bornController.text,
                                 photo: photo,
-                                id_restaurant: -1,
+                                idRestaurant: -1,
                               ),
                               userId);
                           Navigator.pop(
