@@ -3,13 +3,14 @@ import 'dart:convert';
 class User {
   late int id;
   String username;
-  String email;
   String password;
   String name;
-  String address;
+  String email;
   String phoneNumber;
+  String address;
   String bornDate;
   String photo;
+  int id_restaurant;
 
   User(
       {required this.id,
@@ -20,7 +21,8 @@ class User {
       required this.address,
       required this.bornDate,
       required this.phoneNumber,
-      required this.photo});
+      required this.photo,
+      required this.id_restaurant});
 
   factory User.fromRawJson(String str) => User.fromJson(json.decode(str));
   factory User.fromJson(Map<String, dynamic> json) => User(
@@ -32,7 +34,8 @@ class User {
       address: json['address'],
       bornDate: json['bornDate'],
       phoneNumber: json['phoneNumber'],
-      photo: json['photo']);
+      photo: json['photo'],
+      id_restaurant: json['id_restaurant']);
 
   String toRawJson() => json.encode(toJson());
   Map<String, dynamic> toJson() => {
@@ -44,6 +47,7 @@ class User {
         'address': address,
         'bornDate': bornDate,
         'phoneNumber': phoneNumber,
-        'photo': photo
+        'photo': photo,
+        'id_restaurant': id_restaurant
       };
 }

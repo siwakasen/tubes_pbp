@@ -124,7 +124,6 @@ class RestaurantCard extends StatelessWidget {
                         MaterialPageRoute(
                             builder: (context) => HomeBottomView(
                                   initialSelectedIndex: 0,
-                                  lastKnownIndex: 0,
                                 )),
                       );
                     },

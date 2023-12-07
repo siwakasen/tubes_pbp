@@ -37,7 +37,8 @@ class _ProfileViewNewState extends State<ProfileViewNew> {
       address: '',
       bornDate: '',
       phoneNumber: '',
-      photo: '');
+      photo: '',
+      id_restaurant: -1);
   late int userId;
   late Response response;
   String imageLink = '-';

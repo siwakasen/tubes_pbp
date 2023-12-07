@@ -23,12 +23,7 @@ class MainApp extends StatelessWidget {
     return Consumer<ThemeProvider>(
       builder: (context, themeProvider, child) {
         return MaterialApp(
-          home: onBeliView(
-            makanan: Makanan(
-                namaMakanan: "Nama Makanan",
-                hargaMakanan: 10000,
-                namaFoto: "nama Foto"),
-          ),
+          home: LoginNew(),
           theme: themeProvider.themeData,
         );
       },

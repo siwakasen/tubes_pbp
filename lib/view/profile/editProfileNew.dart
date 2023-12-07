@@ -475,15 +475,17 @@ class _EditProfileNewState extends State<EditProfileNew> {
                           formData['borndate'] = bornController.text;
                           UserClient.update(
                               User(
-                                  id: userId,
-                                  username: usernameController.text,
-                                  email: emailController.text,
-                                  password: passwordController.text,
-                                  name: nameController.text,
-                                  address: addressController.text,
-                                  phoneNumber: phoneController.text,
-                                  bornDate: bornController.text,
-                                  photo: photo),
+                                id: userId,
+                                username: usernameController.text,
+                                email: emailController.text,
+                                password: passwordController.text,
+                                name: nameController.text,
+                                address: addressController.text,
+                                phoneNumber: phoneController.text,
+                                bornDate: bornController.text,
+                                photo: photo,
+                                id_restaurant: -1,
+                              ),
                               userId);
                           Navigator.pop(
                             context,

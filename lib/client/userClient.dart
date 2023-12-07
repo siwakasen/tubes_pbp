@@ -18,7 +18,7 @@ class UserClient {
             'username': username,
             'password': password,
           }));
-      //print((response.body));
+      print((response.body));
 
       if (response.statusCode != 200) throw Exception(response.reasonPhrase);
       return User.fromJson(json.decode(response.body)['data']);

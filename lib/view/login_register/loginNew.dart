@@ -29,15 +29,17 @@ class _LoginNewState extends State<LoginNew> {
       print(e.toString());
     }
     return User(
-        id: -1,
-        username: '',
-        email: '',
-        password: '',
-        name: '',
-        address: '',
-        bornDate: '',
-        phoneNumber: '',
-        photo: '');
+      id: -1,
+      username: '',
+      email: '',
+      password: '',
+      name: '',
+      address: '',
+      bornDate: '',
+      phoneNumber: '',
+      photo: '',
+      id_restaurant: -1,
+    );
   }
 
   final _formKey = GlobalKey<FormState>();
@@ -306,7 +308,6 @@ class _LoginNewState extends State<LoginNew> {
                                         MaterialPageRoute(
                                             builder: (_) => HomeBottomView(
                                                   initialSelectedIndex: 0,
-                                                  lastKnownIndex: 0,
                                                 )),
                                       );
                                       //   User a = await onLogin();

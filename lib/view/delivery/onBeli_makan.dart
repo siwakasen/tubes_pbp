@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:ugd2_pbp/entity/makananEntity.dart';
+import 'package:ugd2_pbp/view/delivery/beli_makan.dart';
 import 'package:ugd2_pbp/view/order/nota/note_page.dart';
 import 'package:ugd2_pbp/view/order/ratings_page.dart';
 
@@ -37,7 +38,12 @@ class _onBeliViewState extends State<onBeliView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Costumize", style: TextStyle(color: Colors.black)),
+        title: const Text("Costumize",
+            style: TextStyle(
+                color: Colors.black,
+                fontSize: 29,
+                fontWeight: FontWeight.w500,
+                fontFamily: 'Poppins')),
         elevation: 0,
         backgroundColor: Colors.white,
         leading: IconButton(
@@ -70,16 +76,8 @@ class _onBeliViewState extends State<onBeliView> {
                           width: 100,
                           height: 100,
                           color: Colors.red,
-                          child: Text("ini foto"),
+                          child: Image(image: AssetImage("images/combo.png")),
                         ),
-                        //@nanti ganti ini
-                        // ExtendedImage.network(
-                        //   imageLink[index],
-                        //   width: 100,
-                        //   height: 100,
-                        //   fit: BoxFit.fill,
-                        //   cache: true,
-                        // ),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -102,7 +100,7 @@ class _onBeliViewState extends State<onBeliView> {
                                   quantity -= 1;
                                 });
                               },
-                              icon: Icon(Icons.add),
+                              icon: Icon(Icons.remove),
                             ),
                             Text(
                               quantity.toString(),
@@ -122,20 +120,20 @@ class _onBeliViewState extends State<onBeliView> {
                   const Divider(
                     color: Colors.black,
                     thickness: 1,
-                    height: 20,
+                    height: 10,
                   ),
                   Container(
                     width: double.infinity,
                     margin: EdgeInsets.all(20),
-                    padding: EdgeInsets.symmetric(horizontal: 30),
-                    decoration: const ShapeDecoration(
-                        color: Colors.grey,
+                    padding: EdgeInsets.only(left: 15, right: 15),
+                    decoration: ShapeDecoration(
+                        color: Colors.grey[300],
                         shape: RoundedRectangleBorder(
                             borderRadius:
                                 BorderRadius.all(Radius.circular(50)))),
                     child: DropdownMenu<String>(
                       initialSelection: ukuran.first,
-                      width: 260,
+                      width: MediaQuery.of(context).size.width - 60,
                       inputDecorationTheme:
                           InputDecorationTheme(border: InputBorder.none),
                       onSelected: (String? value) {
@@ -144,6 +142,10 @@ class _onBeliViewState extends State<onBeliView> {
                           dropdownValue = value!;
                         });
                       },
+                      trailingIcon: const Icon(
+                        Icons.arrow_drop_down,
+                        size: 50,
+                      ),
                       dropdownMenuEntries:
                           ukuran.map<DropdownMenuEntry<String>>((String value) {
                         return DropdownMenuEntry<String>(
@@ -154,66 +156,66 @@ class _onBeliViewState extends State<onBeliView> {
                 ],
               ),
             ),
-            Container(
-              width: double.infinity,
-              height: 100,
-              decoration: BoxDecoration(
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(1),
-                    spreadRadius: 2,
-                    blurRadius: 5,
-                    offset: Offset(0, -5), // changes position of shadow
-                  ),
-                ],
-              ),
-              child: Container(
-                color: Colors.white,
-                child: Center(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Container(
-                        width: 100,
-                        foregroundDecoration: BoxDecoration(
-                            border: Border.all(color: Colors.red, width: 2),
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(50))),
-                        decoration: const ShapeDecoration(
-                            shape: RoundedRectangleBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(50)))),
-                        child: TextButton(
-                          child: Text(
-                            "Cancel",
-                            style: TextStyle(color: Colors.red),
-                          ),
-                          onPressed: () {},
-                        ),
-                      ),
-                      Container(
-                        padding: EdgeInsets.symmetric(horizontal: 20),
-                        decoration: const ShapeDecoration(
-                            color: Colors.red,
-                            shape: RoundedRectangleBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(50)))),
-                        child: TextButton(
-                          child: Text(
-                            "Continue",
-                            style: TextStyle(color: Colors.white),
-                          ),
-                          onPressed: () {},
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            )
           ],
         ),
       ),
+      persistentFooterButtons: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            Container(
+              height: 50,
+              width: 120,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(50),
+                      side: const BorderSide(color: Colors.red),
+                    )),
+                onPressed: () {
+                  setState(() {
+                    Navigator.pop(context);
+                  });
+                },
+                child: const Text(
+                  "Cancel",
+                  style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.red),
+                ),
+              ),
+            ),
+            Container(
+              height: 50,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.red,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(50))),
+                onPressed: () {
+                  setState(() {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => BeliMakanView(
+                                  type: 0,
+                                )));
+                  });
+                },
+                child: const Text(
+                  "Continue",
+                  style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.white),
+                ),
+              ),
+            ),
+          ],
+        )
+      ],
     );
   }
 }
