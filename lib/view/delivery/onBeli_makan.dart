@@ -19,9 +19,16 @@ class _onBeliViewState extends State<onBeliView> {
   List<String> rating = ["4", "2"];
   Makanan item = Makanan();
   int quantity = 0;
+  List<String> ukuran = <String>[
+    'Large',
+    'Medium',
+    'Small',
+  ];
+  late String dropdownValue;
 
   @override
   void initState() {
+    dropdownValue = ukuran[0];
     item = widget.makanan;
     super.initState();
   }
@@ -47,71 +54,151 @@ class _onBeliViewState extends State<onBeliView> {
         ),
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(10),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              child: Row(
+              height: 600,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
-                    width: 100,
-                    height: 100,
-                    color: Colors.red,
-                    child: Text("ini foto"),
+                    padding: const EdgeInsets.all(10),
+                    child: Row(
+                      children: [
+                        Container(
+                          margin: EdgeInsets.symmetric(horizontal: 5),
+                          width: 100,
+                          height: 100,
+                          color: Colors.red,
+                          child: Text("ini foto"),
+                        ),
+                        //@nanti ganti ini
+                        // ExtendedImage.network(
+                        //   imageLink[index],
+                        //   width: 100,
+                        //   height: 100,
+                        //   fit: BoxFit.fill,
+                        //   cache: true,
+                        // ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Text(
+                              item.namaMakanan!,
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            Text(
+                              dropdownValue,
+                            )
+                          ],
+                        ),
+                        Container(
+                          margin: EdgeInsets.only(left: 20),
+                          child: Row(children: [
+                            IconButton(
+                              onPressed: () {
+                                setState(() {
+                                  quantity -= 1;
+                                });
+                              },
+                              icon: Icon(Icons.add),
+                            ),
+                            Text(
+                              quantity.toString(),
+                            ),
+                            IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    quantity += 1;
+                                  });
+                                },
+                                icon: Icon(Icons.add))
+                          ]),
+                        )
+                      ],
+                    ),
                   ),
-                  //@nanti ganti ini
-                  // ExtendedImage.network(
-                  //   imageLink[index],
-                  //   width: 100,
-                  //   height: 100,
-                  //   fit: BoxFit.fill,
-                  //   cache: true,
-                  // ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Text(
-                        item.namaMakanan!,
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      Text(
-                        "describsi?",
-                      )
-                    ],
+                  const Divider(
+                    color: Colors.black,
+                    thickness: 1,
+                    height: 20,
                   ),
                   Container(
-                    margin: EdgeInsets.only(left: 30),
-                    child: Row(children: [
-                      IconButton(
-                        onPressed: () {
-                          setState(() {
-                            quantity -= 1;
-                          });
-                        },
-                        icon: Icon(Icons.add),
-                      ),
-                      Text(
-                        quantity.toString(),
-                      ),
-                      IconButton(
-                          onPressed: () {
-                            setState(() {
-                              quantity += 1;
-                            });
-                          },
-                          icon: Icon(Icons.add))
-                    ]),
-                  )
+                    width: double.infinity,
+                    margin: EdgeInsets.all(20),
+                    padding: EdgeInsets.symmetric(horizontal: 30),
+                    decoration: const ShapeDecoration(
+                        color: Colors.grey,
+                        shape: RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(50)))),
+                    child: DropdownMenu<String>(
+                      initialSelection: ukuran.first,
+                      width: 260,
+                      inputDecorationTheme:
+                          InputDecorationTheme(border: InputBorder.none),
+                      onSelected: (String? value) {
+                        // This is called when the user selects an item.
+                        setState(() {
+                          dropdownValue = value!;
+                        });
+                      },
+                      dropdownMenuEntries:
+                          ukuran.map<DropdownMenuEntry<String>>((String value) {
+                        return DropdownMenuEntry<String>(
+                            value: value, label: value);
+                      }).toList(),
+                    ),
+                  ),
                 ],
               ),
             ),
-            const Divider(
-              color: Colors.black,
-              thickness: 1,
-              height: 20,
-            ),
+            Container(
+              width: double.infinity,
+              height: 100,
+              decoration: BoxDecoration(
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(1),
+                    spreadRadius: 2,
+                    blurRadius: 5,
+                    offset: Offset(0, -5), // changes position of shadow
+                  ),
+                ],
+              ),
+              child: Container(
+                color: Colors.white,
+                child: Center(
+                  child: Container(
+                      width: 300,
+                      padding: EdgeInsets.symmetric(horizontal: 20),
+                      decoration: const ShapeDecoration(
+                          color: Colors.red,
+                          shape: RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10)))),
+                      child: TextButton(
+                        child: const Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Icon(Icons.collections_bookmark,
+                                color: Colors.white),
+                            Text(
+                              "1 Item(s)",
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            Text(
+                              "Harga",
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ],
+                        ),
+                        onPressed: () {},
+                      )),
+                ),
+              ),
+            )
           ],
         ),
       ),
