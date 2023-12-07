@@ -170,32 +170,44 @@ class _onBeliViewState extends State<onBeliView> {
               child: Container(
                 color: Colors.white,
                 child: Center(
-                  child: Container(
-                      width: 300,
-                      padding: EdgeInsets.symmetric(horizontal: 20),
-                      decoration: const ShapeDecoration(
-                          color: Colors.red,
-                          shape: RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10)))),
-                      child: TextButton(
-                        child: const Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Icon(Icons.collections_bookmark,
-                                color: Colors.white),
-                            Text(
-                              "1 Item(s)",
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            Text(
-                              "Harga",
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ],
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      Container(
+                        width: 100,
+                        foregroundDecoration: BoxDecoration(
+                            border: Border.all(color: Colors.red, width: 2),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(50))),
+                        decoration: const ShapeDecoration(
+                            shape: RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(50)))),
+                        child: TextButton(
+                          child: Text(
+                            "Cancel",
+                            style: TextStyle(color: Colors.red),
+                          ),
+                          onPressed: () {},
                         ),
-                        onPressed: () {},
-                      )),
+                      ),
+                      Container(
+                        padding: EdgeInsets.symmetric(horizontal: 20),
+                        decoration: const ShapeDecoration(
+                            color: Colors.red,
+                            shape: RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(50)))),
+                        child: TextButton(
+                          child: Text(
+                            "Continue",
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          onPressed: () {},
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             )
