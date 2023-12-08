@@ -44,7 +44,7 @@ class TransaksiClient {
     print("finding trans");
     try {
       var response = await get(Uri.http(url, '$endpoint/transactions/$id'));
-      print((response.body));
+      print(response.body);
 
       return Transaksi.fromJson(json.decode(response.body)['data']);
     } catch (e) {

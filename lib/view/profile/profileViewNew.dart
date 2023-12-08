@@ -48,7 +48,6 @@ class _ProfileViewNewState extends State<ProfileViewNew> {
     clearMemoryImageCache();
     clearDiskCachedImages();
     userId = await getIntValuesSF();
-    print(userId);
     final data = await UserClient.find(userId);
 
     response = await UserClient.getImageUser(data.photo);

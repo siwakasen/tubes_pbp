@@ -43,7 +43,7 @@ class UserClient {
   static Future<User> find(id) async {
     try {
       var response = await get(Uri.http(url, '$endpoint/users/$id'));
-      print((response.body));
+      print(response.body);
 
       if (response.statusCode != 200) throw Exception(response.reasonPhrase);
 

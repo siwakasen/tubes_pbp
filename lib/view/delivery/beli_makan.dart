@@ -90,27 +90,6 @@ class _BeliMakanViewState extends State<BeliMakanView> {
     });
   }
 
-  void setTransaksi() async {
-    Transaksi trans = await TransaksiClient.find(user.id);
-
-    List<DetailTransaksi> detailTransaksi = [
-      for (int i = 0; i < pesanan.length; i++)
-        DetailTransaksi(
-          id_transaksi: trans.id,
-          id_item: pesanan[i].id,
-          quantity: qty[i],
-        )
-    ];
-    for (int i = 0; i < detailTransaksi.length; i++) {
-      DetailTransaksiClient.create(detailTransaksi[i]);
-    }
-
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (_) => const OrderReviewView()),
-    );
-  }
-
   @override
   void initState() {
     refresh();
@@ -270,13 +249,26 @@ class _BeliMakanViewState extends State<BeliMakanView> {
                                     id_user: user.id,
                                     id_restaurant: user.id_restaurant,
                                     address_on_trans: user.address,
-                                    subtotal: subtotal.toDouble(),
+                                    subtotal: subtotal,
                                     delivery_fee: 10000,
                                     order_fee: 4000,
-                                    status: "wait for payment");
-                                TransaksiClient.create(transaksi);
+                                    status: "not payed");
 
-                                setTransaksi();
+                                List<DetailTransaksi> detailTransaksi = [
+                                  for (int i = 0; i < pesanan.length; i++)
+                                    DetailTransaksi(
+                                      id_transaksi: -1,
+                                      id_item: pesanan[i].id,
+                                      quantity: qty[i],
+                                    )
+                                ];
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (_) => OrderReviewView(
+                                          trans: transaksi,
+                                          detailTrans: detailTransaksi)),
+                                );
                               },
                             )),
                       ),

@@ -1,4 +1,15 @@
+import 'dart:convert';
+
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:ugd2_pbp/client/detailTransaksiClient.dart';
+import 'package:ugd2_pbp/client/itemClient.dart';
+import 'package:ugd2_pbp/client/restaurantClient.dart';
+import 'package:ugd2_pbp/client/transaksiClient.dart';
+import 'package:ugd2_pbp/client/userClient.dart';
+import 'package:ugd2_pbp/entity/detailTransaksiEntity.dart';
+import 'package:ugd2_pbp/entity/itemEntity.dart';
 import 'package:ugd2_pbp/entity/makananEntity.dart';
 
 import 'package:geolocator/geolocator.dart';
@@ -6,19 +17,26 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:ugd2_pbp/components/summary.dart';
+import 'package:ugd2_pbp/entity/restaurantEntity.dart';
+import 'package:ugd2_pbp/entity/transaksiEntity.dart';
+import 'package:ugd2_pbp/entity/userEntity.dart';
 import 'package:ugd2_pbp/view/order/order_success_page.dart';
 
 class OrderReviewView extends StatefulWidget {
-  const OrderReviewView({super.key});
+  OrderReviewView({super.key, required this.trans, required this.detailTrans});
+  Transaksi trans;
+  List<DetailTransaksi> detailTrans;
 
   @override
   State<OrderReviewView> createState() => _OrderReviewViewState();
 }
 
 class _OrderReviewViewState extends State<OrderReviewView> {
-  List<Makanan> makanan = [];
-  List<String> desc = ["Pedas", "Goreng mateng"];
-  int amountOrder = 0;
+  List<Item> items = [];
+  List<String> imageLink = [];
+  late int userId;
+  User user = User.empty();
+  Restaurant mainRes = Restaurant.empty();
 
   String voucherName = "";
   List<String> voucherData = ["Promo Paket Family", "Promo Paket Hemat"];
@@ -60,15 +78,26 @@ class _OrderReviewViewState extends State<OrderReviewView> {
   TextEditingController noteController = TextEditingController();
   TextEditingController addressController = TextEditingController();
   TextEditingController noteAddressController = TextEditingController();
+  void refresh() async {
+    userId = await getIntValuesSF();
+    final dataUser = await UserClient.find(userId);
+    print("data user : $dataUser");
+    List<Item> items = [];
+    final restaurant = await RestaurantClient.find(user.id_restaurant);
+
+    var response2 = await ItemClient.getAllImageItems();
+    imageLink = json.decode(response2.body)['data'].cast<String>();
+
+    setState(() {
+      user = dataUser;
+      mainRes = restaurant;
+      this.items = items;
+    });
+  }
 
   @override
   void initState() {
-    makanan.add(Makanan(
-        namaMakanan: "Soto Ayam Madura",
-        hargaMakanan: 15000,
-        namaFoto: "logo.png"));
-    makanan.add(Makanan(
-        namaMakanan: "Ayam goreng", hargaMakanan: 25000, namaFoto: "logo.png"));
+    refresh();
     super.initState();
   }
 
@@ -99,7 +128,7 @@ class _OrderReviewViewState extends State<OrderReviewView> {
           splashColor: Colors.transparent,
           highlightColor: Colors.transparent,
           onPressed: () {
-            //Navigator.pop(context);
+            Navigator.pop(context);
           },
         ),
       ),
@@ -209,9 +238,9 @@ class _OrderReviewViewState extends State<OrderReviewView> {
                                 width: 255,
                                 decoration:
                                     const BoxDecoration(color: Colors.white),
-                                child: const Text(
-                                  "Crusty Crunch's Sultan Agung",
-                                  style: TextStyle(
+                                child: Text(
+                                  user.address,
+                                  style: const TextStyle(
                                     fontFamily: "Poppins",
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
@@ -222,8 +251,8 @@ class _OrderReviewViewState extends State<OrderReviewView> {
                                 width: 255,
                                 decoration:
                                     const BoxDecoration(color: Colors.white),
-                                child: const Text(
-                                  "Jl. Sultan Agung no. 24. Wirogunana, Mergang, Yogyakarta",
+                                child: Text(
+                                  mainRes.address,
                                   style: TextStyle(
                                     fontFamily: "Poppins",
                                     fontSize: 14,
@@ -661,8 +690,8 @@ class _OrderReviewViewState extends State<OrderReviewView> {
 
   Widget buildCart(BuildContext context) {
     return Column(
-      children: List.generate(makanan.length, (index) => listCart(index)),
-    );
+        // children: List.generate(makanan.length, (index) => listCart(index)),
+        );
   }
 
   Widget applyVoucher() => DraggableScrollableSheet(
@@ -823,7 +852,7 @@ class _OrderReviewViewState extends State<OrderReviewView> {
                 child: InkWell(
                   onTap: () {
                     setState(() {
-                      _getCurrentLocation();
+                      addressController.text = user.address;
                     });
                   },
                   borderRadius: BorderRadius.circular(10),
@@ -1260,11 +1289,6 @@ class _OrderReviewViewState extends State<OrderReviewView> {
       );
 
   Widget listCart(index) {
-    Makanan m = Makanan(
-      namaMakanan: makanan[index].namaMakanan!,
-      hargaMakanan: makanan[index].hargaMakanan,
-      namaFoto: makanan[index].namaFoto,
-    );
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -1273,11 +1297,14 @@ class _OrderReviewViewState extends State<OrderReviewView> {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Image(
-                image: AssetImage('images/${m.namaFoto}'),
-                width: 110,
-                height: 110,
-                fit: BoxFit.cover,
+              ExtendedImage.network(
+                imageLink
+                    .where((element) => element.contains(items[index].photo))
+                    .first,
+                width: 100,
+                height: 100,
+                fit: BoxFit.fill,
+                cache: true,
               ),
               const SizedBox(width: 10),
               Column(
@@ -1294,7 +1321,7 @@ class _OrderReviewViewState extends State<OrderReviewView> {
                           decoration: const BoxDecoration(color: Colors.white),
                           width: 150,
                           child: Text(
-                            m.namaMakanan!,
+                            items[index].name,
                             style: const TextStyle(
                               fontWeight: FontWeight.w500,
                               fontFamily: 'Poppins',
@@ -1309,7 +1336,7 @@ class _OrderReviewViewState extends State<OrderReviewView> {
                           alignment: Alignment.centerRight,
                           width: 100,
                           child: Text(
-                            "IDR ${m.hargaMakanan}",
+                            "IDR ${items[index].price * widget.detailTrans[index].quantity}",
                             style: const TextStyle(
                               fontWeight: FontWeight.bold,
                               fontFamily: 'Poppins',
@@ -1325,7 +1352,7 @@ class _OrderReviewViewState extends State<OrderReviewView> {
                     decoration: const BoxDecoration(color: Colors.white),
                     width: 250,
                     child: Text(
-                      desc[index],
+                      items[index].size,
                       style:
                           const TextStyle(fontFamily: 'Poppins', fontSize: 14),
                       overflow: TextOverflow.ellipsis,
@@ -1350,13 +1377,13 @@ class _OrderReviewViewState extends State<OrderReviewView> {
                         ),
                         onTap: () {
                           setState(() {
-                            amountOrder--;
+                            widget.detailTrans[index].quantity--;
                           });
                         },
                       ),
                       const SizedBox(width: 20),
                       Text(
-                        amountOrder.toString(),
+                        "${widget.detailTrans[index].quantity.toString}",
                         style: const TextStyle(
                             fontFamily: 'Poppins', fontSize: 16),
                       ),
@@ -1377,7 +1404,7 @@ class _OrderReviewViewState extends State<OrderReviewView> {
                         ),
                         onTap: () {
                           setState(() {
-                            amountOrder++;
+                            widget.detailTrans[index].quantity++;
                           });
                         },
                       ),
@@ -1559,6 +1586,13 @@ class _OrderReviewViewState extends State<OrderReviewView> {
       debugPrint(e);
     });
   }
+}
+
+getIntValuesSF() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  //Return int
+  int intValue = prefs.getInt('intValue') ?? 0;
+  return intValue;
 }
 
 void showSnackBar(BuildContext context, String msg, Color bg) {

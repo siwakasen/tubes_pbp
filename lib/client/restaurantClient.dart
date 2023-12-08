@@ -24,4 +24,18 @@ class RestaurantClient {
       return Future.error(e.toString());
     }
   }
+
+  static Future<Restaurant> find(id) async {
+    try {
+      var response = await get(Uri.http(url, '$endpoint/restaurants/$id'));
+
+      if (response.statusCode != 200) {
+        if (response.statusCode != 404) throw Exception(response.reasonPhrase);
+      }
+      print(response.body);
+      return Restaurant.fromJson(json.decode(response.body)['data']);
+    } catch (e) {
+      return Future.error(e.toString());
+    }
+  }
 }

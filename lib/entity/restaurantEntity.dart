@@ -17,7 +17,14 @@ class Restaurant {
       required this.postalCode,
       required this.openingHours,
       required this.closedHours});
-
+  Restaurant.empty()
+      : id = -1,
+        name = '',
+        address = '',
+        city = '',
+        postalCode = '',
+        openingHours = '',
+        closedHours = '';
   factory Restaurant.fromRawJson(String str) =>
       Restaurant.fromJson(json.decode(str));
   factory Restaurant.fromJson(Map<String, dynamic> json) => Restaurant(
@@ -40,4 +47,12 @@ class Restaurant {
         'openingHours': openingHours,
         'closedHours': closedHours,
       };
+  findRestaurant(id, List<Restaurant> restaurants) {
+    for (var i = 0; i < restaurants.length; i++) {
+      if (restaurants[i].id == id) {
+        return restaurants[i];
+      }
+    }
+    return null;
+  }
 }

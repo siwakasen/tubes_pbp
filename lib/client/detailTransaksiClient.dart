@@ -9,7 +9,7 @@ class DetailTransaksiClient {
   static final String url = '10.0.2.2:8000';
   static final String endpoint = '/api';
 
-  static Future<List<Transaksi>> fetchAll() async {
+  static Future<List<DetailTransaksi>> fetchAll() async {
     print("get data trans");
     try {
       var response = await get(Uri.http(url, '$endpoint/detail_transactions'));
@@ -21,7 +21,7 @@ class DetailTransaksiClient {
 
       Iterable list = json.decode(response.body)['data'];
 
-      return list.map((e) => Transaksi.fromJson(e)).toList();
+      return list.map((e) => DetailTransaksi.fromJson(e)).toList();
     } catch (e) {
       return Future.error(e.toString());
     }
@@ -40,14 +40,15 @@ class DetailTransaksiClient {
     }
   }
 
-  static Future<Transaksi> find(idTrans) async {
+  static Future<List<DetailTransaksi>> find(idTrans) async {
     print("finding trans");
     try {
       var response =
           await get(Uri.http(url, '$endpoint/transactions/$idTrans'));
       print((response.body));
+      Iterable list = json.decode(response.body)['data'];
 
-      return Transaksi.fromJson(json.decode(response.body)['data']);
+      return list.map((e) => DetailTransaksi.fromJson(e)).toList();
     } catch (e) {
       return Future.error(e.toString());
     }
