@@ -22,25 +22,25 @@ class ItemClient {
     }
   }
 
-  static Future<List<Map<String, dynamic>>> fetchAll2() async {
-    print("fetching all 2");
+  // static Future<List<Map<String, dynamic>>> fetchAll2() async {
+  //   print("fetching all 2");
 
-    try {
-      var response = await get(Uri.http(url, '$endpoint/items'));
+  //   try {
+  //     var response = await get(Uri.http(url, '$endpoint/items'));
 
-      if (response.statusCode != 200) {
-        if (response.statusCode != 404) throw Exception(response.reasonPhrase);
-      }
+  //     if (response.statusCode != 200) {
+  //       if (response.statusCode != 404) throw Exception(response.reasonPhrase);
+  //     }
 
-      Iterable list = json.decode(response.body)['data'];
+  //     Iterable list = json.decode(response.body)['data'];
 
-      // Modify the mapping to Map<String, dynamic>
+  //     // Modify the mapping to Map<String, dynamic>
 
-      return list.map((e) => e as Map<String, dynamic>).toList();
-    } catch (e) {
-      return Future.error(e.toString());
-    }
-  }
+  //     return list.map((e) => e as Map<String, dynamic>).toList();
+  //   } catch (e) {
+  //     return Future.error(e.toString());
+  //   }
+  // }
 
   static Future<void> create(Item item, File photo) async {
     try {

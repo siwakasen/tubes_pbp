@@ -35,4 +35,31 @@ class Item {
         'size': size,
         'id_type': id_type,
       };
+
+  printPesanan() {
+    print("id: " + id.toString());
+    print("name: " + name);
+    print("price: " + price.toString());
+    print("photo: " + photo);
+    print("size: " + size);
+    print("id_type: " + id_type.toString());
+  }
+
+  Item getIdBySize(List<Item> list, String name, String size) {
+    for (int i = 0; i < list.length; i++) {
+      if (list[i].name == name && list[i].size == size) {
+        return list[i];
+      }
+    }
+    return Item(name: '', price: 0, photo: '', size: '', id_type: -1);
+  }
+
+  bool isSamePesanan(List<Item> list, int id) {
+    for (int i = 0; i < list.length; i++) {
+      if (list[i].id == id) {
+        return true;
+      }
+    }
+    return false;
+  }
 }

@@ -10,7 +10,7 @@ class User {
   String address;
   String bornDate;
   String photo;
-  int? idRestaurant;
+  int? id_restaurant;
 
   User(
       {required this.id,
@@ -22,7 +22,7 @@ class User {
       required this.bornDate,
       required this.phoneNumber,
       required this.photo,
-      this.idRestaurant});
+      this.id_restaurant});
 
   User.empty()
       : id = -1,
@@ -34,7 +34,7 @@ class User {
         bornDate = '',
         phoneNumber = '',
         photo = '',
-        idRestaurant = -1;
+        id_restaurant = -1;
 
   factory User.fromRawJson(String str) => User.fromJson(json.decode(str));
   factory User.fromJson(Map<String, dynamic> json) => User(
@@ -47,7 +47,7 @@ class User {
       bornDate: json['bornDate'],
       phoneNumber: json['phoneNumber'],
       photo: json['photo'],
-      idRestaurant: json['idRestaurant']);
+      id_restaurant: json['id_restaurant']);
 
   String toRawJson() => json.encode(toJson());
   Map<String, dynamic> toJson() => {
@@ -60,6 +60,6 @@ class User {
         'bornDate': bornDate,
         'phoneNumber': phoneNumber,
         'photo': photo,
-        'idRestaurant': idRestaurant
+        'id_restaurant': id_restaurant
       };
 }

@@ -502,7 +502,7 @@ class _EditProfileNewState extends State<EditProfileNew> {
                                 phoneNumber: phoneController.text,
                                 bornDate: bornController.text,
                                 photo: photo,
-                                idRestaurant: -1,
+                                id_restaurant: -1,
                               ),
                               userId);
                           UserClient.updateImageUser(

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:extended_image/extended_image.dart';
 import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:ugd2_pbp/client/detailTransaksiClient.dart';
 import 'package:ugd2_pbp/client/itemClient.dart';
 import 'package:flutter/material.dart';
 import 'package:ugd2_pbp/client/itemTypeClient.dart';
@@ -10,11 +11,14 @@ import 'package:ugd2_pbp/client/userClient.dart';
 import 'package:ugd2_pbp/components/delivery_drawer.dart';
 import 'package:ugd2_pbp/entity/itemEntity.dart';
 import 'package:ugd2_pbp/entity/itemTypeEntity.dart';
+import 'package:ugd2_pbp/entity/transaksiEntity.dart';
+import 'package:ugd2_pbp/entity/detailTransaksiEntity.dart';
 import 'package:ugd2_pbp/entity/userEntity.dart';
 import 'package:ugd2_pbp/view/delivery/cari_makan.dart';
 import 'package:ugd2_pbp/view/delivery/onBeli_makan.dart';
 import 'package:ugd2_pbp/view/home/home_bottom.dart';
 import 'package:ugd2_pbp/view/order/order_review_page.dart';
+import 'package:ugd2_pbp/client/transaksiClient.dart';
 
 // ignore: must_be_immutable
 class BeliMakanView extends StatefulWidget {
@@ -43,8 +47,9 @@ class _BeliMakanViewState extends State<BeliMakanView> {
   List<ItemType> types = [];
   List<Item> itemFromDatabase = [];
   List<ItemType> itemTypeFromDatabase = [];
-
   List<Item> pesanan = [];
+  List<int> qty = [];
+  int subtotal = 0;
 
   String jumlahPesanan() {
     return pesanan.length.toString();
@@ -73,14 +78,37 @@ class _BeliMakanViewState extends State<BeliMakanView> {
       items = itemFromDatabase;
       types = itemTypeFromDatabase;
       itemCount = items.length;
-      print(user.id);
-      print(user.idRestaurant);
-      user.idRestaurant == null
+      filterSize("Regular");
+
+      print(user);
+      print(user.id_restaurant);
+      user.id_restaurant == null
           ? WidgetsBinding.instance.addPostFrameCallback((_) {
               showAlertDialog();
             })
           : null;
     });
+  }
+
+  void setTransaksi() async {
+    Transaksi trans = await TransaksiClient.find(user.id);
+
+    List<DetailTransaksi> detailTransaksi = [
+      for (int i = 0; i < pesanan.length; i++)
+        DetailTransaksi(
+          id_transaksi: trans.id,
+          id_item: pesanan[i].id,
+          quantity: qty[i],
+        )
+    ];
+    for (int i = 0; i < detailTransaksi.length; i++) {
+      DetailTransaksiClient.create(detailTransaksi[i]);
+    }
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const OrderReviewView()),
+    );
   }
 
   @override
@@ -232,17 +260,23 @@ class _BeliMakanViewState extends State<BeliMakanView> {
                                     style: TextStyle(color: Colors.white),
                                   ),
                                   Text(
-                                    "Harga",
+                                    "IDR $subtotal",
                                     style: TextStyle(color: Colors.white),
                                   ),
                                 ],
                               ),
                               onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (_) => const OrderReviewView()),
-                                );
+                                Transaksi transaksi = Transaksi(
+                                    id_user: user.id,
+                                    id_restaurant: user.id_restaurant,
+                                    address_on_trans: user.address,
+                                    subtotal: subtotal.toDouble(),
+                                    delivery_fee: 10000,
+                                    order_fee: 4000,
+                                    status: "wait for payment");
+                                TransaksiClient.create(transaksi);
+
+                                setTransaksi();
                               },
                             )),
                       ),
@@ -290,28 +324,56 @@ class _BeliMakanViewState extends State<BeliMakanView> {
                           Text(
                             "IDR ${items[index].price.toString()}",
                             style: const TextStyle(fontSize: 18),
-                          )
+                          ),
                         ],
                       ),
                     ),
                     TextButton(
                         onPressed: () async {
-                          // bool p = await Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute(
-                          //       builder: (_) => onBeliView(
-                          //             makanan: items[index],
-                          //             photo: imageLink
-                          //                 .where((element) => element
-                          //                     .contains(items[index].photo))
-                          //                 .first,
-                          //           )),
-                          // );
-                          // if (p) {
-                          //   setState(() {
-                          //     pesanan.add(items[index]);
-                          //   });
-                          // }
+                          if (items[index].name.contains("Combo")) {
+                            setState(() {
+                              pesanan.add(items[index]);
+                              qty.add(1);
+                              for (var i = 0; i < pesanan.length; i++) {
+                                subtotal += pesanan[i].price * qty[i];
+                              }
+                            });
+                          } else {
+                            Map<String, dynamic> result = await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (_) => onBeliView(
+                                        makanan: items[index],
+                                        photo: imageLink
+                                            .where((element) => element
+                                                .contains(items[index].photo))
+                                            .first,
+                                      )),
+                            );
+                            if (result['isPesan'] == true) {
+                              Item newItem = items[index].getIdBySize(
+                                  itemFromDatabase,
+                                  result['name'],
+                                  result['size']);
+                              setState(() {
+                                if (newItem.isSamePesanan(
+                                    pesanan, newItem.id)) {
+                                  int index = pesanan.indexWhere(
+                                      (element) => element.id == newItem.id);
+                                  int customizeQty = result['quantity'];
+                                  qty[index] += customizeQty;
+                                } else {
+                                  pesanan.add(newItem);
+                                  qty.add(result['quantity']);
+                                }
+                                for (var i = 0; i < pesanan.length; i++) {
+                                  subtotal += pesanan[i].price * qty[i];
+                                }
+                              });
+                            }
+                          }
+                          print(pesanan.map((e) => e.printPesanan()));
+                          print(qty.map((e) => e));
                         },
                         child: Container(
                             decoration: const BoxDecoration(
@@ -401,7 +463,7 @@ class _BeliMakanViewState extends State<BeliMakanView> {
                   children: [
                     TextButton(
                         onPressed: () {
-                          filter('Food');
+                          filter(1);
                           setState(() {
                             typeYangsedangDicari = "Food";
                           });
@@ -419,7 +481,7 @@ class _BeliMakanViewState extends State<BeliMakanView> {
                     ),
                     TextButton(
                         onPressed: () {
-                          filter('Snack');
+                          filter(3);
                           setState(() {
                             typeYangsedangDicari = "Snack";
                           });
@@ -437,7 +499,7 @@ class _BeliMakanViewState extends State<BeliMakanView> {
                     ),
                     TextButton(
                         onPressed: () {
-                          filter('Drink');
+                          filter(2);
                           setState(() {
                             typeYangsedangDicari = "Drink";
                           });
@@ -455,7 +517,7 @@ class _BeliMakanViewState extends State<BeliMakanView> {
                     ),
                     TextButton(
                         onPressed: () {
-                          filter('Combo');
+                          filter(4);
                           setState(() {
                             typeYangsedangDicari = "Combo";
                           });
@@ -481,6 +543,7 @@ class _BeliMakanViewState extends State<BeliMakanView> {
   void showAlertDialog() {
     showDialog(
       context: context,
+      barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text("Please choose the restaurant before ordering foods"),
@@ -539,37 +602,44 @@ class _BeliMakanViewState extends State<BeliMakanView> {
     });
   }
 
-  void filter(String filter) {
+  void filter(
+    int filter,
+  ) {
     List<Item> hasil = [];
-
-    //cara ku
-    for (var item in itemFromDatabase) {
-      String tipeItemNya = "";
-
-      for (var type in types) {
-        if (type.id == item.id_type) {
-          tipeItemNya = type.name;
+    if (filter == 4) {
+      for (var item in itemFromDatabase) {
+        if (item.id_type == 4 || item.id_type == 5 || item.id_type == 6) {
+          hasil.add(item);
         }
       }
+    } else {
+      for (var item in itemFromDatabase) {
+        if (item.id_type == filter && item.size == "Regular") {
+          hasil.add(item);
+        }
+      }
+    }
+    //cara ku
+    setState(() {
+      items = hasil;
+      itemCount = items.length;
+    });
+  }
 
-      if (tipeItemNya == filter) {
+  void filterSize(String size) {
+    List<Item> hasil = [];
+    print(itemFromDatabase.length);
+    for (var item in itemFromDatabase) {
+      if (item.size == size) {
         hasil.add(item);
       }
     }
-
-    //cara chatgpt
-    // var hasil2 = items.where((item) {
-    //   var tipeItemNya = types
-    //       .firstWhere(
-    //         (type) => type.id == item.id_type,
-    //       )
-    //       .name;
-    //   return tipeItemNya == filter;
-    // }).toList();
 
     setState(() {
       items = hasil;
       itemCount = items.length;
     });
+    print("Sorting");
+    print(hasil[0].size);
   }
 }

@@ -1,5 +1,7 @@
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cart/flutter_cart.dart';
+import 'package:ugd2_pbp/client/itemClient.dart';
 import 'package:ugd2_pbp/client/itemTypeClient.dart';
 import 'package:ugd2_pbp/entity/itemEntity.dart';
 import 'package:ugd2_pbp/entity/itemTypeEntity.dart';
@@ -22,18 +24,12 @@ class _onBeliViewState extends State<onBeliView> {
   int quantity = 0;
 
   List<String> ukuran = <String>[
-    'Large',
-    'Medium',
+    'Regular',
     'Small',
+    'Large',
   ];
   late String dropdownValue;
-
   var cart = FlutterCart();
-
-  List<ItemType> itemTypeFromDatabase = [];
-  void getDataFromDatabase() async {
-    itemTypeFromDatabase = await ItemTypeClient.fetchAll();
-  }
 
   @override
   void initState() {
@@ -81,10 +77,13 @@ class _onBeliViewState extends State<onBeliView> {
                       children: [
                         Container(
                           margin: EdgeInsets.symmetric(horizontal: 5),
-                          width: 100,
-                          height: 100,
-                          color: Colors.red,
-                          child: Image(image: AssetImage("images/combo.png")),
+                          child: ExtendedImage.network(
+                            widget.photo,
+                            width: 140,
+                            height: 200,
+                            fit: BoxFit.fill,
+                            cache: true,
+                          ),
                         ),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -140,7 +139,7 @@ class _onBeliViewState extends State<onBeliView> {
                             borderRadius:
                                 BorderRadius.all(Radius.circular(50)))),
                     child: DropdownMenu<String>(
-                      initialSelection: ukuran.first,
+                      initialSelection: ukuran[0],
                       width: MediaQuery.of(context).size.width - 60,
                       inputDecorationTheme:
                           InputDecorationTheme(border: InputBorder.none),
@@ -203,9 +202,21 @@ class _onBeliViewState extends State<onBeliView> {
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(50))),
                 onPressed: () {
-                  setState(() {
-                    Navigator.pop(context, true);
-                  });
+                  if (quantity == 0) {
+                    showSnackBar(
+                        context, "Inputkan jumlah pesanan", Colors.red);
+                  } else {
+                    setState(() {
+                      Map<String, dynamic> data = {
+                        'isPesan': true,
+                        'name': item.name,
+                        'quantity': quantity,
+                        'size': dropdownValue,
+                      };
+
+                      Navigator.pop(context, data);
+                    });
+                  }
                 },
                 child: const Text(
                   "Continue",
@@ -221,4 +232,12 @@ class _onBeliViewState extends State<onBeliView> {
       ],
     );
   }
+}
+
+void showSnackBar(BuildContext context, String msg, Color bg) {
+  final scaffold = ScaffoldMessenger.of(context);
+  scaffold.showSnackBar(SnackBar(
+    content: Text(msg),
+    backgroundColor: bg,
+  ));
 }

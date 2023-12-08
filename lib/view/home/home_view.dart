@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ugd2_pbp/view/home/home_bottom.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -69,20 +70,44 @@ class _HomeViewState extends State<HomeView> {
                 Material(
                     color: Colors.transparent,
                     child: InkWell(
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => HomeBottomView(
+                                      pageRenderIndex: 2, bottomBarIndex: 2)));
+                        },
                         highlightColor: Colors.transparent,
                         child: GridItem(imagePath: 'images/drink.png'))),
                 Material(
                     child: InkWell(
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => HomeBottomView(
+                                      pageRenderIndex: 2, bottomBarIndex: 2)));
+                        },
                         child: GridItem(imagePath: 'images/snack.png'))),
                 Material(
                     child: InkWell(
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => HomeBottomView(
+                                      pageRenderIndex: 2, bottomBarIndex: 2)));
+                        },
                         child: GridItem(imagePath: 'images/food.png'))),
                 Material(
                     child: InkWell(
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => HomeBottomView(
+                                      pageRenderIndex: 2, bottomBarIndex: 2)));
+                        },
                         child: GridItem(imagePath: 'images/combo.png'))),
                 // ...
               ],

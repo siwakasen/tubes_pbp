@@ -174,9 +174,9 @@ class SubscriptionViewState extends State<SubscriptionView> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      listsubs[index].id == "1"
+                                      listsubs[index].id == 1
                                           ? "Bronze"
-                                          : listsubs[index].id == "2"
+                                          : listsubs[index].id == 2
                                               ? "Gold"
                                               : "Platinum",
                                       style: const TextStyle(

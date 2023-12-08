@@ -1,30 +1,31 @@
 import 'dart:convert';
 
 class Transaksi {
+  late int id;
   late int id_user;
-  String id_restaurant;
-  String id_voucher;
-  String address_on_trans;
-  double subtotal;
-  double delivery_fee;
-  String order_fee;
-  String total;
-  String status;
-  String paymentMethod;
-  String datetime;
+  int? id_restaurant;
+  int? id_voucher;
+  String? address_on_trans;
+  double? subtotal;
+  double? delivery_fee;
+  double? order_fee;
+  double? total;
+  String? status;
+  String? paymentMethod;
+  String? datetime;
 
   Transaksi(
       {required this.id_user,
       required this.id_restaurant,
-      required this.id_voucher,
+      this.id_voucher,
       required this.address_on_trans,
       required this.subtotal,
       required this.delivery_fee,
       required this.order_fee,
-      required this.total,
+      this.total,
       required this.status,
-      required this.paymentMethod,
-      required this.datetime});
+      this.paymentMethod,
+      this.datetime});
 
   factory Transaksi.fromRawJson(String str) =>
       Transaksi.fromJson(json.decode(str));
