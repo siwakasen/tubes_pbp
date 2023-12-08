@@ -49,8 +49,7 @@ class TransaksiClient {
       var response = await post(Uri.http(url, '$endpoint/transactions'),
           headers: {'Content-Type': 'application/json'},
           body: trans.toRawJson());
-
-      // Send the request
+      print(response);
       if (response.statusCode != 200) throw Exception(response.reasonPhrase);
       return response;
     } catch (e) {

@@ -22,6 +22,19 @@ class ItemClient {
     }
   }
 
+  static Future<List<Item>> fetchAllById() async {
+    print("fetching all item");
+    try {
+      var response = await get(Uri.http(url, '$endpoint/items'));
+
+      Iterable list = json.decode(response.body)['data'];
+      print(list);
+      return list.map((e) => Item.fromJson(e)).toList();
+    } catch (e) {
+      return Future.error(e.toString());
+    }
+  }
+
   // static Future<List<Map<String, dynamic>>> fetchAll2() async {
   //   print("fetching all 2");
 

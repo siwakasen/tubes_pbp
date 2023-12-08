@@ -1,14 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:ugd2_pbp/entity/detailTransaksiEntity.dart';
+import 'package:ugd2_pbp/entity/itemEntity.dart';
 import 'package:ugd2_pbp/entity/makananEntity.dart';
 
-Widget listItem(index, makanan, desc) {
-  Makanan m = Makanan(
-    namaMakanan: makanan[index].namaMakanan!,
-    hargaMakanan: makanan[index].hargaMakanan,
-    namaFoto: makanan[index].namaFoto,
-  );
-  List<String> qty = ["1", "2", "3"];
-
+Widget listItem(int index, List<Item> items, List<DetailTransaksi> dtrans) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.center,
     children: [
@@ -21,7 +16,7 @@ Widget listItem(index, makanan, desc) {
               width: 110,
               height: 110,
               child: Image(
-                image: AssetImage('images/${m.namaFoto}'),
+                image: AssetImage('images/${items[index].name}'),
                 fit: BoxFit.cover,
               ),
             ),
@@ -37,7 +32,7 @@ Widget listItem(index, makanan, desc) {
                       SizedBox(
                         width: 150,
                         child: Text(
-                          m.namaMakanan!,
+                          items[index].name,
                           style: const TextStyle(
                             fontWeight: FontWeight.w500,
                             fontFamily: 'Poppins',
@@ -54,7 +49,7 @@ Widget listItem(index, makanan, desc) {
                           Container(
                             alignment: Alignment.centerRight,
                             child: Text(
-                              "IDR ${m.hargaMakanan}",
+                              "IDR ${items[index].price}",
                               style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontFamily: 'Poppins',
@@ -64,7 +59,7 @@ Widget listItem(index, makanan, desc) {
                             ),
                           ),
                           Text(
-                            " x ${qty[index]}",
+                            " x ${dtrans[index].quantity}",
                             style: const TextStyle(
                               fontWeight: FontWeight.bold,
                               fontFamily: 'Poppins',
@@ -80,7 +75,7 @@ Widget listItem(index, makanan, desc) {
                 Container(
                   width: 250,
                   child: Text(
-                    desc[index],
+                    items[index].size,
                     style: const TextStyle(fontFamily: 'Poppins', fontSize: 14),
                     overflow: TextOverflow.ellipsis,
                   ),

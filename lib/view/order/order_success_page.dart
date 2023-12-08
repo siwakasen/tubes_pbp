@@ -1,31 +1,59 @@
 import 'package:flutter/material.dart';
-import 'package:ugd2_pbp/entity/makananEntity.dart';
+import 'package:ugd2_pbp/client/detailTransaksiClient.dart';
+import 'package:ugd2_pbp/client/itemClient.dart';
+import 'package:ugd2_pbp/entity/detailTransaksiEntity.dart';
 import 'package:ugd2_pbp/components/order_items.dart';
 import 'package:ugd2_pbp/components/summary.dart';
 import 'package:ugd2_pbp/components/transaction_details.dart';
+import 'package:ugd2_pbp/entity/itemEntity.dart';
+import 'package:ugd2_pbp/entity/transaksiEntity.dart';
+import 'package:ugd2_pbp/view/home/home_bottom.dart';
 import 'package:ugd2_pbp/view/order/history_page.dart';
+import 'package:ugd2_pbp/view/order/order_progress_page.dart';
 
 class OrderCompleteView extends StatefulWidget {
-  const OrderCompleteView({super.key});
-
+  OrderCompleteView(
+      {super.key, required this.transaksi, required this.detailTrans});
+  Transaksi transaksi;
+  List<DetailTransaksi> detailTrans;
   @override
   State<OrderCompleteView> createState() => _OrderCompleteViewState();
 }
 
 class _OrderCompleteViewState extends State<OrderCompleteView> {
-  List<Makanan> makanan = [];
-  List<String> desc = ["Pedas", "Goreng mateng", "tes"];
+  List<Item> items = [];
+  late Transaksi transaksi;
+  List<Item> itemFromDatabase = [];
+  List<String> listUkuran = [];
+  List<DetailTransaksi> detailTrans = [];
+
+  void refresh() async {
+    itemFromDatabase = await ItemClient.fetchAll();
+    detailTrans = await DetailTransaksiClient.find(widget.transaksi.id);
+
+    for (var dt in widget.detailTrans) {
+      print(dt.id_item);
+      items.add(
+          itemFromDatabase.where((element) => element.id == dt.id_item).first);
+      listUkuran.add(itemFromDatabase
+          .where((element) => element.id == dt.id_item)
+          .first
+          .size);
+    }
+
+    setState(() {
+      items = detailTrans
+          .map((trans) =>
+              itemFromDatabase.firstWhere((item) => trans.id_item == item.id))
+          .toList();
+    });
+  }
 
   @override
   void initState() {
-    makanan.add(Makanan(
-        namaMakanan: "Soto Ayam Madura",
-        hargaMakanan: 15000,
-        namaFoto: "logo.png"));
-    makanan.add(Makanan(
-        namaMakanan: "Ayam goreng", hargaMakanan: 25000, namaFoto: "logo.png"));
-    makanan.add(Makanan(
-        namaMakanan: "Ayam goreng", hargaMakanan: 25000, namaFoto: "logo.png"));
+    refresh();
+    transaksi = widget.transaksi;
+
     super.initState();
   }
 
@@ -71,8 +99,8 @@ class _OrderCompleteViewState extends State<OrderCompleteView> {
               ),
               width: screenWidth,
               child: Column(
-                children: List.generate(
-                    makanan.length, (index) => listItem(index, makanan, desc)),
+                children: List.generate(items.length,
+                    (index) => listItem(index, items, widget.detailTrans)),
               )),
           Container(
             //Container payment method
@@ -83,19 +111,19 @@ class _OrderCompleteViewState extends State<OrderCompleteView> {
             padding:
                 const EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
             width: screenWidth,
-            child: transDetails(),
+            child: transDetails(widget.transaksi),
           ),
-          // Container(
-          //   //Container payment method
-          //   decoration: const BoxDecoration(
-          //     borderRadius: BorderRadius.only(
-          //         topLeft: Radius.circular(10), topRight: Radius.circular(10)),
-          //   ),
-          //   padding:
-          //       const EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
-          //   width: screenWidth,
-          //   child: summary(),
-          // ),
+          Container(
+            //Container payment method
+            decoration: const BoxDecoration(
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(10), topRight: Radius.circular(10)),
+            ),
+            padding:
+                const EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
+            width: screenWidth,
+            child: summary(transaksi, 10, 10),
+          ),
           const SizedBox(height: 20),
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -113,7 +141,7 @@ class _OrderCompleteViewState extends State<OrderCompleteView> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const HistoryOrderView(),
+                            builder: (context) => const OrderProcessView(),
                           ),
                         );
                       });
@@ -144,7 +172,15 @@ class _OrderCompleteViewState extends State<OrderCompleteView> {
                   child: InkWell(
                     onTap: () {
                       setState(() {
-                        Navigator.pop(context);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => HomeBottomView(
+                                bottomBarIndex: 0,
+                                pageRenderIndex: 0,
+                                typeDeliver: 0),
+                          ),
+                        );
                       });
                     },
                     borderRadius: BorderRadius.circular(20),

@@ -55,6 +55,7 @@ class UserClient {
 
   static Future<Response> update(User user, id) async {
     try {
+      print(id);
       var response = await put(Uri.http(url, '$endpoint/users/$id'),
           headers: {'Content-Type': 'application/json'},
           body: user.toRawJson());
@@ -104,6 +105,7 @@ class UserClient {
   static Future<void> updateImageUser(
       File imageFile, id, String filename) async {
     try {
+      print('Uploading image...');
       var apiUrl = 'http://$url$endpoint/users/images/$id';
 
       // Create a multipart request
@@ -118,7 +120,6 @@ class UserClient {
           filename: filename,
         ),
       );
-
       // Send the request
       var response = await request.send();
       print(response);

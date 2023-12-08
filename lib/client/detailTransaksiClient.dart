@@ -43,14 +43,15 @@ class DetailTransaksiClient {
     }
   }
 
-  static Future<DetailTransaksi> find(idTrans) async {
+  static Future<List<DetailTransaksi>> find(idTrans) async {
     print("finding trans");
     try {
       var response =
           await get(Uri.http(url, '$endpoint/transactions/$idTrans'));
       print((response.body));
+      Iterable list = json.decode(response.body)['data'];
 
-      return DetailTransaksi.fromJson(json.decode(response.body)['data']);
+      return list.map((e) => DetailTransaksi.fromJson(e)).toList();
     } catch (e) {
       return Future.error(e.toString());
     }

@@ -1,29 +1,61 @@
 import 'package:flutter/material.dart';
-import 'package:ugd2_pbp/entity/makananEntity.dart';
+import 'package:ugd2_pbp/client/detailTransaksiClient.dart';
+import 'package:ugd2_pbp/client/itemClient.dart';
+import 'package:ugd2_pbp/client/subsClient.dart';
+import 'package:ugd2_pbp/client/subsUserClient.dart';
+import 'package:ugd2_pbp/client/voucherClient.dart';
+import 'package:ugd2_pbp/entity/detailTransaksiEntity.dart';
+import 'package:ugd2_pbp/entity/itemEntity.dart';
 import 'package:ugd2_pbp/components/order_items.dart';
 import 'package:ugd2_pbp/components/summary.dart';
 import 'package:ugd2_pbp/components/transaction_details.dart';
+import 'package:ugd2_pbp/entity/subscriptionEntity.dart';
+import 'package:ugd2_pbp/entity/subsuserEntity.dart';
+import 'package:ugd2_pbp/entity/transaksiEntity.dart';
+import 'package:ugd2_pbp/entity/voucherEntity.dart';
 import 'package:ugd2_pbp/view/order/nota/note_pdf_builder.dart';
 
 class OrderNoteView extends StatefulWidget {
-  const OrderNoteView({super.key});
-
+  const OrderNoteView({super.key, required this.transaksi});
+  final Transaksi transaksi;
   @override
   State<OrderNoteView> createState() => _OrderNoteViewState();
 }
 
 class _OrderNoteViewState extends State<OrderNoteView> {
-  List<Makanan> makanan = [];
-  List<String> desc = ["Pedas", "Goreng mateng", "tes"];
+  List<DetailTransaksi> deTrans = [];
+  List<Item> item = [];
+  List<Item> items = [];
+  List<Voucher> voucher = [];
+  List<Subscription> subs = [];
+  SubscriptionUser subuser = SubscriptionUser.empty();
+  int voucherCut = 0;
+  int percentage = 0;
+
+  void refresh() async {
+    deTrans = await DetailTransaksiClient.find(widget.transaksi.id);
+    item = await ItemClient.fetchAll();
+    voucher = await VoucherClient.fetchAll();
+    subs = await SubsClient.fetchAll();
+    subuser = await SubsUserClient.find(widget.transaksi.id_user);
+
+    setState(() {
+      items = deTrans
+          .map((trans) => item.firstWhere((item) => trans.id_item == item.id))
+          .toList();
+      voucherCut = voucher
+          .firstWhere((voucher) => voucher.id == widget.transaksi.id_voucher,
+              orElse: () => Voucher.empty())
+          .cut_price;
+      percentage = subs
+          .firstWhere((subs) => subs.id == subuser.id_subscription,
+              orElse: () => Subscription.empty())
+          .percentage;
+    });
+  }
 
   @override
   void initState() {
-    makanan.add(Makanan(
-        namaMakanan: "Soto Ayam Madura",
-        hargaMakanan: 15000,
-        namaFoto: "logo.png"));
-    makanan.add(Makanan(
-        namaMakanan: "Ayam goreng", hargaMakanan: 25000, namaFoto: "logo.png"));
     super.initState();
   }
 
@@ -72,7 +104,7 @@ class _OrderNoteViewState extends State<OrderNoteView> {
               width: screenWidth,
               child: Column(
                 children: List.generate(
-                    makanan.length, (index) => listItem(index, makanan, desc)),
+                    items.length, (index) => listItem(index, items, deTrans)),
               )),
           Container(
             //Container payment method
@@ -83,19 +115,19 @@ class _OrderNoteViewState extends State<OrderNoteView> {
             padding:
                 const EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
             width: screenWidth,
-            child: transDetails(),
+            child: transDetails(widget.transaksi),
           ),
-          // Container(
-          //   //Container payment method
-          //   decoration: const BoxDecoration(
-          //     borderRadius: BorderRadius.only(
-          //         topLeft: Radius.circular(10), topRight: Radius.circular(10)),
-          //   ),
-          //   padding:
-          //       const EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
-          //   width: screenWidth,
-          //   child: summary(),
-          // ),
+          Container(
+            //Container payment method
+            decoration: const BoxDecoration(
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(10), topRight: Radius.circular(10)),
+            ),
+            padding:
+                const EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
+            width: screenWidth,
+            child: summary(widget.transaksi, voucherCut, percentage),
+          ),
         ]),
       ),
       persistentFooterButtons: [

@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -49,11 +50,13 @@ class _EditProfileNewState extends State<EditProfileNew> {
   late int userId;
   late String photo = "-";
   late Response response;
+  bool isClick = false;
   void refresh() async {
     userId = await getIntValuesSF();
     print(userId);
     final data = await UserClient.find(userId);
     response = await UserClient.getImageUser(data.photo);
+    photo = json.decode(response.body)['data'];
     setState(() {
       usernameController.text = data.username;
       emailController.text = data.email;
@@ -160,7 +163,7 @@ class _EditProfileNewState extends State<EditProfileNew> {
                   bottom: 1,
                   right: 1,
                   child: InkWell(
-                    onTap: () => _showBottomSheet(context),
+                    onTap: () => {_showBottomSheet(context), isClick = true},
                     child: Container(
                       decoration: BoxDecoration(
                         border: Border.all(
@@ -502,11 +505,14 @@ class _EditProfileNewState extends State<EditProfileNew> {
                                 phoneNumber: phoneController.text,
                                 bornDate: bornController.text,
                                 photo: photo,
-                                id_restaurant: -1,
                               ),
                               userId);
-                          UserClient.updateImageUser(
-                              imageInput!, userId!, xFile.name);
+                          if (isClick) {
+                            print(isClick);
+                            UserClient.updateImageUser(
+                                    imageInput!, userId, xFile.name)
+                                .then((value) => {});
+                          }
                           Navigator.pop(
                             context,
                             MaterialPageRoute(builder: (_) => ProfileViewNew()),

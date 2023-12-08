@@ -13,7 +13,7 @@ class Voucher {
   Voucher.empty()
       : id = -1,
         name = '',
-        cut_price = -1;
+        cut_price = 0;
   factory Voucher.fromRawJson(String str) => Voucher.fromJson(json.decode(str));
   factory Voucher.fromJson(Map<String, dynamic> json) => Voucher(
         id: json['id'],

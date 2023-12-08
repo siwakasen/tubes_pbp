@@ -53,6 +53,7 @@ class _OrderReviewViewState extends State<OrderReviewView> {
   int selectedVoucher = -1;
   int percentage = -1;
   List<Voucher> voucherData = [];
+  late Transaksi transaksi;
 
   List<String> voucherImageName = [
     "voucher_family.png",
@@ -92,6 +93,16 @@ class _OrderReviewViewState extends State<OrderReviewView> {
   TextEditingController noteController = TextEditingController();
   TextEditingController addressController = TextEditingController();
   TextEditingController noteAddressController = TextEditingController();
+
+  void createsAllDetailTransaksi(int id) async {
+    for (int i = 0; i < widget.detailTrans.length; i++) {
+      widget.detailTrans[i].id_transaksi = id;
+      await Future.delayed(Duration(seconds: 1));
+      print(widget.detailTrans[i].id_transaksi);
+      DetailTransaksiClient.create(widget.detailTrans[i]);
+    }
+  }
+
   void refresh() async {
     itemFromDatabase = await ItemClient.fetchAll();
     userId = await getIntValuesSF();
@@ -852,14 +863,23 @@ class _OrderReviewViewState extends State<OrderReviewView> {
                           onTap: () {
                             setState(() {
                               widget.trans.status = "Cooking";
-                              TransaksiClient.create(widget.trans);
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      const OrderCompleteView(),
-                                ),
-                              );
+                              TransaksiClient.create(widget.trans)
+                                  .then((value) => {
+                                        transaksi = Transaksi.fromJson(
+                                            json.decode(value.body)['data']),
+                                        createsAllDetailTransaksi(transaksi.id),
+                                        print(transaksi.id),
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                OrderCompleteView(
+                                                    transaksi: transaksi,
+                                                    detailTrans:
+                                                        widget.detailTrans),
+                                          ),
+                                        )
+                                      });
                             });
                           },
                           borderRadius: BorderRadius.circular(50),
@@ -974,7 +994,7 @@ class _OrderReviewViewState extends State<OrderReviewView> {
                   for (var i = 0; i < voucherData.length; i++) {
                     print(voucherData[i].name);
                   }
-                  widget.trans.id_voucher = voucherData[index + 1].id;
+                  widget.trans.id_voucher = voucherData[index].id;
                   voucherName = voucherData[index].name;
                   selectedVoucher = index;
                   Navigator.of(context).pop();

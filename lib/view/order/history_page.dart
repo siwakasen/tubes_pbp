@@ -339,7 +339,9 @@ class _HistoryOrderViewState extends State<HistoryOrderView> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const OrderNoteView()));
+                                builder: (context) => OrderNoteView(
+                                      transaksi: transaksis[inde],
+                                    )));
                       });
                     },
                   ),

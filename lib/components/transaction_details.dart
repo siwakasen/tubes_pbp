@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:ugd2_pbp/entity/transaksiEntity.dart';
 
-Widget transDetails() {
+Widget transDetails(Transaksi trans) {
+  String date = trans.datetime!.substring(1, 11);
+  String time = trans.datetime!.substring(12, 19);
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
@@ -15,10 +18,10 @@ Widget transDetails() {
         padding: const EdgeInsets.only(left: 10),
         child: Column(
           children: [
-            const Row(
+            Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
+                const Text(
                   "Transaction ID",
                   style: TextStyle(
                       fontFamily: 'Poppins',
@@ -27,8 +30,8 @@ Widget transDetails() {
                   overflow: TextOverflow.ellipsis,
                 ),
                 Text(
-                  "TRX-0001",
-                  style: TextStyle(
+                  "TRX-${trans.id}",
+                  style: const TextStyle(
                       fontFamily: 'Poppins',
                       fontSize: 14,
                       fontWeight: FontWeight.normal),
@@ -37,10 +40,10 @@ Widget transDetails() {
               ],
             ),
             const SizedBox(height: 5),
-            const Row(
+            Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
+                const Text(
                   "Date order",
                   style: TextStyle(
                       fontFamily: 'Poppins',
@@ -49,8 +52,8 @@ Widget transDetails() {
                   overflow: TextOverflow.ellipsis,
                 ),
                 Text(
-                  "2023/12/31",
-                  style: TextStyle(
+                  "$date",
+                  style: const TextStyle(
                       fontFamily: 'Poppins',
                       fontSize: 14,
                       fontWeight: FontWeight.normal),
@@ -59,10 +62,10 @@ Widget transDetails() {
               ],
             ),
             const SizedBox(height: 5),
-            const Row(
+            Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
+                const Text(
                   "Time order",
                   style: TextStyle(
                       fontFamily: 'Poppins',
@@ -71,8 +74,8 @@ Widget transDetails() {
                   overflow: TextOverflow.ellipsis,
                 ),
                 Text(
-                  "12:00:00",
-                  style: TextStyle(
+                  "$time",
+                  style: const TextStyle(
                       fontFamily: 'Poppins',
                       fontSize: 14,
                       fontWeight: FontWeight.normal),

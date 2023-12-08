@@ -13,7 +13,11 @@ class Subscription {
       required this.name,
       required this.price,
       required this.percentage});
-
+  Subscription.empty()
+      : id = -1,
+        name = '',
+        price = 0,
+        percentage = 0;
   factory Subscription.fromRawJson(String str) =>
       Subscription.fromJson(json.decode(str));
   factory Subscription.fromJson(Map<String, dynamic> json) => Subscription(
