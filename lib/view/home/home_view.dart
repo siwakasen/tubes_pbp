@@ -75,7 +75,10 @@ class _HomeViewState extends State<HomeView> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => HomeBottomView(
-                                      pageRenderIndex: 2, bottomBarIndex: 2)));
+                                        pageRenderIndex: 2,
+                                        bottomBarIndex: 2,
+                                        typeDeliver: 2,
+                                      )));
                         },
                         highlightColor: Colors.transparent,
                         child: GridItem(imagePath: 'images/drink.png'))),
@@ -86,7 +89,10 @@ class _HomeViewState extends State<HomeView> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => HomeBottomView(
-                                      pageRenderIndex: 2, bottomBarIndex: 2)));
+                                        pageRenderIndex: 2,
+                                        bottomBarIndex: 2,
+                                        typeDeliver: 3,
+                                      )));
                         },
                         child: GridItem(imagePath: 'images/snack.png'))),
                 Material(
@@ -96,7 +102,10 @@ class _HomeViewState extends State<HomeView> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => HomeBottomView(
-                                      pageRenderIndex: 2, bottomBarIndex: 2)));
+                                        pageRenderIndex: 2,
+                                        bottomBarIndex: 2,
+                                        typeDeliver: 1,
+                                      )));
                         },
                         child: GridItem(imagePath: 'images/food.png'))),
                 Material(
@@ -106,7 +115,10 @@ class _HomeViewState extends State<HomeView> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => HomeBottomView(
-                                      pageRenderIndex: 2, bottomBarIndex: 2)));
+                                        pageRenderIndex: 2,
+                                        bottomBarIndex: 2,
+                                        typeDeliver: 4,
+                                      )));
                         },
                         child: GridItem(imagePath: 'images/combo.png'))),
                 // ...

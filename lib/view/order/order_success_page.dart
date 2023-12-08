@@ -85,17 +85,17 @@ class _OrderCompleteViewState extends State<OrderCompleteView> {
             width: screenWidth,
             child: transDetails(),
           ),
-          Container(
-            //Container payment method
-            decoration: const BoxDecoration(
-              borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(10), topRight: Radius.circular(10)),
-            ),
-            padding:
-                const EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
-            width: screenWidth,
-            child: summary(),
-          ),
+          // Container(
+          //   //Container payment method
+          //   decoration: const BoxDecoration(
+          //     borderRadius: BorderRadius.only(
+          //         topLeft: Radius.circular(10), topRight: Radius.circular(10)),
+          //   ),
+          //   padding:
+          //       const EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
+          //   width: screenWidth,
+          //   child: summary(),
+          // ),
           const SizedBox(height: 20),
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,

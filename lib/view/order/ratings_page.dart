@@ -1,19 +1,62 @@
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:ugd2_pbp/client/ratingClient.dart';
+import 'package:ugd2_pbp/entity/itemEntity.dart';
+import 'package:ugd2_pbp/entity/ratingEntity.dart';
+import 'package:ugd2_pbp/entity/transaksiEntity.dart';
 import 'package:ugd2_pbp/view/order/history_page.dart';
 
 class RatingView extends StatefulWidget {
-  const RatingView({super.key});
+  RatingView(
+      {super.key,
+      required this.transaksi,
+      required this.itemsInThisTransaction,
+      required this.imageLink,
+      this.rating});
+  Transaksi transaksi;
+  List<Item> itemsInThisTransaction;
+  List<String> imageLink;
+  Rating? rating;
 
   @override
   State<RatingView> createState() => _RatingViewState();
 }
 
 class _RatingViewState extends State<RatingView> {
-  List<String> orderData = ["1", "2"];
+  late Transaksi transaksi;
+  late List<Item> itemsInThisTransaction;
+  late List<String> imageLink;
+  late Rating rating;
+  bool isUpdate = false;
 
   TextEditingController rateStarController = TextEditingController();
   TextEditingController textReviewController = TextEditingController();
+
+  void getRating() async {
+    List<Rating> ratingFromDatabase = await RatingClient.fetchAll();
+
+    rating = Rating(id_transaksi: -1);
+
+    for (var rat in ratingFromDatabase) {
+      if (rat.id_transaksi == widget.transaksi.id) {
+        rating = rat;
+        isUpdate = true;
+        break;
+      }
+    }
+  }
+
+  @override
+  void initState() {
+    getRating();
+    transaksi = widget.transaksi;
+    itemsInThisTransaction = widget.itemsInThisTransaction;
+    imageLink = widget.imageLink;
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,7 +73,7 @@ class _RatingViewState extends State<RatingView> {
           highlightColor: Colors.transparent,
           onPressed: () {
             setState(() {
-              Navigator.pop(context);
+              Navigator.pop(context, false);
             });
           },
         ),
@@ -89,7 +132,8 @@ class _RatingViewState extends State<RatingView> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Column(
-                            children: List.generate(orderData.length,
+                            children: List.generate(
+                                itemsInThisTransaction.length,
                                 (index) => orderDetails(index)),
                           ),
                           Column(
@@ -182,12 +226,15 @@ class _RatingViewState extends State<RatingView> {
                 backgroundColor: Colors.red,
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10))),
-            onPressed: () {
+            onPressed: () async {
+              Rating ratingOutput = await onSubmit();
               setState(() {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const HistoryOrderView()));
+                Navigator.pop(context, ratingOutput);
+                // Navigator.push(
+                //     context,
+                //     MaterialPageRoute(
+                //       builder: (context) => HistoryOrderView(),
+                //     ));
               });
             },
             child: const Text(
@@ -210,30 +257,56 @@ class _RatingViewState extends State<RatingView> {
           width: 80,
           height: 80,
           padding: const EdgeInsets.all(10),
-          child: Image(
-            image: AssetImage('images/logo.png'),
+          child: ExtendedImage.network(
+            imageLink
+                .where((element) =>
+                    element.contains(itemsInThisTransaction[index].photo))
+                .first,
+            width: 100,
+            height: 100,
+            fit: BoxFit.fill,
+            cache: true,
           ),
         ),
-        const Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "Coca - Cola",
-              style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.black),
-            ),
-            Text(
-              "IDR 110.000",
-              style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.black),
-            )
-          ],
+        Container(
+          width: 140,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                itemsInThisTransaction[index].name,
+                style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.black),
+              ),
+              Text(
+                "IDR ${itemsInThisTransaction[index].price}",
+                style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.black),
+              )
+            ],
+          ),
         )
       ],
     );
+  }
+
+  Rating onSubmit() {
+    Rating ratingYangDiBuat = Rating(
+        id_transaksi: transaksi.id,
+        notes: textReviewController.text,
+        stars: int.parse(rateStarController.text));
+    if (isUpdate) {
+      print("UPDATE RATING");
+      RatingClient.update(ratingYangDiBuat, rating.id);
+    } else {
+      print("CREATE RATING");
+      RatingClient.create(ratingYangDiBuat);
+    }
+
+    return ratingYangDiBuat;
   }
 }

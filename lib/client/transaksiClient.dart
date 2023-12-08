@@ -26,6 +26,24 @@ class TransaksiClient {
     }
   }
 
+  static Future<List<Transaksi>> fetchSuccessOnly() async {
+    print("get data trans success");
+    try {
+      var response = await get(Uri.http(url, '$endpoint/transactions/success'));
+
+      if (response.statusCode != 200) {
+        if (response.statusCode != 404) throw Exception(response.reasonPhrase);
+      }
+      print(response.body);
+
+      Iterable list = json.decode(response.body)['data'];
+
+      return list.map((e) => Transaksi.fromJson(e)).toList();
+    } catch (e) {
+      return Future.error(e.toString());
+    }
+  }
+
   static Future<Response> create(Transaksi trans) async {
     try {
       var response = await post(Uri.http(url, '$endpoint/transactions'),
@@ -47,6 +65,19 @@ class TransaksiClient {
       print(response.body);
 
       return Transaksi.fromJson(json.decode(response.body)['data']);
+    } catch (e) {
+      return Future.error(e.toString());
+    }
+  }
+
+  static Future<Response> update(Transaksi transaksi, id) async {
+    try {
+      var response = await put(
+          Uri.http(url, '$endpoint/transactions/status/$id'),
+          headers: {'Content-Type': 'application/json'},
+          body: transaksi.toRawJson());
+      if (response.statusCode != 200) throw Exception(response.reasonPhrase);
+      return response;
     } catch (e) {
       return Future.error(e.toString());
     }

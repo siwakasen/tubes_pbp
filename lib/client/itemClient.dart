@@ -62,7 +62,7 @@ class ItemClient {
   static Future<Item> find(id) async {
     print("finding makanan");
     try {
-      var response = await get(Uri.http(url, '$endpoint/makanans/$id'));
+      var response = await get(Uri.http(url, '$endpoint/items/$id'));
       print((response.body));
 
       if (response.statusCode != 200) throw Exception(response.reasonPhrase);
@@ -77,7 +77,7 @@ class ItemClient {
     try {
       print("update makanan");
       var request = http.MultipartRequest(
-          'POST', Uri.parse('http://$url$endpoint/makanans/$id'));
+          'POST', Uri.parse('http://$url$endpoint/items/$id'));
       request.files.add(await http.MultipartFile.fromPath('photo', photo.path));
 
       request.fields['price'] = item.price.toString();
@@ -93,7 +93,7 @@ class ItemClient {
 
   static Future<Response> updateWithoutImage(Item makanan, id) async {
     try {
-      var response = await put(Uri.http(url, '$endpoint/makanans/noImage/$id'),
+      var response = await put(Uri.http(url, '$endpoint/items/noImage/$id'),
           headers: {'Content-Type': 'application/json'},
           body: jsonEncode(<String, String>{
             'name': makanan.name,
@@ -114,7 +114,7 @@ class ItemClient {
     print("getting certain image");
     try {
       var response =
-          await get(Uri.http(url, '$endpoint/makanans/images/$filename'));
+          await get(Uri.http(url, '$endpoint/items/images/$filename'));
       print(response.body);
       if (response.statusCode == 200) {
         return response;
@@ -143,7 +143,7 @@ class ItemClient {
 
   static Future<Item> deleteMakanan(int id) async {
     try {
-      var response = await delete(Uri.http(url, '$endpoint/makanans/$id'));
+      var response = await delete(Uri.http(url, '$endpoint/items/$id'));
       print((response.body));
 
       if (response.statusCode != 200) throw Exception(response.reasonPhrase);

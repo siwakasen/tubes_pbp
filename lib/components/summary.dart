@@ -1,7 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:ugd2_pbp/entity/subscriptionEntity.dart';
+import 'package:ugd2_pbp/entity/transaksiEntity.dart';
+import 'package:ugd2_pbp/entity/voucherEntity.dart';
 
-Widget summary() {
-  bool isSubs = true;
+Widget summary(
+  Transaksi transaction,
+  int percentageSubscription,
+  int cutPriceVoucher,
+) {
+  bool isSubs;
+  percentageSubscription == 0 ? isSubs = false : isSubs = true;
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
@@ -16,7 +24,7 @@ Widget summary() {
         padding: const EdgeInsets.only(left: 10),
         child: Column(
           children: [
-            const Row(
+            Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
@@ -28,7 +36,7 @@ Widget summary() {
                   overflow: TextOverflow.ellipsis,
                 ),
                 Text(
-                  "IDR 40.000",
+                  "IDR ${transaction.subtotal}",
                   style: TextStyle(
                       fontFamily: 'Poppins',
                       fontSize: 14,
@@ -38,7 +46,7 @@ Widget summary() {
               ],
             ),
             const SizedBox(height: 5),
-            const Row(
+            Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
@@ -50,7 +58,7 @@ Widget summary() {
                   overflow: TextOverflow.ellipsis,
                 ),
                 Text(
-                  "IDR 5.000",
+                  "IDR ${transaction.delivery_fee}",
                   style: TextStyle(
                       fontFamily: 'Poppins',
                       fontSize: 14,
@@ -60,7 +68,7 @@ Widget summary() {
               ],
             ),
             const SizedBox(height: 5),
-            const Row(
+            Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
@@ -72,7 +80,7 @@ Widget summary() {
                   overflow: TextOverflow.ellipsis,
                 ),
                 Text(
-                  "IDR 0",
+                  "IDR ${cutPriceVoucher}",
                   style: TextStyle(
                       fontFamily: 'Poppins',
                       fontSize: 14,
@@ -82,7 +90,7 @@ Widget summary() {
               ],
             ),
             const SizedBox(height: 5),
-            const Row(
+            Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
@@ -94,7 +102,7 @@ Widget summary() {
                   overflow: TextOverflow.ellipsis,
                 ),
                 Text(
-                  "IDR 7.000",
+                  "IDR ${transaction.order_fee}",
                   style: TextStyle(
                       fontFamily: 'Poppins',
                       fontSize: 14,
@@ -117,7 +125,7 @@ Widget summary() {
                         overflow: TextOverflow.ellipsis,
                       ),
                       Text(
-                        "10% off",
+                        "${percentageSubscription}% off",
                         style: TextStyle(
                             fontFamily: 'Poppins',
                             fontSize: 14,
@@ -132,7 +140,7 @@ Widget summary() {
               thickness: 1,
             ),
             const SizedBox(height: 5),
-            const Row(
+            Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
@@ -144,7 +152,7 @@ Widget summary() {
                   overflow: TextOverflow.ellipsis,
                 ),
                 Text(
-                  "IDR 45.000",
+                  "IDR ${transaction.total}",
                   style: TextStyle(
                       fontFamily: 'Poppins',
                       fontSize: 16,

@@ -2,12 +2,16 @@ import 'dart:convert';
 
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ugd2_pbp/client/detailTransaksiClient.dart';
 import 'package:ugd2_pbp/client/itemClient.dart';
 import 'package:ugd2_pbp/client/restaurantClient.dart';
+import 'package:ugd2_pbp/client/subsClient.dart';
+import 'package:ugd2_pbp/client/subsUserClient.dart';
 import 'package:ugd2_pbp/client/transaksiClient.dart';
 import 'package:ugd2_pbp/client/userClient.dart';
+import 'package:ugd2_pbp/client/voucherClient.dart';
 import 'package:ugd2_pbp/entity/detailTransaksiEntity.dart';
 import 'package:ugd2_pbp/entity/itemEntity.dart';
 import 'package:ugd2_pbp/entity/makananEntity.dart';
@@ -18,8 +22,11 @@ import 'package:latlong2/latlong.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:ugd2_pbp/components/summary.dart';
 import 'package:ugd2_pbp/entity/restaurantEntity.dart';
+import 'package:ugd2_pbp/entity/subscriptionEntity.dart';
+import 'package:ugd2_pbp/entity/subsuserEntity.dart';
 import 'package:ugd2_pbp/entity/transaksiEntity.dart';
 import 'package:ugd2_pbp/entity/userEntity.dart';
+import 'package:ugd2_pbp/entity/voucherEntity.dart';
 import 'package:ugd2_pbp/view/order/order_success_page.dart';
 
 class OrderReviewView extends StatefulWidget {
@@ -32,14 +39,21 @@ class OrderReviewView extends StatefulWidget {
 }
 
 class _OrderReviewViewState extends State<OrderReviewView> {
+  List<Item> itemFromDatabase = [];
   List<Item> items = [];
-  List<String> imageLink = [];
   late int userId;
+  List<String> imageLink = [];
   User user = User.empty();
+  late Response response2;
   Restaurant mainRes = Restaurant.empty();
-
+  SubscriptionUser subsuser = SubscriptionUser.empty();
+  List<Subscription> subs = [];
+  bool isSubs = false;
   String voucherName = "";
-  List<String> voucherData = ["Promo Paket Family", "Promo Paket Hemat"];
+  int selectedVoucher = -1;
+  int percentage = -1;
+  List<Voucher> voucherData = [];
+
   List<String> voucherImageName = [
     "voucher_family.png",
     "voucher_hemat.png",
@@ -79,19 +93,40 @@ class _OrderReviewViewState extends State<OrderReviewView> {
   TextEditingController addressController = TextEditingController();
   TextEditingController noteAddressController = TextEditingController();
   void refresh() async {
+    itemFromDatabase = await ItemClient.fetchAll();
     userId = await getIntValuesSF();
     final dataUser = await UserClient.find(userId);
-    print("data user : $dataUser");
     List<Item> items = [];
-    final restaurant = await RestaurantClient.find(user.id_restaurant);
-
-    var response2 = await ItemClient.getAllImageItems();
+    for (var i = 0; i < widget.detailTrans.length; i++) {
+      final item = itemFromDatabase
+          .where((element) => element.id == widget.detailTrans[i].id_item)
+          .first;
+      items.add(item);
+    }
+    mainRes = await RestaurantClient.find(dataUser.id_restaurant);
+    response2 = await ItemClient.getAllImageItems();
     imageLink = json.decode(response2.body)['data'].cast<String>();
+    voucherData = await VoucherClient.fetchAll();
+    subsuser = await SubsUserClient.find(userId);
+    isSubs = subsuser.id_subscription != -1;
+    print(isSubs);
+    subs = await SubsClient.fetchAll();
+    if (isSubs) {
+      percentage = subs
+          .where((element) => element.id == subsuser.id_subscription)
+          .first
+          .percentage;
+    } else {
+      percentage = 0;
+    }
 
     setState(() {
+      widget.trans.total =
+          widget.trans.total! - widget.trans.total! * (percentage / 100);
+      mainRes = mainRes;
       user = dataUser;
-      mainRes = restaurant;
       this.items = items;
+      noteAddressController.text = user.address;
     });
   }
 
@@ -162,7 +197,9 @@ class _OrderReviewViewState extends State<OrderReviewView> {
                       borderRadius: BorderRadius.circular(5),
                       child: InkWell(
                         onTap: () {
-                          setState(() {});
+                          setState(() {
+                            Navigator.pop(context);
+                          });
                         },
                         splashColor: Colors.transparent,
                         highlightColor: Colors.transparent,
@@ -239,7 +276,7 @@ class _OrderReviewViewState extends State<OrderReviewView> {
                                 decoration:
                                     const BoxDecoration(color: Colors.white),
                                 child: Text(
-                                  user.address,
+                                  mainRes.name,
                                   style: const TextStyle(
                                     fontFamily: "Poppins",
                                     fontSize: 16,
@@ -330,6 +367,7 @@ class _OrderReviewViewState extends State<OrderReviewView> {
                             ),
                             onTap: () {
                               setState(() {
+                                addressController.text = "";
                                 _mapController = MapController();
                                 _getCurrentLocation();
                                 showModalBottomSheet(
@@ -370,9 +408,9 @@ class _OrderReviewViewState extends State<OrderReviewView> {
                                   width: 260,
                                   decoration:
                                       const BoxDecoration(color: Colors.white),
-                                  child: const Text(
-                                    "Jl. Babarsari, Selokan",
-                                    style: TextStyle(
+                                  child: Text(
+                                    user.address,
+                                    style: const TextStyle(
                                       fontFamily: "Poppins",
                                       fontSize: 16,
                                       fontWeight: FontWeight.w500,
@@ -383,8 +421,8 @@ class _OrderReviewViewState extends State<OrderReviewView> {
                                   width: 260,
                                   decoration:
                                       const BoxDecoration(color: Colors.white),
-                                  child: const Text(
-                                    "Jl. Babarsari, Selokan, no. 33, Sleman, Yogyakarta",
+                                  child: Text(
+                                    noteAddressController.text,
                                     style: TextStyle(
                                       fontFamily: "Poppins",
                                       fontSize: 14,
@@ -619,18 +657,180 @@ class _OrderReviewViewState extends State<OrderReviewView> {
                 height: 5,
               ),
               Container(
-                //Container payment method
-                decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(10),
-                      topRight: Radius.circular(10)),
-                  color: Colors.white,
-                ),
-                padding: const EdgeInsets.only(
-                    left: 10, right: 10, top: 5, bottom: 5),
-                width: screenWidth,
-                child: summary(),
-              ),
+                  //Container payment method
+                  decoration: const BoxDecoration(
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(10),
+                        topRight: Radius.circular(10)),
+                    color: Colors.white,
+                  ),
+                  padding: const EdgeInsets.only(
+                      left: 10, right: 10, top: 5, bottom: 5),
+                  width: screenWidth,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        "Order Summary",
+                        style: TextStyle(
+                            fontFamily: 'Poppins',
+                            fontSize: 18,
+                            fontWeight: FontWeight.w500),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 15),
+                      Container(
+                        padding: const EdgeInsets.only(left: 10),
+                        child: Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "Subtotal",
+                                  style: TextStyle(
+                                      fontFamily: 'Poppins',
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.normal),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                Text(
+                                  "IDR ${widget.trans.subtotal}",
+                                  style: TextStyle(
+                                      fontFamily: 'Poppins',
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.normal),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 5),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "Delivery Fee",
+                                  style: TextStyle(
+                                      fontFamily: 'Poppins',
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.normal),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                Text(
+                                  "IDR ${widget.trans.delivery_fee}",
+                                  style: TextStyle(
+                                      fontFamily: 'Poppins',
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.normal),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 5),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "Order fee",
+                                  style: TextStyle(
+                                      fontFamily: 'Poppins',
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.normal),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                Text(
+                                  "IDR ${widget.trans.order_fee}",
+                                  style: TextStyle(
+                                      fontFamily: 'Poppins',
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.normal),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 5),
+                            selectedVoucher != -1
+                                ? Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        "Voucher",
+                                        style: TextStyle(
+                                            fontFamily: 'Poppins',
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.normal),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                      Text(
+                                        "IDR -${voucherData[selectedVoucher].cut_price}",
+                                        style: TextStyle(
+                                            fontFamily: 'Poppins',
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.normal),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ],
+                                  )
+                                : Container(),
+                            isSubs
+                                ? const SizedBox(height: 5)
+                                : const SizedBox(height: 0),
+                            isSubs
+                                ? Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        "Subscription discount",
+                                        style: TextStyle(
+                                            fontFamily: 'Poppins',
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.normal),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                      Text(
+                                        "${percentage}% off",
+                                        style: TextStyle(
+                                            fontFamily: 'Poppins',
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.normal),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ],
+                                  )
+                                : const SizedBox(height: 0),
+                            const Divider(
+                              color: Color.fromARGB(255, 167, 167, 167),
+                              thickness: 1,
+                            ),
+                            const SizedBox(height: 5),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "Total",
+                                  style: TextStyle(
+                                      fontFamily: 'Poppins',
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                Text(
+                                  "IDR ${widget.trans.total}",
+                                  style: TextStyle(
+                                      fontFamily: 'Poppins',
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  )),
               Container(
                 decoration: const BoxDecoration(
                   borderRadius: BorderRadius.only(
@@ -651,6 +851,8 @@ class _OrderReviewViewState extends State<OrderReviewView> {
                         child: InkWell(
                           onTap: () {
                             setState(() {
+                              widget.trans.status = "Cooking";
+                              TransaksiClient.create(widget.trans);
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -690,8 +892,8 @@ class _OrderReviewViewState extends State<OrderReviewView> {
 
   Widget buildCart(BuildContext context) {
     return Column(
-        // children: List.generate(makanan.length, (index) => listCart(index)),
-        );
+      children: List.generate(items.length, (index) => listCart(index)),
+    );
   }
 
   Widget applyVoucher() => DraggableScrollableSheet(
@@ -764,11 +966,33 @@ class _OrderReviewViewState extends State<OrderReviewView> {
             fit: BoxFit.cover,
             child: InkWell(
               onTap: () {
-                showSnackBar(context, "Berhasil memilih ${voucherData[index]}",
+                showSnackBar(
+                    context,
+                    "Berhasil memilih ${voucherData[index].name}",
                     Colors.green);
                 setState(() {
-                  voucherName = voucherData[index];
+                  for (var i = 0; i < voucherData.length; i++) {
+                    print(voucherData[i].name);
+                  }
+                  widget.trans.id_voucher = voucherData[index + 1].id;
+                  voucherName = voucherData[index].name;
+                  selectedVoucher = index;
                   Navigator.of(context).pop();
+                  if (isSubs) {
+                    widget.trans.total = widget.trans.countTotal(
+                        voucherData[selectedVoucher].cut_price,
+                        percentage,
+                        widget.trans.subtotal,
+                        10000,
+                        4000);
+                  } else {
+                    widget.trans.total = widget.trans.countTotal(
+                        voucherData[selectedVoucher].cut_price,
+                        0,
+                        widget.trans.subtotal,
+                        10000,
+                        4000);
+                  }
                 });
               },
               child: Container(
@@ -1054,6 +1278,7 @@ class _OrderReviewViewState extends State<OrderReviewView> {
                       onTap: () {
                         setState(() {
                           indexPaymentMethod = 0;
+                          widget.trans.paymentMethod = "Credit/Debit Card";
                           Navigator.of(context).pop();
                           showSnackBar(
                               context,
@@ -1107,6 +1332,8 @@ class _OrderReviewViewState extends State<OrderReviewView> {
                     child: InkWell(
                       onTap: () => setState(() {
                         indexPaymentMethod = 1;
+                        widget.trans.paymentMethod = "Gopay";
+
                         Navigator.of(context).pop();
                         showSnackBar(context,
                             "Berhasil Memilih Pembayaran Gopay", Colors.green);
@@ -1173,6 +1400,8 @@ class _OrderReviewViewState extends State<OrderReviewView> {
                     child: InkWell(
                       onTap: () => setState(() {
                         indexPaymentMethod = 2;
+                        widget.trans.paymentMethod = "Transfer BCA";
+
                         Navigator.of(context).pop();
                         showSnackBar(context, "Berhasil Memilih Transfer BCA",
                             Colors.green);
@@ -1211,6 +1440,7 @@ class _OrderReviewViewState extends State<OrderReviewView> {
                     child: InkWell(
                       onTap: () => setState(() {
                         indexPaymentMethod = 3;
+                        widget.trans.paymentMethod = "Transfer Mandiri";
                         Navigator.of(context).pop();
                         showSnackBar(context,
                             "Berhasil Memilih Transfer Mandiri", Colors.green);
@@ -1250,6 +1480,7 @@ class _OrderReviewViewState extends State<OrderReviewView> {
                       onTap: () => setState(() {
                         indexPaymentMethod = 4;
                         Navigator.of(context).pop();
+                        widget.trans.paymentMethod = "Transfer BRI";
                         showSnackBar(context, "Berhasil Memilih Transfer BRI",
                             Colors.green);
                       }),
@@ -1297,15 +1528,10 @@ class _OrderReviewViewState extends State<OrderReviewView> {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              ExtendedImage.network(
-                imageLink
-                    .where((element) => element.contains(items[index].photo))
-                    .first,
-                width: 100,
-                height: 100,
-                fit: BoxFit.fill,
-                cache: true,
-              ),
+              Container(
+                  width: 100,
+                  height: 100,
+                  child: Image.network(imageLink[index])),
               const SizedBox(width: 10),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -1377,13 +1603,46 @@ class _OrderReviewViewState extends State<OrderReviewView> {
                         ),
                         onTap: () {
                           setState(() {
-                            widget.detailTrans[index].quantity--;
+                            if (widget.detailTrans[index].quantity > 1) {
+                              widget.detailTrans[index].quantity--;
+                              widget.trans.subtotal =
+                                  (widget.trans.subtotal! - items[index].price);
+                              if (selectedVoucher != -1) {
+                                if (isSubs) {
+                                  widget.trans.total = widget.trans.countTotal(
+                                      voucherData[selectedVoucher].cut_price,
+                                      percentage,
+                                      widget.trans.subtotal,
+                                      10000,
+                                      4000);
+                                } else {
+                                  widget.trans.total = widget.trans.countTotal(
+                                      voucherData[selectedVoucher].cut_price,
+                                      0,
+                                      widget.trans.subtotal,
+                                      10000,
+                                      4000);
+                                }
+                              } else {
+                                if (isSubs) {
+                                  widget.trans.total = widget.trans.countTotal(
+                                      0,
+                                      percentage,
+                                      widget.trans.subtotal,
+                                      10000,
+                                      4000);
+                                } else {
+                                  widget.trans.total = widget.trans.countTotal(
+                                      0, 0, widget.trans.subtotal, 10000, 4000);
+                                }
+                              }
+                            }
                           });
                         },
                       ),
                       const SizedBox(width: 20),
                       Text(
-                        "${widget.detailTrans[index].quantity.toString}",
+                        "${widget.detailTrans[index].quantity}",
                         style: const TextStyle(
                             fontFamily: 'Poppins', fontSize: 16),
                       ),
@@ -1405,6 +1664,37 @@ class _OrderReviewViewState extends State<OrderReviewView> {
                         onTap: () {
                           setState(() {
                             widget.detailTrans[index].quantity++;
+                            widget.trans.subtotal =
+                                (widget.trans.subtotal! + items[index].price);
+                            if (selectedVoucher != -1) {
+                              if (isSubs) {
+                                widget.trans.total = widget.trans.countTotal(
+                                    voucherData[selectedVoucher].cut_price,
+                                    percentage,
+                                    widget.trans.subtotal,
+                                    10000,
+                                    4000);
+                              } else {
+                                widget.trans.total = widget.trans.countTotal(
+                                    voucherData[selectedVoucher].cut_price,
+                                    0,
+                                    widget.trans.subtotal,
+                                    10000,
+                                    4000);
+                              }
+                            } else {
+                              if (isSubs) {
+                                widget.trans.total = widget.trans.countTotal(
+                                    0,
+                                    percentage,
+                                    widget.trans.subtotal,
+                                    10000,
+                                    4000);
+                              } else {
+                                widget.trans.total = widget.trans.countTotal(
+                                    0, 0, widget.trans.subtotal, 10000, 4000);
+                              }
+                            }
                           });
                         },
                       ),

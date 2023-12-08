@@ -9,7 +9,7 @@ class Transaksi {
   int? subtotal;
   int? delivery_fee;
   int? order_fee;
-  int? total;
+  double? total;
   String? status;
   String? paymentMethod;
   String? datetime;
@@ -39,7 +39,7 @@ class Transaksi {
       subtotal: json['subtotal'],
       delivery_fee: json['delivery_fee'],
       order_fee: json['order_fee'],
-      total: json['total'],
+      total: json['total'].toDouble(),
       status: json['status'],
       paymentMethod: json['paymentMethod'],
       datetime: json['datetime']);
@@ -59,4 +59,14 @@ class Transaksi {
         'paymentMethod': paymentMethod,
         'datetime': datetime,
       };
+  double countTotal(int voucherCut, int subsPercent, int? subtotal,
+      int? delivery_fee, int? order_fee) {
+    total = (subtotal! + delivery_fee! + order_fee!).toDouble();
+    total = total! - voucherCut;
+    total = total! - (total! * (subsPercent / 100));
+    if (total! < 0) {
+      total = 0;
+    }
+    return total!;
+  }
 }

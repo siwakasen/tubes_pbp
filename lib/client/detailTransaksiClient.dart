@@ -9,6 +9,9 @@ class DetailTransaksiClient {
   static final String url = '10.0.2.2:8000';
   static final String endpoint = '/api';
 
+  // static final String url = '192.168.100.211';
+  // static final String endpoint = '/laravel_ugd_api/public/api';
+
   static Future<List<DetailTransaksi>> fetchAll() async {
     print("get data trans");
     try {
@@ -40,15 +43,14 @@ class DetailTransaksiClient {
     }
   }
 
-  static Future<List<DetailTransaksi>> find(idTrans) async {
+  static Future<DetailTransaksi> find(idTrans) async {
     print("finding trans");
     try {
       var response =
           await get(Uri.http(url, '$endpoint/transactions/$idTrans'));
       print((response.body));
-      Iterable list = json.decode(response.body)['data'];
 
-      return list.map((e) => DetailTransaksi.fromJson(e)).toList();
+      return DetailTransaksi.fromJson(json.decode(response.body)['data']);
     } catch (e) {
       return Future.error(e.toString());
     }

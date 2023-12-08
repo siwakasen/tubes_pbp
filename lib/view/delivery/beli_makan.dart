@@ -79,7 +79,7 @@ class _BeliMakanViewState extends State<BeliMakanView> {
       types = itemTypeFromDatabase;
       itemCount = items.length;
       filterSize("Regular");
-
+      filter(widget.type);
       print(user);
       print(user.id_restaurant);
       user.id_restaurant == null
@@ -252,7 +252,8 @@ class _BeliMakanViewState extends State<BeliMakanView> {
                                     subtotal: subtotal,
                                     delivery_fee: 10000,
                                     order_fee: 4000,
-                                    status: "not payed");
+                                    total: subtotal + 10000 + 4000,
+                                    status: "pending");
 
                                 List<DetailTransaksi> detailTransaksi = [
                                   for (int i = 0; i < pesanan.length; i++)
@@ -326,9 +327,11 @@ class _BeliMakanViewState extends State<BeliMakanView> {
                             setState(() {
                               pesanan.add(items[index]);
                               qty.add(1);
+                              int subtotalTemp = 0;
                               for (var i = 0; i < pesanan.length; i++) {
-                                subtotal += pesanan[i].price * qty[i];
+                                subtotalTemp += pesanan[i].price * qty[i];
                               }
+                              subtotal = subtotalTemp;
                             });
                           } else {
                             Map<String, dynamic> result = await Navigator.push(
@@ -358,9 +361,11 @@ class _BeliMakanViewState extends State<BeliMakanView> {
                                   pesanan.add(newItem);
                                   qty.add(result['quantity']);
                                 }
+                                int subtotalTemp = 0;
                                 for (var i = 0; i < pesanan.length; i++) {
-                                  subtotal += pesanan[i].price * qty[i];
+                                  subtotalTemp += pesanan[i].price * qty[i];
                                 }
+                                subtotal = subtotalTemp;
                               });
                             }
                           }
@@ -557,6 +562,7 @@ class _BeliMakanViewState extends State<BeliMakanView> {
                           builder: (_) => HomeBottomView(
                                 pageRenderIndex: 1,
                                 bottomBarIndex: 1,
+                                typeDeliver: 0,
                               )));
                 },
                 child: Text(
@@ -604,18 +610,31 @@ class _BeliMakanViewState extends State<BeliMakanView> {
           hasil.add(item);
         }
       }
-    } else {
+      //cara ku
+      setState(() {
+        typeYangsedangDicari = "Combo";
+        items = hasil;
+        itemCount = items.length;
+      });
+    } else if (filter > 0) {
       for (var item in itemFromDatabase) {
         if (item.id_type == filter && item.size == "Regular") {
           hasil.add(item);
         }
       }
-    }
-    //cara ku
-    setState(() {
-      items = hasil;
-      itemCount = items.length;
-    });
+      //cara ku
+      setState(() {
+        if (filter == 1) {
+          typeYangsedangDicari = "Food";
+        } else if (filter == 2) {
+          typeYangsedangDicari = "Drink";
+        } else if (filter == 3) {
+          typeYangsedangDicari = "Snack";
+        }
+        items = hasil;
+        itemCount = items.length;
+      });
+    } else {}
   }
 
   void filterSize(String size) {

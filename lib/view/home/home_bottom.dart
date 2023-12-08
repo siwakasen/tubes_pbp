@@ -11,11 +11,13 @@ import 'package:ugd2_pbp/view/subscription/subscription_page.dart';
 class HomeBottomView extends StatefulWidget {
   int pageRenderIndex;
   int bottomBarIndex;
+  int typeDeliver;
   @override
   HomeBottomView({
     super.key,
     required this.pageRenderIndex,
     required this.bottomBarIndex,
+    required this.typeDeliver,
   });
 
   State<HomeBottomView> createState() => _HomeBottomViewState();
@@ -43,7 +45,7 @@ class _HomeBottomViewState extends State<HomeBottomView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _getPage(_currentIndex),
+      body: _getPage(_currentIndex, widget.typeDeliver),
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.amber,
         type: BottomNavigationBarType.fixed,
@@ -91,8 +93,11 @@ class _HomeBottomViewState extends State<HomeBottomView> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) =>
-                          HomeBottomView(pageRenderIndex: 5, bottomBarIndex: 3),
+                      builder: (context) => HomeBottomView(
+                        pageRenderIndex: 5,
+                        bottomBarIndex: 3,
+                        typeDeliver: 0,
+                      ),
                     ),
                   ); // Close the bottom sheet
                 },
@@ -109,6 +114,7 @@ class _HomeBottomViewState extends State<HomeBottomView> {
                       builder: (context) => HomeBottomView(
                         pageRenderIndex: 6,
                         bottomBarIndex: 3,
+                        typeDeliver: 0,
                       ),
                     ),
                   ); // Close the bottom sheet
@@ -134,7 +140,7 @@ class _HomeBottomViewState extends State<HomeBottomView> {
     );
   }
 
-  Widget _getPage(int index) {
+  Widget _getPage(int index, int typeDeliver) {
     switch (index) {
       case 0:
         return HomeView();
@@ -142,7 +148,7 @@ class _HomeBottomViewState extends State<HomeBottomView> {
         return MapsView();
       case 2:
         return BeliMakanView(
-          type: 0,
+          type: typeDeliver,
         );
       case 3:
         return ProfileViewNew();

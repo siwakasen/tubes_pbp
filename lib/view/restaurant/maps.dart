@@ -54,8 +54,11 @@ class _MapsViewState extends State<MapsView> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) =>
-                        HomeBottomView(pageRenderIndex: 4, bottomBarIndex: 1)),
+                    builder: (context) => HomeBottomView(
+                          pageRenderIndex: 4,
+                          bottomBarIndex: 1,
+                          typeDeliver: 0,
+                        )),
               );
             },
           ),

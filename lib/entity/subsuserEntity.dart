@@ -18,7 +18,9 @@ class SubscriptionUser {
         start_at: json['start_date'],
         end_at: json['end_date'],
       );
-
+  SubscriptionUser.empty()
+      : id_user = -1,
+        id_subscription = -1;
   String toRawJson() => json.encode(toJson());
   Map<String, dynamic> toJson() => {
         'user_id': id_user,

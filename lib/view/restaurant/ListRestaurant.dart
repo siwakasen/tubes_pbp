@@ -144,8 +144,9 @@ class RestaurantCard extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                             builder: (context) => HomeBottomView(
-                                  pageRenderIndex: 0,
-                                  bottomBarIndex: 0,
+                                  pageRenderIndex: 2,
+                                  bottomBarIndex: 2,
+                                  typeDeliver: 0,
                                 )),
                       );
                       showSnackBar(

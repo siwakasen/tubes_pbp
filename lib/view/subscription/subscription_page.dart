@@ -41,18 +41,16 @@ class SubscriptionViewState extends State<SubscriptionView> {
     print("subsuser");
     if (subsuser.id_user == -1) {
       isSubs = false;
-      // subsuser = SubscriptionUser(
-      //   id_user: -1,
-      //   id_subscription: -1,
-      // );
     } else {
       isSubs = true;
       if (subsuser.id_subscription == 1) {
         namaSubs = "Bronze";
       } else if (subsuser.id_subscription == 2) {
         namaSubs = "Gold";
-      } else {
+      } else if (subsuser.id_subscription == 3) {
         namaSubs = "Platinum";
+      } else {
+        namaSubs = subsuser.id_subscription.toString();
       }
     }
 
@@ -156,13 +154,14 @@ class SubscriptionViewState extends State<SubscriptionView> {
                               borderRadius: BorderRadius.circular(10),
                               onTap: () {
                                 print("AAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-                                print(isSubs);
+                                print(
+                                    "ini state isSubs : " + isSubs.toString());
                                 setState(() {
                                   print(
                                       "subsuser id ${subsuser.id_subscription}");
-                                  print(subsuser.id_subscription);
-                                  print(index);
                                   selectedSubs = index + 1;
+                                  print("ini selected subs : " +
+                                      selectedSubs.toString());
                                   if (!isSubs) {
                                     showModalBottomSheet(
                                       context: context,
@@ -181,15 +180,7 @@ class SubscriptionViewState extends State<SubscriptionView> {
                                         isScrollControlled: true,
                                         backgroundColor: Colors.transparent,
                                       );
-                                    } else {
-                                      // showModalBottomSheet(
-                                      //   context: context,
-                                      //   builder: (context) => payment(),
-                                      //   isDismissible: false,
-                                      //   isScrollControlled: true,
-                                      //   backgroundColor: Colors.transparent,
-                                      // );
-                                    }
+                                    } else {}
                                   }
                                 });
                               },
@@ -397,24 +388,30 @@ class SubscriptionViewState extends State<SubscriptionView> {
                   Material(
                     color: Colors.white,
                     child: InkWell(
-                      onTap: () {
+                      onTap: () async {
                         SubscriptionUser barusub = SubscriptionUser(
                             id_user: userId, id_subscription: selectedSubs);
                         SubsUserClient.create(barusub);
-                        setState(() async {
-                          subsuser = await SubsUserClient.find(userId);
 
+                        subsuser = await SubsUserClient.find(userId);
+                        print("subsuser find" +
+                            subsuser.id_subscription.toString());
+                        setState(() {
+                          if (subsuser.id_subscription == 1) {
+                            namaSubs = "Bronze";
+                          } else if (subsuser.id_subscription == 2) {
+                            namaSubs = "Gold";
+                          } else if (subsuser.id_subscription == 3) {
+                            namaSubs = "Platinum";
+                          }
+                          isSubs = true;
                           Navigator.of(context).pop();
                           showSnackBar(
                               context,
                               "Successfull to pay using Credit/Debit Card",
                               Colors.green);
-                          await Future.delayed(
-                              const Duration(seconds: 2), () {});
                         });
-                        setState(() {
-                          isSubs = true;
-                        });
+                        setState(() {});
                       },
                       child: Container(
                         padding: const EdgeInsets.only(left: 10, right: 10),
@@ -460,19 +457,28 @@ class SubscriptionViewState extends State<SubscriptionView> {
                   Material(
                     color: Colors.white,
                     child: InkWell(
-                      onTap: () {
+                      onTap: () async {
                         SubscriptionUser barusub = SubscriptionUser(
                             id_user: userId, id_subscription: selectedSubs);
                         SubsUserClient.create(barusub);
+
+                        subsuser = await SubsUserClient.find(userId);
+                        print("subsuser find" +
+                            subsuser.id_subscription.toString());
                         setState(() {
-                          subsuser = barusub;
+                          if (subsuser.id_subscription == 1) {
+                            namaSubs = "Bronze";
+                          } else if (subsuser.id_subscription == 2) {
+                            namaSubs = "Gold";
+                          } else if (subsuser.id_subscription == 3) {
+                            namaSubs = "Platinum";
+                          }
                           isSubs = true;
                           Navigator.of(context).pop();
-                          showSnackBar(
-                              context,
-                              "Successfull to pay using Credit/Debit Card",
-                              Colors.green);
+                          showSnackBar(context,
+                              "Successfull to pay using Gopay", Colors.green);
                         });
+                        setState(() {});
                       },
                       child: Container(
                         width: double.infinity,
@@ -534,19 +540,29 @@ class SubscriptionViewState extends State<SubscriptionView> {
                   Material(
                     color: Colors.white,
                     child: InkWell(
-                      onTap: () => setState(() {
+                      onTap: () async {
                         SubscriptionUser barusub = SubscriptionUser(
                             id_user: userId, id_subscription: selectedSubs);
                         SubsUserClient.create(barusub);
-                        subsuser = barusub;
 
-                        indexPaymentMethod = 2;
-                        Navigator.of(context).pop();
-                        showSnackBar(
-                            context,
-                            "Successfull to pay using Transfer BCA",
-                            Colors.green);
-                      }),
+                        subsuser = await SubsUserClient.find(userId);
+                        print("subsuser find" +
+                            subsuser.id_subscription.toString());
+                        setState(() {
+                          if (subsuser.id_subscription == 1) {
+                            namaSubs = "Bronze";
+                          } else if (subsuser.id_subscription == 2) {
+                            namaSubs = "Gold";
+                          } else if (subsuser.id_subscription == 3) {
+                            namaSubs = "Platinum";
+                          }
+                          isSubs = true;
+                          Navigator.of(context).pop();
+                          showSnackBar(context, "Successfull to pay using BCA",
+                              Colors.green);
+                        });
+                        setState(() {});
+                      },
                       child: Container(
                         decoration: const BoxDecoration(),
                         width: double.infinity,
@@ -579,23 +595,29 @@ class SubscriptionViewState extends State<SubscriptionView> {
                   Material(
                     color: Colors.white,
                     child: InkWell(
-                      onTap: () => setState(() {
-                        if (isSubs) {
-                          subsuser.id_subscription = selectedSubs;
-                          SubsUserClient.update(subsuser, userId);
-                        } else {
-                          SubscriptionUser barusub = SubscriptionUser(
-                              id_user: userId, id_subscription: selectedSubs);
-                          SubsUserClient.create(barusub);
-                          subsuser = barusub;
-                        }
-                        indexPaymentMethod = 3;
-                        Navigator.of(context).pop();
-                        showSnackBar(
-                            context,
-                            "Successfull to pay using Transfer Mandiri",
-                            Colors.green);
-                      }),
+                      onTap: () async {
+                        SubscriptionUser barusub = SubscriptionUser(
+                            id_user: userId, id_subscription: selectedSubs);
+                        SubsUserClient.create(barusub);
+
+                        subsuser = await SubsUserClient.find(userId);
+                        print("subsuser find" +
+                            subsuser.id_subscription.toString());
+                        setState(() {
+                          if (subsuser.id_subscription == 1) {
+                            namaSubs = "Bronze";
+                          } else if (subsuser.id_subscription == 2) {
+                            namaSubs = "Gold";
+                          } else if (subsuser.id_subscription == 3) {
+                            namaSubs = "Platinum";
+                          }
+                          isSubs = true;
+                          Navigator.of(context).pop();
+                          showSnackBar(context,
+                              "Successfull to pay using Mandiri", Colors.green);
+                        });
+                        setState(() {});
+                      },
                       child: Container(
                         decoration: const BoxDecoration(),
                         width: double.infinity,
@@ -628,21 +650,29 @@ class SubscriptionViewState extends State<SubscriptionView> {
                   Material(
                     color: Colors.white,
                     child: InkWell(
-                      onTap: () => setState(() {
-                        if (isSubs) {
-                          SubscriptionUser barusub = SubscriptionUser(
-                              id_user: userId, id_subscription: selectedSubs);
-                          SubsUserClient.create(barusub);
-                          subsuser = barusub;
-                        }
-                        isSubs = true;
-                        indexPaymentMethod = 4;
-                        Navigator.of(context).pop();
-                        showSnackBar(
-                            context,
-                            "Successfull to pay using Transfer BRI",
-                            Colors.green);
-                      }),
+                      onTap: () async {
+                        SubscriptionUser barusub = SubscriptionUser(
+                            id_user: userId, id_subscription: selectedSubs);
+                        SubsUserClient.create(barusub);
+
+                        subsuser = await SubsUserClient.find(userId);
+                        print("subsuser find" +
+                            subsuser.id_subscription.toString());
+                        setState(() {
+                          if (subsuser.id_subscription == 1) {
+                            namaSubs = "Bronze";
+                          } else if (subsuser.id_subscription == 2) {
+                            namaSubs = "Gold";
+                          } else if (subsuser.id_subscription == 3) {
+                            namaSubs = "Platinum";
+                          }
+                          isSubs = true;
+                          Navigator.of(context).pop();
+                          showSnackBar(context, "Successfull to pay using BRI",
+                              Colors.green);
+                        });
+                        setState(() {});
+                      },
                       child: Container(
                         width: double.infinity,
                         height: 70,
@@ -730,8 +760,7 @@ class SubscriptionViewState extends State<SubscriptionView> {
               ),
               Container(
                 padding: const EdgeInsets.only(left: 10, right: 10),
-                child: const Text(
-                    "Are you sure to update subscription to ... ?",
+                child: Text("Are you sure to change your subscription?",
                     style: TextStyle(
                         fontFamily: 'Poppins',
                         fontSize: 16,
@@ -782,15 +811,15 @@ class SubscriptionViewState extends State<SubscriptionView> {
                           subsuser.id_subscription = selectedSubs;
                           SubsUserClient.update(subsuser, userId);
                           setState(() {
-                            Navigator.of(context).pop();
                             namaSubs = subsuser.id_subscription == 1
                                 ? "Bronze"
                                 : subsuser.id_subscription == 2
                                     ? "Gold"
                                     : "Platinum";
+                            Navigator.of(context).pop();
                             showSnackBar(
                                 context,
-                                "Successfull to update subscription to ...  ",
+                                "Successfull to update subscription to ${namaSubs!}",
                                 Colors.green);
                           });
                         },
@@ -920,7 +949,7 @@ class SubscriptionViewState extends State<SubscriptionView> {
                           isSubs = false;
                           setState(() {
                             Navigator.of(context).pop();
-                            print(userId);
+                            print("ini user id : " + userId.toString());
                             subsuser.id_user = -1;
                             showSnackBar(
                                 context,

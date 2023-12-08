@@ -314,6 +314,7 @@ class _LoginNewState extends State<LoginNew> {
                                               builder: (_) => HomeBottomView(
                                                     pageRenderIndex: 0,
                                                     bottomBarIndex: 0,
+                                                    typeDeliver: 0,
                                                   )),
                                         );
                                       } else {

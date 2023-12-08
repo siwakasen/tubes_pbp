@@ -22,7 +22,6 @@ class Subscription {
         price: json['price'],
         percentage: json['percentage'],
       );
-
   String toRawJson() => json.encode(toJson());
   Map<String, dynamic> toJson() => {
         'id': id,

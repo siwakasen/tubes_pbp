@@ -1,7 +1,21 @@
+import 'dart:convert';
+
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:ugd2_pbp/client/detailTransaksiClient.dart';
+import 'package:ugd2_pbp/client/itemClient.dart';
+import 'package:ugd2_pbp/client/ratingClient.dart';
+import 'package:ugd2_pbp/client/transaksiClient.dart';
+import 'package:ugd2_pbp/client/userClient.dart';
+import 'package:ugd2_pbp/entity/detailTransaksiEntity.dart';
+import 'package:ugd2_pbp/entity/itemEntity.dart';
+import 'package:ugd2_pbp/entity/ratingEntity.dart';
+import 'package:ugd2_pbp/entity/transaksiEntity.dart';
+import 'package:ugd2_pbp/entity/userEntity.dart';
 import 'package:ugd2_pbp/view/order/nota/note_page.dart';
 import 'package:ugd2_pbp/view/order/ratings_page.dart';
+import 'package:ugd2_pbp/view/restaurant/ListRestaurant.dart';
 
 class HistoryOrderView extends StatefulWidget {
   const HistoryOrderView({super.key});
@@ -11,10 +25,85 @@ class HistoryOrderView extends StatefulWidget {
 }
 
 class _HistoryOrderViewState extends State<HistoryOrderView> {
-  List<String> historyData = ["1", "2"];
-  List<String> orderData = ["1", "2"];
-  List<bool> isRated = [false, true];
-  List<String> rating = ["4", "2"];
+  List<List<Item>> orderData = [];
+
+  List<Transaksi> transaksiFromDatabase = [];
+  List<Transaksi> transaksis = [];
+  List<Item> itemFromDatabase = [];
+  List<Item> items = [];
+  List<DetailTransaksi> tDetailFromDatabase = [];
+  List<Rating> ratingFromDatabase = [];
+  List<Rating> ratings = [];
+
+  List<String> imageLink = [];
+
+  late Map<Transaksi, List<Item>> itemsInTransaction;
+
+  late User userYangLogin;
+  late int transaksiCount = 0;
+
+  void refresh() async {
+    transaksiFromDatabase = await TransaksiClient.fetchSuccessOnly();
+    itemFromDatabase = await ItemClient.fetchAll();
+    tDetailFromDatabase = await DetailTransaksiClient.fetchAll();
+    ratingFromDatabase = await RatingClient.fetchAll();
+    // imageLink = List.filled(makanan2.length, '');
+
+    //clear cache image makanan
+    clearMemoryImageCache();
+    clearDiskCachedImages();
+
+    //mengambil image semua makanan yang tersimpan di dalam folder public
+    //laravel, berdasarkan nama image yang tersimpan di database
+    var response2 = await ItemClient.getAllImageItems();
+    //bentuk response2.body[data] ini adalah array of string
+    //kemudian disimpan di imageLink yg berupa list
+    imageLink = json.decode(response2.body)['data'].cast<String>();
+    userId = await getIntValuesSF();
+
+    transaksis = transaksiFromDatabase
+        .where((trans) => trans.id_user == userId)
+        .toList();
+
+    for (var trans in transaksis) {
+      List<Item> itemnya = [];
+
+      for (var detail in tDetailFromDatabase) {
+        if (detail.id_transaksi == trans.id) {
+          itemnya.add(itemFromDatabase
+              .where((element) => element.id == detail.id_item)
+              .first);
+        }
+      }
+      orderData.add(itemnya);
+    }
+
+    for (var trans in transaksis) {
+      var flag = false;
+      for (var rating in ratingFromDatabase) {
+        if (trans.id == rating.id_transaksi) {
+          ratings.add(rating);
+          flag = true;
+          break;
+        }
+      }
+      if (!flag) {
+        ratings.add(Rating(id_transaksi: -1));
+      }
+    }
+
+    setState(() {
+      items = itemFromDatabase;
+
+      transaksiCount = transaksis.length;
+    });
+  }
+
+  @override
+  void initState() {
+    refresh();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -70,12 +159,11 @@ class _HistoryOrderViewState extends State<HistoryOrderView> {
 
   Widget buildHistory(BuildContext context) {
     return Column(
-      children:
-          List.generate(historyData.length, (index) => historyList(index)),
+      children: List.generate(transaksiCount, (index) => historyList(index)),
     );
   }
 
-  Widget historyList(index) {
+  Widget historyList(inde) {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
@@ -89,9 +177,18 @@ class _HistoryOrderViewState extends State<HistoryOrderView> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // SizedBox(
+              //   height: 160,
+              //   child: SingleChildScrollView(
+              //     child: Column(
+              //       children: List.generate(orderData[inde].length,
+              //           (index) => orderDetails(orderData[inde], index)),
+              //     ),
+              //   ),
+              // ),
               Column(
-                children: List.generate(
-                    orderData.length, (index) => orderDetails(index)),
+                children: List.generate(orderData[inde].length,
+                    (index) => orderDetails(orderData[inde], index)),
               ),
               Container(
                 padding: EdgeInsets.only(right: 14),
@@ -106,7 +203,7 @@ class _HistoryOrderViewState extends State<HistoryOrderView> {
                       ),
                     ),
                     Text(
-                      "IDR 220.000",
+                      "IDR ${transaksis[inde].total}",
                       style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.w500,
@@ -138,7 +235,7 @@ class _HistoryOrderViewState extends State<HistoryOrderView> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                !isRated[index]
+                ratings[inde].id_transaksi == -1
                     ? Material(
                         color: Colors.transparent,
                         child: InkWell(
@@ -153,12 +250,18 @@ class _HistoryOrderViewState extends State<HistoryOrderView> {
                             ),
                           ),
                           onTap: () {
-                            setState(() {
-                              Navigator.push(
+                            setState(() async {
+                              var hasil = await Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) =>
-                                          const RatingView()));
+                                      builder: (context) => RatingView(
+                                          transaksi: transaksis[inde],
+                                          itemsInThisTransaction:
+                                              orderData[inde],
+                                          imageLink: imageLink)));
+                              setState(() {
+                                ratings[inde] = hasil;
+                              });
                             });
                           },
                         ),
@@ -172,7 +275,7 @@ class _HistoryOrderViewState extends State<HistoryOrderView> {
                               highlightColor: Colors.transparent,
                               borderRadius: BorderRadius.circular(50),
                               child: RatingBarIndicator(
-                                rating: double.parse(rating[index]),
+                                rating: ratings[inde].stars!.toDouble(),
                                 itemBuilder: (context, index) => const Icon(
                                   Icons.star,
                                   color: Colors.amber,
@@ -180,12 +283,18 @@ class _HistoryOrderViewState extends State<HistoryOrderView> {
                                 itemSize: 20,
                               ),
                               onTap: () {
-                                setState(() {
-                                  Navigator.push(
+                                setState(() async {
+                                  var hasil = await Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) =>
-                                              const RatingView()));
+                                          builder: (context) => RatingView(
+                                              transaksi: transaksis[inde],
+                                              itemsInThisTransaction:
+                                                  orderData[inde],
+                                              imageLink: imageLink)));
+                                  setState(() {
+                                    ratings[inde] = hasil;
+                                  });
                                 });
                               },
                             ),
@@ -202,8 +311,10 @@ class _HistoryOrderViewState extends State<HistoryOrderView> {
                                 color: Colors.red,
                               ),
                               onTap: () {
+                                print("deleting");
+                                onDelete(ratings[inde].id_transaksi!);
                                 setState(() {
-                                  //hapus rating
+                                  ratings[inde] = Rating(id_transaksi: -1);
                                 });
                               },
                             ),
@@ -216,7 +327,7 @@ class _HistoryOrderViewState extends State<HistoryOrderView> {
                     splashColor: Colors.transparent,
                     highlightColor: Colors.transparent,
                     borderRadius: BorderRadius.circular(50),
-                    child: const Text(
+                    child: Text(
                       "Order Note",
                       style: TextStyle(
                         fontSize: 20,
@@ -241,37 +352,50 @@ class _HistoryOrderViewState extends State<HistoryOrderView> {
     );
   }
 
-  Widget orderDetails(index) {
+  Widget orderDetails(List<Item> orderData, index) {
     return Row(
       children: [
         Container(
           width: 80,
           height: 80,
           padding: const EdgeInsets.all(10),
-          child: Image(
-            image: AssetImage('images/logo.png'),
+          child: ExtendedImage.network(
+            imageLink
+                .where((element) => element.contains(orderData[index].photo))
+                .first,
+            width: 100,
+            height: 100,
+            fit: BoxFit.fill,
+            cache: true,
           ),
         ),
-        const Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "Coca - Cola",
-              style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.black),
-            ),
-            Text(
-              "IDR 110.000",
-              style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.black),
-            )
-          ],
+        Container(
+          width: 140,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                orderData[index].name,
+                style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.black),
+              ),
+              Text(
+                orderData[index].price.toString(),
+                style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.black),
+              )
+            ],
+          ),
         )
       ],
     );
+  }
+
+  void onDelete(int id) {
+    RatingClient.deleteRating(id);
   }
 }
