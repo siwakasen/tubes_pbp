@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ugd2_pbp/view/home/home_bottom.dart';
 import 'package:ugd2_pbp/view/restaurant/ListRestaurant.dart';
 
 import 'package:geolocator/geolocator.dart';
@@ -52,7 +53,9 @@ class _MapsViewState extends State<MapsView> {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => RestaurantList()),
+                MaterialPageRoute(
+                    builder: (context) =>
+                        HomeBottomView(pageRenderIndex: 4, bottomBarIndex: 1)),
               );
             },
           ),

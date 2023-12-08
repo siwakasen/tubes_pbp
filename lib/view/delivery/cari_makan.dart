@@ -1,15 +1,16 @@
-import 'dart:convert';
-
 import 'package:extended_image/extended_image.dart';
 import 'package:http/http.dart';
-import 'package:ugd2_pbp/client/makananClient.dart';
 import 'package:flutter/material.dart';
-import 'package:ugd2_pbp/components/delivery_drawer.dart';
-import 'package:ugd2_pbp/entity/makananEntity.dart';
+import 'package:ugd2_pbp/entity/itemEntity.dart';
+import 'package:ugd2_pbp/view/delivery/onBeli_makan.dart';
 import 'package:uuid/uuid.dart';
 
+// ignore: must_be_immutable
 class CariMakanView extends StatefulWidget {
-  const CariMakanView({super.key});
+  CariMakanView(
+      {super.key, required this.imageLink, required this.itemsFromDatabase});
+  List<String> imageLink;
+  List<Item> itemsFromDatabase = [];
 
   @override
   State<CariMakanView> createState() => _CariMakanViewState();
@@ -18,41 +19,26 @@ class CariMakanView extends StatefulWidget {
 class _CariMakanViewState extends State<CariMakanView> {
   String id = const Uuid().v1();
   bool isPesan = false;
-  List<Makanan> makanan = [];
   late int itemCount = 0;
   late Response response;
   late Response response2;
+
+  List<Item> items = [];
+
   List<String> imageLink = [];
-  List<Makanan> makanan2 = [];
-  List<Makanan> makananFromDatabase = [];
+  List<Item> itemsFromDatabase = [];
 
   TextEditingController searchController = TextEditingController();
 
-  void refresh() async {
-    final makanan2 = await MakananClient.fetchAll();
-    imageLink = List.filled(makanan2.length, '');
-
-    //clear cache image makanan
-    clearMemoryImageCache();
-    clearDiskCachedImages();
-
-    //mengambil image semua makanan yang tersimpan di dalam folder public
-    //laravel, berdasarkan nama image yang tersimpan di database
-    response2 = await MakananClient.getAllImageMakanan();
-    //bentuk response2.body[data] ini adalah array of string
-    //kemudian disimpan di imageLink yg berupa list
-    imageLink = json.decode(response2.body)['data'].cast<String>();
-
-    setState(() {
-      makanan = makanan2;
-      makananFromDatabase = makanan2;
-      itemCount = makanan.length;
-    });
-  }
+  void refresh() async {}
 
   List<int> tapCounts = [];
   @override
   void initState() {
+    itemsFromDatabase = widget.itemsFromDatabase;
+    imageLink = widget.imageLink;
+    items = itemsFromDatabase;
+    itemCount = items.length;
     refresh();
     super.initState();
   }
@@ -71,7 +57,10 @@ class _CariMakanViewState extends State<CariMakanView> {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     ExtendedImage.network(
-                      imageLink[index],
+                      imageLink
+                          .where(
+                              (element) => element.contains(items[index].photo))
+                          .first,
                       width: 100,
                       height: 100,
                       fit: BoxFit.fill,
@@ -83,19 +72,31 @@ class _CariMakanViewState extends State<CariMakanView> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            makanan[index].namaMakanan!,
+                            items[index].name,
                             style: const TextStyle(
                                 fontSize: 18, fontWeight: FontWeight.bold),
                           ),
                           Text(
-                            makanan[index].hargaMakanan!.toString(),
+                            "IDR ${items[index].price.toString()}",
                             style: const TextStyle(fontSize: 18),
                           )
                         ],
                       ),
                     ),
                     TextButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (_) => onBeliView(
+                                      makanan: items[index],
+                                      photo: imageLink
+                                          .where((element) => element
+                                              .contains(items[index].photo))
+                                          .first,
+                                    )),
+                          );
+                        },
                         child: Container(
                             decoration: const BoxDecoration(
                               color: Colors.red,
@@ -186,7 +187,7 @@ class _CariMakanViewState extends State<CariMakanView> {
           ],
         ),
       ),
-      drawer: delivery(context),
+      // drawer: delivery(context),
     );
   }
 
@@ -257,16 +258,16 @@ class _CariMakanViewState extends State<CariMakanView> {
   }
 
   void searchMakanan(String query) {
-    List<Makanan> hasilCari = [];
-    for (var element in makananFromDatabase) {
-      if (element.namaMakanan!.contains(query)) {
+    List<Item> hasilCari = [];
+    for (var element in itemsFromDatabase) {
+      if (element.name.contains(query)) {
         hasilCari.add(element);
       }
     }
 
     setState(() {
-      makanan = hasilCari;
-      itemCount = makanan.length;
+      items = hasilCari;
+      itemCount = items.length;
     });
   }
 }

@@ -312,7 +312,8 @@ class _LoginNewState extends State<LoginNew> {
                                           context,
                                           MaterialPageRoute(
                                               builder: (_) => HomeBottomView(
-                                                    initialSelectedIndex: 0,
+                                                    pageRenderIndex: 0,
+                                                    bottomBarIndex: 0,
                                                   )),
                                         );
                                       } else {

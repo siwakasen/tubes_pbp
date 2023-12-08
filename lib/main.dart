@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:ugd2_pbp/entity/makananEntity.dart';
@@ -7,6 +10,9 @@ import 'package:ugd2_pbp/theme/theme_provider.dart';
 import 'package:ugd2_pbp/view/order/order_review_page.dart';
 
 void main() {
+  // if (Platform.isWindows) {
+  //   debugDefaultTargetPlatformOverride = TargetPlatform.fuchsia;
+  // }
   runApp(
     ChangeNotifierProvider(
       create: (context) => ThemeProvider(),
@@ -23,6 +29,7 @@ class MainApp extends StatelessWidget {
     return Consumer<ThemeProvider>(
       builder: (context, themeProvider, child) {
         return MaterialApp(
+          debugShowCheckedModeBanner: false,
           home: LoginNew(),
           theme: themeProvider.themeData,
         );

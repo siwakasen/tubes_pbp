@@ -9,11 +9,13 @@ import 'package:ugd2_pbp/view/restaurant/maps.dart';
 import 'package:ugd2_pbp/view/subscription/subscription_page.dart';
 
 class HomeBottomView extends StatefulWidget {
-  int initialSelectedIndex;
+  int pageRenderIndex;
+  int bottomBarIndex;
   @override
   HomeBottomView({
     super.key,
-    required this.initialSelectedIndex,
+    required this.pageRenderIndex,
+    required this.bottomBarIndex,
   });
 
   State<HomeBottomView> createState() => _HomeBottomViewState();
@@ -33,19 +35,23 @@ class _HomeBottomViewState extends State<HomeBottomView> {
   }
 
   @override
+  void initState() {
+    _currentIndex = widget.pageRenderIndex;
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _getPage(widget.initialSelectedIndex != 0
-          ? widget.initialSelectedIndex
-          : _currentIndex == 3
-              ? 6
-              : _currentIndex),
+      body: _getPage(_currentIndex),
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.amber,
         type: BottomNavigationBarType.fixed,
         selectedItemColor: Colors.red, // Selected icon color
-        unselectedItemColor: Colors.white, // Unselected icon color
-        currentIndex: _currentIndex,
+        unselectedItemColor: Colors.white,
+        currentIndex: (_currentIndex >= 0 && _currentIndex < 3)
+            ? _currentIndex
+            : widget.bottomBarIndex,
         onTap: _onItemTapped,
         items: [
           BottomNavigationBarItem(
@@ -81,11 +87,12 @@ class _HomeBottomViewState extends State<HomeBottomView> {
                 leading: Icon(Icons.subscriptions_sharp),
                 title: Text('Subscription'),
                 onTap: () {
-                  // Handle Profile button tap
+                  Navigator.of(context).pop();
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => SubscriptionView(),
+                      builder: (context) =>
+                          HomeBottomView(pageRenderIndex: 5, bottomBarIndex: 3),
                     ),
                   ); // Close the bottom sheet
                 },
@@ -94,12 +101,15 @@ class _HomeBottomViewState extends State<HomeBottomView> {
                 leading: Icon(Icons.person),
                 title: Text('Profile'),
                 onTap: () {
-                  // Handle Profile button tap
+                  Navigator.of(context).pop();
+
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) =>
-                          HomeBottomView(initialSelectedIndex: 6),
+                      builder: (context) => HomeBottomView(
+                        pageRenderIndex: 6,
+                        bottomBarIndex: 3,
+                      ),
                     ),
                   ); // Close the bottom sheet
                 },
@@ -108,7 +118,7 @@ class _HomeBottomViewState extends State<HomeBottomView> {
                 leading: Icon(Icons.settings),
                 title: Text('Logout'),
                 onTap: () {
-                  // Handle Settings button tap
+                  Navigator.of(context).pop();
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -139,14 +149,8 @@ class _HomeBottomViewState extends State<HomeBottomView> {
       case 4:
         return RestaurantList();
       case 5:
-        //delivery
-        return Container();
+        return SubscriptionView();
       case 6:
-        //profile
-        setState(() {
-          widget.initialSelectedIndex = 0;
-          _currentIndex = 3;
-        });
         return ProfileViewNew();
       default:
         return Container();

@@ -24,6 +24,18 @@ class User {
       required this.photo,
       this.idRestaurant});
 
+  User.empty()
+      : id = -1,
+        username = '',
+        email = '',
+        password = '',
+        name = '',
+        address = '',
+        bornDate = '',
+        phoneNumber = '',
+        photo = '',
+        idRestaurant = -1;
+
   factory User.fromRawJson(String str) => User.fromJson(json.decode(str));
   factory User.fromJson(Map<String, dynamic> json) => User(
       id: json['id'],

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:http/http.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -43,12 +44,16 @@ class _EditProfileNewState extends State<EditProfileNew> {
     super.initState();
   }
 
+  String usernames = "";
+  String emails = "";
   late int userId;
   late String photo = "-";
+  late Response response;
   void refresh() async {
     userId = await getIntValuesSF();
     print(userId);
     final data = await UserClient.find(userId);
+    response = await UserClient.getImageUser(data.photo);
     setState(() {
       usernameController.text = data.username;
       emailController.text = data.email;
@@ -58,12 +63,14 @@ class _EditProfileNewState extends State<EditProfileNew> {
       phoneController.text = data.phoneNumber;
       bornController.text = data.bornDate;
       photo = data.photo;
+      usernames = data.username;
+      emails = data.email;
     });
   }
 
   String uploadingMessage = '';
   String? imgString = '';
-  bool pickingImage = false;
+  bool isPickingImage = false;
   late XFile xFile;
   Future<File?>? imageFile;
   Image? imageFromPreferences;
@@ -74,7 +81,7 @@ class _EditProfileNewState extends State<EditProfileNew> {
 
     final image = File(xFile.path);
     imageInput = image;
-    pickingImage = true;
+    isPickingImage = true;
     setState(() {
       imageFile = Future.value(image);
     });
@@ -86,37 +93,19 @@ class _EditProfileNewState extends State<EditProfileNew> {
 
     final image = File(xFile.path);
     imageInput = image;
-    pickingImage = true;
+    isPickingImage = true;
     setState(() {
       imageFile = Future.value(image);
     });
   }
 
-  Widget imageFromGallery() {
-    return FutureBuilder<File?>(
-      future: imageFile,
-      builder: (BuildContext context, AsyncSnapshot<File?> snapshot) {
-        if (snapshot.connectionState == ConnectionState.done &&
-            null != snapshot.data) {
-          final imgBytes = snapshot.data!.readAsBytesSync();
-          imgString = Utility.base64String(imgBytes);
-
-          Utility.saveImageToPreferences(
-              Utility.base64String(snapshot.data!.readAsBytesSync()));
-          return CircleAvatar(
+  Widget displaySelectedImage() {
+    return imageInput != null
+        ? CircleAvatar(
             radius: 70,
-            backgroundImage: FileImage(
-              snapshot.data!,
-            ),
-          );
-        } else {
-          return const CircleAvatar(
-            radius: 70,
-            backgroundImage: null,
-          );
-        }
-      },
-    );
+            backgroundImage: FileImage(imageInput!),
+          )
+        : const CircleAvatar(radius: 70, backgroundImage: null);
   }
 
   late String username, name, password, email, phoneNumber, address, bornDate;
@@ -157,18 +146,15 @@ class _EditProfileNewState extends State<EditProfileNew> {
           children: [
             Stack(
               children: <Widget>[
-                if (photo == "-") ...[
+                if (photo == "-" && !isPickingImage) ...[
                   const CircleAvatar(radius: 70, backgroundImage: null),
-                ]
-                // else if (!pickingImage)
-                //   [
-                //     imageFromGallery(),
-                // ]
-                else ...[
+                ] else if (!isPickingImage && photo != "-") ...[
                   CircleAvatar(
                     radius: 70,
                     backgroundImage: photo != '-' ? NetworkImage(photo) : null,
-                  )
+                  ),
+                ] else ...[
+                  displaySelectedImage()
                 ],
                 Positioned(
                   bottom: 1,
@@ -207,13 +193,12 @@ class _EditProfileNewState extends State<EditProfileNew> {
               ],
             ),
             const SizedBox(height: 5),
-            Text("nickname",
+            Text(usernames,
                 style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                     fontFamily: 'Poppins')),
-            Text("aku@gmail.com",
-                style: TextStyle(fontSize: 20, fontFamily: 'Poppins')),
+            Text(emails, style: TextStyle(fontSize: 20, fontFamily: 'Poppins')),
             Form(
                 key: _formKey,
                 child: Column(
@@ -520,6 +505,8 @@ class _EditProfileNewState extends State<EditProfileNew> {
                                 idRestaurant: -1,
                               ),
                               userId);
+                          UserClient.updateImageUser(
+                              imageInput!, userId!, xFile.name);
                           Navigator.pop(
                             context,
                             MaterialPageRoute(builder: (_) => ProfileViewNew()),

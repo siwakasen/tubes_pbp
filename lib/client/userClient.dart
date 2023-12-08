@@ -53,11 +53,11 @@ class UserClient {
     }
   }
 
-  static Future<Response> update(User User, id) async {
+  static Future<Response> update(User user, id) async {
     try {
       var response = await put(Uri.http(url, '$endpoint/users/$id'),
           headers: {'Content-Type': 'application/json'},
-          body: User.toRawJson());
+          body: user.toRawJson());
       if (response.statusCode != 200) throw Exception(response.reasonPhrase);
       return response;
     } catch (e) {
@@ -67,10 +67,23 @@ class UserClient {
 
   static Future<Response> updatePassword(String password, String email) async {
     try {
-      var response = await put(Uri.http(url, '$endpoint/users/pass/${email}'),
+      var response = await put(Uri.http(url, '$endpoint/users/pass/$email'),
           headers: {'Content-Type': 'application/json'},
           body: jsonEncode(<String, String>{
             'password': password,
+          }));
+      return response;
+    } catch (e) {
+      return Future.error(e.toString());
+    }
+  }
+
+  static Future<Response> updateRes(int id_restaurant, id) async {
+    try {
+      var response = await put(Uri.http(url, '$endpoint/users/restaurant/$id'),
+          headers: {'Content-Type': 'application/json'},
+          body: jsonEncode(<String, int>{
+            'id_restaurant': id_restaurant,
           }));
       return response;
     } catch (e) {

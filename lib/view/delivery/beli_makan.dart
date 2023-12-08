@@ -3,15 +3,20 @@ import 'dart:convert';
 import 'package:extended_image/extended_image.dart';
 import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:ugd2_pbp/client/makananClient.dart';
+import 'package:ugd2_pbp/client/itemClient.dart';
 import 'package:flutter/material.dart';
+import 'package:ugd2_pbp/client/itemTypeClient.dart';
+import 'package:ugd2_pbp/client/userClient.dart';
 import 'package:ugd2_pbp/components/delivery_drawer.dart';
-import 'package:ugd2_pbp/entity/makananEntity.dart';
+import 'package:ugd2_pbp/entity/itemEntity.dart';
+import 'package:ugd2_pbp/entity/itemTypeEntity.dart';
+import 'package:ugd2_pbp/entity/userEntity.dart';
 import 'package:ugd2_pbp/view/delivery/cari_makan.dart';
+import 'package:ugd2_pbp/view/delivery/onBeli_makan.dart';
 import 'package:ugd2_pbp/view/home/home_bottom.dart';
 import 'package:ugd2_pbp/view/order/order_review_page.dart';
-import 'package:uuid/uuid.dart';
 
+// ignore: must_be_immutable
 class BeliMakanView extends StatefulWidget {
   int type;
   @override
@@ -25,66 +30,63 @@ class BeliMakanView extends StatefulWidget {
 }
 
 class _BeliMakanViewState extends State<BeliMakanView> {
+  User user = User.empty();
   bool isPesan = false;
-  List<Makanan> makanan = [
-    Makanan(
-        namaMakanan: "Soto Ayam Madura",
-        hargaMakanan: 15000,
-        namaFoto: "logo.png"),
-    Makanan(
-        namaMakanan: "Ayam goreng", hargaMakanan: 25000, namaFoto: "logo.png"),
-    Makanan(
-        namaMakanan: "Ayam goreng", hargaMakanan: 25000, namaFoto: "logo.png"),
-    Makanan(
-        namaMakanan: "Ayam goreng", hargaMakanan: 25000, namaFoto: "logo.png"),
-    Makanan(
-        namaMakanan: "Ayam goreng", hargaMakanan: 25000, namaFoto: "logo.png"),
-    Makanan(
-        namaMakanan: "Ayam goreng", hargaMakanan: 25000, namaFoto: "logo.png"),
-    Makanan(
-        namaMakanan: "Ayam goreng", hargaMakanan: 25000, namaFoto: "logo.png"),
-    Makanan(
-        namaMakanan: "Ayam goreng", hargaMakanan: 25000, namaFoto: "logo.png"),
-    Makanan(
-        namaMakanan: "Ayam goreng", hargaMakanan: 25000, namaFoto: "logo.png"),
-  ];
-  late int itemCount = makanan.length;
+  List<Item> items = [];
+  late int itemCount = 0;
   late Response response;
   late Response response2;
   List<String> imageLink = [];
   bool isHavePesanan = false;
-  List<Makanan> pesanan = [];
+  late String typeYangsedangDicari = "Pilih Type";
+  late int userId;
+  List<ItemType> types = [];
+  List<Item> itemFromDatabase = [];
+  List<ItemType> itemTypeFromDatabase = [];
+
+  List<Item> pesanan = [];
+
+  String jumlahPesanan() {
+    return pesanan.length.toString();
+  }
+
   void refresh() async {
-    // final makanan2 = await MakananClient.fetchAll();
+    itemFromDatabase = await ItemClient.fetchAll();
+    itemTypeFromDatabase = await ItemTypeClient.fetchAll();
     // imageLink = List.filled(makanan2.length, '');
-    print(makanan[0].namaMakanan);
+
     //clear cache image makanan
     clearMemoryImageCache();
     clearDiskCachedImages();
 
     //mengambil image semua makanan yang tersimpan di dalam folder public
     //laravel, berdasarkan nama image yang tersimpan di database
-    // response2 = await MakananClient.getAllImageMakanan();
+    response2 = await ItemClient.getAllImageItems();
     //bentuk response2.body[data] ini adalah array of string
     //kemudian disimpan di imageLink yg berupa list
-    // imageLink = json.decode(response2.body)['data'].cast<String>();
-
-    // setState(() {
-    //   makanan = makanan2;
-    //   itemCount = makanan.length;
-    // });
+    imageLink = json.decode(response2.body)['data'].cast<String>();
     userId = await getIntValuesSF();
+    final data = await UserClient.find(userId);
+
+    setState(() {
+      user = data;
+      items = itemFromDatabase;
+      types = itemTypeFromDatabase;
+      itemCount = items.length;
+      print(user.id);
+      print(user.idRestaurant);
+      user.idRestaurant == null
+          ? WidgetsBinding.instance.addPostFrameCallback((_) {
+              showAlertDialog();
+            })
+          : null;
+    });
   }
 
-  int userId = -1;
-  List<int> tapCounts = [];
   @override
   void initState() {
-    super.initState();
     refresh();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      showAlertDialog();
-    });
+    super.initState();
   }
 
   @override
@@ -101,7 +103,7 @@ class _BeliMakanViewState extends State<BeliMakanView> {
         body: Column(
           children: [
             Container(
-              height: isHavePesanan
+              height: pesanan.isNotEmpty
                   ? MediaQuery.of(context).size.height - 236
                   : MediaQuery.of(context).size.height - 136,
               child: SingleChildScrollView(
@@ -122,12 +124,12 @@ class _BeliMakanViewState extends State<BeliMakanView> {
                                       borderRadius: BorderRadius.all(
                                           Radius.circular(50)))),
                               child: TextButton(
-                                child: const Row(
+                                child: Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
-                                      "Food",
+                                      typeYangsedangDicari,
                                       style: TextStyle(
                                           color: Colors.white,
                                           fontSize: 18,
@@ -156,7 +158,10 @@ class _BeliMakanViewState extends State<BeliMakanView> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (_) => const CariMakanView()),
+                                    builder: (_) => CariMakanView(
+                                          imageLink: imageLink,
+                                          itemsFromDatabase: itemFromDatabase,
+                                        )),
                               );
                             },
                             child: Container(
@@ -190,7 +195,7 @@ class _BeliMakanViewState extends State<BeliMakanView> {
                 ),
               ),
             ),
-            isHavePesanan
+            pesanan.isNotEmpty
                 ? Container(
                     width: double.infinity,
                     height: 100,
@@ -216,14 +221,14 @@ class _BeliMakanViewState extends State<BeliMakanView> {
                                     borderRadius:
                                         BorderRadius.all(Radius.circular(10)))),
                             child: TextButton(
-                              child: const Row(
+                              child: Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   Icon(Icons.collections_bookmark,
                                       color: Colors.white),
                                   Text(
-                                    "1 Item(s)",
+                                    "${pesanan.length} Item(s)",
                                     style: TextStyle(color: Colors.white),
                                   ),
                                   Text(
@@ -249,74 +254,12 @@ class _BeliMakanViewState extends State<BeliMakanView> {
         drawer: delivery(context));
   }
 
-  void showAlertDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text("Welcome to BeliMakanView"),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text("OK"),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  Column bottomSheet() {
-    return Column(
-      children: [
-        Container(
-          height: 300,
-          width: double.infinity,
-          decoration: const ShapeDecoration(
-              color: Colors.white,
-              shadows: [
-                BoxShadow(
-                    color: Colors.grey,
-                    spreadRadius: 10,
-                    blurRadius: 9,
-                    offset: Offset(0, 5)),
-              ],
-              shape: RoundedRectangleBorder(
-                  borderRadius:
-                      BorderRadius.vertical(top: Radius.circular(50)))),
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                SizedBox(
-                  child: Padding(
-                    padding:
-                        const EdgeInsets.only(top: 10, left: 50, right: 50),
-                    child: Container(
-                      height: 5,
-                      color: Colors.grey,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
   Widget listMakanan(int index) {
     return Padding(
       padding: const EdgeInsets.all(10.0),
       child: SingleChildScrollView(
           child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
+        duration: const Duration(milliseconds: 10000),
         child: Column(
           children: [
             Container(
@@ -324,33 +267,51 @@ class _BeliMakanViewState extends State<BeliMakanView> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    // ExtendedImage.network(
-                    //   imageLink[index],
-                    //   width: 100,
-                    //   height: 100,
-                    //   fit: BoxFit.fill,
-                    //   cache: true,
-                    // ),
+                    ExtendedImage.network(
+                      imageLink
+                          .where(
+                              (element) => element.contains(items[index].photo))
+                          .first,
+                      width: 100,
+                      height: 100,
+                      fit: BoxFit.fill,
+                      cache: true,
+                    ),
                     SizedBox(
                       width: 100,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            makanan[index].namaMakanan!,
+                            items[index].name,
                             style: const TextStyle(
                                 fontSize: 18, fontWeight: FontWeight.bold),
                           ),
                           Text(
-                            makanan[index].hargaMakanan!.toString(),
+                            "IDR ${items[index].price.toString()}",
                             style: const TextStyle(fontSize: 18),
                           )
                         ],
                       ),
                     ),
                     TextButton(
-                        onPressed: () {
-                          addPesanan(index);
+                        onPressed: () async {
+                          // bool p = await Navigator.push(
+                          //   context,
+                          //   MaterialPageRoute(
+                          //       builder: (_) => onBeliView(
+                          //             makanan: items[index],
+                          //             photo: imageLink
+                          //                 .where((element) => element
+                          //                     .contains(items[index].photo))
+                          //                 .first,
+                          //           )),
+                          // );
+                          // if (p) {
+                          //   setState(() {
+                          //     pesanan.add(items[index]);
+                          //   });
+                          // }
                         },
                         child: Container(
                             decoration: const BoxDecoration(
@@ -440,6 +401,10 @@ class _BeliMakanViewState extends State<BeliMakanView> {
                   children: [
                     TextButton(
                         onPressed: () {
+                          filter('Food');
+                          setState(() {
+                            typeYangsedangDicari = "Food";
+                          });
                           Navigator.pop(context);
                         },
                         child: const Text('Food',
@@ -454,6 +419,10 @@ class _BeliMakanViewState extends State<BeliMakanView> {
                     ),
                     TextButton(
                         onPressed: () {
+                          filter('Snack');
+                          setState(() {
+                            typeYangsedangDicari = "Snack";
+                          });
                           Navigator.pop(context);
                         },
                         child: const Text('Snacks',
@@ -468,6 +437,10 @@ class _BeliMakanViewState extends State<BeliMakanView> {
                     ),
                     TextButton(
                         onPressed: () {
+                          filter('Drink');
+                          setState(() {
+                            typeYangsedangDicari = "Drink";
+                          });
                           Navigator.pop(context);
                         },
                         child: const Text('Drink',
@@ -482,6 +455,10 @@ class _BeliMakanViewState extends State<BeliMakanView> {
                     ),
                     TextButton(
                         onPressed: () {
+                          filter('Combo');
+                          setState(() {
+                            typeYangsedangDicari = "Combo";
+                          });
                           Navigator.pop(context);
                         },
                         child: const Text('Combo',
@@ -501,6 +478,48 @@ class _BeliMakanViewState extends State<BeliMakanView> {
           ),
         ),
       );
+  void showAlertDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Please choose the restaurant before ordering foods"),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20.0),
+          ),
+          actions: [
+            Container(
+              padding: EdgeInsets.all(5),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(25.0),
+                color: Colors.red,
+              ),
+              child: TextButton(
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) => HomeBottomView(
+                                pageRenderIndex: 1,
+                                bottomBarIndex: 1,
+                              )));
+                },
+                child: Text(
+                  "Choose Now",
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                      fontFamily: "Poppins"),
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   getIntValuesSF() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     //Return int
@@ -509,7 +528,7 @@ class _BeliMakanViewState extends State<BeliMakanView> {
   }
 
   void addPesanan(int index) {
-    pesanan.add(makanan[index]);
+    pesanan.add(items[index]);
 
     setState(() {
       if (pesanan.isNotEmpty) {
@@ -517,6 +536,40 @@ class _BeliMakanViewState extends State<BeliMakanView> {
       } else {
         isHavePesanan = false;
       }
+    });
+  }
+
+  void filter(String filter) {
+    List<Item> hasil = [];
+
+    //cara ku
+    for (var item in itemFromDatabase) {
+      String tipeItemNya = "";
+
+      for (var type in types) {
+        if (type.id == item.id_type) {
+          tipeItemNya = type.name;
+        }
+      }
+
+      if (tipeItemNya == filter) {
+        hasil.add(item);
+      }
+    }
+
+    //cara chatgpt
+    // var hasil2 = items.where((item) {
+    //   var tipeItemNya = types
+    //       .firstWhere(
+    //         (type) => type.id == item.id_type,
+    //       )
+    //       .name;
+    //   return tipeItemNya == filter;
+    // }).toList();
+
+    setState(() {
+      items = hasil;
+      itemCount = items.length;
     });
   }
 }

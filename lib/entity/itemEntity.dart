@@ -1,26 +1,38 @@
 import 'dart:convert';
 
 class Item {
-  int? id;
-  String? namaMakanan;
-  int? hargaMakanan;
-  String? namaFoto;
+  int id;
+  String name;
+  int price;
+  String photo;
+  String size;
+  int id_type;
 
-  Item({this.id = 0, this.namaMakanan, this.hargaMakanan, this.namaFoto});
+  Item(
+      {this.id = 0,
+      required this.name,
+      required this.price,
+      required this.photo,
+      required this.size,
+      required this.id_type});
 
   factory Item.fromRawJson(String str) => Item.fromJson(json.decode(str));
   factory Item.fromJson(Map<String, dynamic> json) => Item(
         id: json['id'],
-        namaMakanan: json['namaMakanan'],
-        hargaMakanan: json['hargaMakanan'],
-        namaFoto: json['namaFoto'],
+        name: json['name'],
+        price: json['price'],
+        photo: json['photo'],
+        size: json['size'],
+        id_type: json['id_type'],
       );
 
   String toRawJson() => json.encode(toJson());
   Map<String, dynamic> toJson() => {
         'id': id,
-        'namaMakanan': namaMakanan,
-        'hargaMakanan': hargaMakanan,
-        'namaFoto': namaFoto,
+        'name': name,
+        'price': price,
+        'photo': photo,
+        'size': size,
+        'id_type': id_type,
       };
 }

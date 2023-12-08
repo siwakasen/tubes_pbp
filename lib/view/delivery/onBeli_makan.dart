@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:ugd2_pbp/entity/makananEntity.dart';
-import 'package:ugd2_pbp/view/delivery/beli_makan.dart';
-import 'package:ugd2_pbp/view/order/nota/note_page.dart';
-import 'package:ugd2_pbp/view/order/ratings_page.dart';
+import 'package:flutter_cart/flutter_cart.dart';
+import 'package:ugd2_pbp/client/itemTypeClient.dart';
+import 'package:ugd2_pbp/entity/itemEntity.dart';
+import 'package:ugd2_pbp/entity/itemTypeEntity.dart';
 
 class onBeliView extends StatefulWidget {
-  const onBeliView({super.key, required this.makanan});
-  final Makanan makanan;
+  const onBeliView({super.key, required this.makanan, required this.photo});
+  final Item makanan;
+  final String photo;
 
   @override
   State<onBeliView> createState() => _onBeliViewState();
@@ -18,14 +18,22 @@ class _onBeliViewState extends State<onBeliView> {
   List<String> orderData = ["1", "2"];
   List<bool> isRated = [false, true];
   List<String> rating = ["4", "2"];
-  Makanan item = Makanan();
+  late Item item;
   int quantity = 0;
+
   List<String> ukuran = <String>[
     'Large',
     'Medium',
     'Small',
   ];
   late String dropdownValue;
+
+  var cart = FlutterCart();
+
+  List<ItemType> itemTypeFromDatabase = [];
+  void getDataFromDatabase() async {
+    itemTypeFromDatabase = await ItemTypeClient.fetchAll();
+  }
 
   @override
   void initState() {
@@ -83,7 +91,7 @@ class _onBeliViewState extends State<onBeliView> {
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
                             Text(
-                              item.namaMakanan!,
+                              item.name,
                               style: TextStyle(fontWeight: FontWeight.bold),
                             ),
                             Text(
@@ -196,12 +204,7 @@ class _onBeliViewState extends State<onBeliView> {
                         borderRadius: BorderRadius.circular(50))),
                 onPressed: () {
                   setState(() {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => BeliMakanView(
-                                  type: 0,
-                                )));
+                    Navigator.pop(context, true);
                   });
                 },
                 child: const Text(

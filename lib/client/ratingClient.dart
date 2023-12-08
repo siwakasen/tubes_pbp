@@ -5,8 +5,8 @@ import 'package:http/http.dart';
 import 'package:ugd2_pbp/entity/ratingEntity.dart';
 
 class RatingClient {
-  static final String url = '192.168.100.211';
-  static final String endpoint = 'tugbes/public/api';
+  static final String url = '10.0.2.2:8000';
+  static final String endpoint = '/api';
 
   static Future<List<Rating>> fetchAll() async {
     print("fetching all");

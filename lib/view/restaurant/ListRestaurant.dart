@@ -1,9 +1,36 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:ugd2_pbp/client/restaurantClient.dart';
+import 'package:ugd2_pbp/client/userClient.dart';
+import 'package:ugd2_pbp/entity/restaurantEntity.dart';
 import 'package:ugd2_pbp/view/home/home_bottom.dart';
 
-class RestaurantList extends StatelessWidget {
+class RestaurantList extends StatefulWidget {
   @override
+  State<RestaurantList> createState() => _RestaurantListState();
+}
+
+late int userId;
+
+class _RestaurantListState extends State<RestaurantList> {
+  List<Restaurant> restaurantDataList1 = [];
   TextEditingController searchController = TextEditingController();
+
+  void getRestaurant() async {
+    final restaurantDataList = await RestaurantClient.fetchAll();
+    userId = await getIntValuesSF();
+    setState(() {
+      restaurantDataList1 = restaurantDataList;
+    });
+  }
+
+  @override
+  void initState() {
+    getRestaurant();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -45,9 +72,9 @@ class RestaurantList extends StatelessWidget {
         ],
       ),
       body: ListView.builder(
-        itemCount: restaurantData.length,
+        itemCount: restaurantDataList1.length,
         itemBuilder: (context, index) {
-          return RestaurantCard(restaurant: restaurantData[index]);
+          return RestaurantCard(restaurant: restaurantDataList1[index]);
         },
       ),
     );
@@ -95,37 +122,34 @@ class RestaurantCard extends StatelessWidget {
                         ),
                         SizedBox(height: 8),
                         Text(
-                          restaurant.postal_code,
+                          "${restaurant.postalCode} ${restaurant.city}",
                           style: TextStyle(fontSize: 18),
                         ),
                         SizedBox(height: 8),
                         Text(
-                          "Opening hours: ${restaurant.opening_hours} - ${restaurant.closing_hours}",
+                          "Opening hours: ${restaurant.openingHours} - ${restaurant.closedHours}",
                           style: TextStyle(fontSize: 18),
                         ),
                       ],
                     ),
                   ),
-                  Text("${restaurant.jarak}",
-                      style: TextStyle(
-                          fontSize: 18,
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: "Poppins")),
                 ],
               ),
               SizedBox(height: 20),
               Center(
                 child: ElevatedButton(
                     onPressed: () {
-                      print("CK");
+                      UserClient.updateRes(restaurant.id, userId);
                       Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (context) => HomeBottomView(
-                                  initialSelectedIndex: 0,
+                                  pageRenderIndex: 0,
+                                  bottomBarIndex: 0,
                                 )),
                       );
+                      showSnackBar(
+                          context, 'Restaurant selected', Colors.green);
                     },
                     style: ButtonStyle(
                         minimumSize: MaterialStateProperty.all(Size(290, 50)),
@@ -185,15 +209,15 @@ class RestaurantCard extends StatelessWidget {
                 ),
               ],
             ),
-            Positioned(
-              bottom: 8,
-              right: 8,
-              child: Text(
-                '${restaurant.jarak}',
-                style: TextStyle(
-                    fontSize: 14, color: const Color.fromARGB(255, 65, 65, 65)),
-              ),
-            ),
+            // Positioned(
+            //   bottom: 8,
+            //   right: 8,
+            //   child: Text(
+            //     '${restaurant.jarak}',
+            //     style: TextStyle(
+            //         fontSize: 14, color: const Color.fromARGB(255, 65, 65, 65)),
+            //   ),
+            // ),
           ],
         ),
       ),
@@ -201,44 +225,17 @@ class RestaurantCard extends StatelessWidget {
   }
 }
 
-class Restaurant {
-  final String name;
-  final String address;
-  final String jarak;
-  final String postal_code;
-  final String opening_hours;
-  final String closing_hours;
-
-  Restaurant(
-      {required this.name,
-      required this.address,
-      required this.jarak,
-      required this.postal_code,
-      required this.opening_hours,
-      required this.closing_hours});
+void showSnackBar(BuildContext context, String msg, Color bg) {
+  final scaffold = ScaffoldMessenger.of(context);
+  scaffold.showSnackBar(SnackBar(
+    content: Text(msg),
+    backgroundColor: bg,
+  ));
 }
 
-List<Restaurant> restaurantData = [
-  Restaurant(
-      name: 'Crusty Crunch’s Yogyakarta Ambarukmo',
-      address: 'Jl. Laskda Adisucipto, Depok, Daerah Istimewa Yogyakarta ',
-      jarak: '200 m',
-      postal_code: '55281',
-      opening_hours: '10.00',
-      closing_hours: '22.00'),
-  Restaurant(
-      name: 'Crusty Crunch’s Sultan Agung',
-      address:
-          'Jl. Sultan Agung no. 24. Wirogunan, Mergangsan, Daerah Istimewa Yogyakarta ',
-      jarak: '200 m',
-      postal_code: '55151',
-      opening_hours: '10.00',
-      closing_hours: '22.00'),
-  Restaurant(
-      name: 'Crusty Crunch’s Sudirman Jogja ',
-      address: 'Jl. Laskda Adisucipto, Depok, Daerah Istimewa Yogyakarta  ',
-      jarak: '200 m',
-      postal_code: '55281',
-      opening_hours: '10.00',
-      closing_hours: '22.00'),
-];
+getIntValuesSF() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  //Return int
+  int intValue = prefs.getInt('intValue') ?? 0;
+  return intValue;
+}

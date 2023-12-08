@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:ugd2_pbp/client/userClient.dart';
@@ -20,11 +21,11 @@ class ProfileViewNew extends StatefulWidget {
 class _ProfileViewNewState extends State<ProfileViewNew> {
   // DateTime date = DateTime.now();
 
-  // @override
-  // void initState() {
-  //   refresh();
-  //   super.initState();
-  // }
+  @override
+  void initState() {
+    refresh();
+    super.initState();
+  }
 
   // List<Map<String, dynamic>> users = [];
 
@@ -44,9 +45,12 @@ class _ProfileViewNewState extends State<ProfileViewNew> {
   String imageLink = '-';
 
   void refresh() async {
+    clearMemoryImageCache();
+    clearDiskCachedImages();
     userId = await getIntValuesSF();
     print(userId);
     final data = await UserClient.find(userId);
+
     response = await UserClient.getImageUser(data.photo);
     setState(() {
       imageLink = json.decode(response.body)['data'];
@@ -100,12 +104,12 @@ class _ProfileViewNewState extends State<ProfileViewNew> {
                 ],
               ),
               const SizedBox(height: 5),
-              Text("nickname",
+              Text(user.username,
                   style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                       fontFamily: 'Poppins')),
-              Text("aku@gmail.com",
+              Text(user.email,
                   style: TextStyle(fontSize: 20, fontFamily: 'Poppins')),
               const SizedBox(height: 20),
               itemProfile('Name : ' + user.name),

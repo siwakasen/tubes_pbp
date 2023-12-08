@@ -51,6 +51,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^2.0.0
+  msix: ^3.16.7
 
 flutter:
   uses-material-design: true
@@ -63,3 +64,11 @@ flutter:
       - asset: fonts/Poppins-Medium.ttf
       - asset: fonts/Poppins-Bold.ttf
       - asset: fonts/Poppins-SemiBold.ttf
+
+msix_config:
+  display_name: ditonton
+  publisher_display_name: asdos compay
+  identity_name: com.example.ugd2_pbp
+  logo_path: C:/Users/riksi/Downloads/combo.png
+  msix_version: 1.0.0.0
+  capabilities: internetClient

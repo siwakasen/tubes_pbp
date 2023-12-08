@@ -382,16 +382,6 @@ class _RegisterViewNewState extends State<RegisterViewNew> {
                           padding: const EdgeInsets.only(left: 60, right: 60)),
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
-                          // UserClient.create(User(
-                          //     id: 0,
-                          //     username: usernameController.text,
-                          //     email: emailController.text,
-                          //     password: passwordController.text,
-                          //     name: nameController.text,
-                          //     address: addressController.text,
-                          //     bornDate: bornController.text,
-                          //     phoneNumber: phoneController.text,
-                          //     photo: "-"));
                           showDialog(
                               context: context,
                               builder: (_) => AlertDialog(
@@ -468,6 +458,16 @@ class _RegisterViewNewState extends State<RegisterViewNew> {
                                       ),
                                     ],
                                   ));
+                          UserClient.create(User(
+                              id: 0,
+                              username: usernameController.text,
+                              email: emailController.text,
+                              password: passwordController.text,
+                              name: nameController.text,
+                              address: addressController.text,
+                              bornDate: bornController.text,
+                              phoneNumber: phoneController.text,
+                              photo: "-"));
                         }
                       },
                       child: const Text(
